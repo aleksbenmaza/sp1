@@ -1,0 +1,70 @@
+#parse("macro/msg.vm")
+<div id="customer_board" class="panel panel-default col-md-9">
+    <div class="panel-heading" style="background: #353535; color: #AFAFAF;">
+        <label class="title" style="">
+            #msg("customerpanel.index.panelTitle")
+        </label>
+    </div>
+    <div class="panel-body" style="">
+        <div class="post">
+            <div class="entry">
+                <div>
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <th scope="row">#msg("lastName")</th>
+                            <td>{{customer.last_name}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">#msg("firstName")</th>
+                            <td>{{customer.first_name}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">#msg("address")</th>
+                            <td>{{customer.address}}, {{customer.zip_code}}, {{customer.city}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">#msg("phone")</th>
+                            <td>{{customer.phone_number}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">#msg("bonusMalus")</th>
+                            <td>{{customer.bonus_malus}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="contracts_list" class="panel panel-default col-md-3">
+        <div class="panel-heading" style=" background: #353535; color: #AFAFAF;">
+            <label class="title" style="">
+                #msg("customerpanel.actionsPanel.title")
+            </label>
+        </div>
+        <div ng-controller="NavCtrl" class="panel-body list-group">
+            <ul style="overflow: auto">
+                <li><button class="btn btn-md" id="show_contracts_butt" ng-click="go('contracts_list')">Voir les contrats</button></li>
+            </ul>
+        </div>
+    </div>
+    <div id="contracts_list" class="panel panel-default col-md-3">
+        <div class="panel-heading" style=" background: #353535; color: #AFAFAF;">
+            <label class="title" style="">
+                #msg("customerpanel.todoPanel.title")
+            </label>
+        </div>
+        <div ng-controller="NavCtrl" class="panel-body list-group">
+            <ul style="overflow: auto">
+                <li>
+                    <button ng-if="!user_granted" type="button" class="btn btn-md" data-toggle="modal" data-target="#sepa_modal">
+                        #msg("customerpanel.todoPanel.sepaUpload.buttonTitle")
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

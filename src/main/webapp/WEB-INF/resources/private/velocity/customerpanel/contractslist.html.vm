@@ -1,0 +1,56 @@
+#parse("macro/msg.vm")
+#set($index = "&#36;index")
+<div id="customer_board" class="panel panel-default col-md-9">
+    <div class="panel-heading" style=" background: #353535; color: #AFAFAF;">
+        <label class="title" style="">
+            #msg("customerpanel.contractslist.panelTitle")
+        </label>
+    </div>
+    <div class="panel-body" style="height: 246px; overflow: auto">
+        <div class="post">
+            <div class="entry">
+                <div>
+                    <table class="table-striped">
+                        <tr>
+                            <td class="col-md-1"></td>
+                            <td class="col-md-3">#msg("id")</td>
+                            <td class="col-md-3">#msg("insurance")</td>
+                            <td class="col-md-3">#msg("annualAmount")</td>
+                            <td class="col-md-3">#msg("vehiclesRegistrationNumber")</td>
+                            <td class="col-md-3">#msg("active")</td>
+                        </tr>
+
+                        <tr ng-repeat="contract in contracts">
+                            <td class="col-md-1"><button ng-controller="NavCtrl" class="btn btn-md" ng-click="go('contract', {contract_key:$index+1})"></button></td>
+                            <td class="col-md-3">{{contract.id}}</td>
+                            <td class="col-md-3">{{contract.insurance.name}}</td>
+                            <td class="col-md-3">{{contract.amount}}</td>
+                            <td class="col-md-3">{{contract.vehicle.registration_number}}</td>
+                            <td class="col-md-3">{{contract.active ? "oui" : "non"}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="contracts_list" class="panel panel-default col-md-3">
+        <div class="panel-heading" style=" background: #353535; color: #AFAFAF;">
+            <label class="title" style="">
+                #msg("customerpanel.navPanelTitle")
+            </label>
+        </div>
+        <div ng-controller="NavCtrl" class="panel-body list-group">
+            <ul style="height: 246px; overflow: auto">
+                <li>
+                    <button ng-if="user_granted" class="btn btn-md" id="new_contract_butt" ng-click="go('new_contract')">Nouveau contrat</button>
+                    <button ng-if="!user_granted" class="btn btn-md btn-danger" data-toggle="modal" data-target="#sepa_modal">Nouveau contrat</button>
+                </li>
+                <li>
+                    <button class="btn btn-md" id="show_contract_butt" ng-click="go('index')">Retour</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
