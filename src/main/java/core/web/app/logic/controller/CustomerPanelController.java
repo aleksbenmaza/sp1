@@ -1,19 +1,17 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import static core.business.model.mapping.IdentifiableById.Utils.toSortedList;
 
 import core.business.model.mapping.Contract;
 import core.business.model.mapping.person.insuree.Customer;
 
-import core.web.logic.exception.CustomHttpExceptions.WithViewUnauthorizedRequestException;
-import core.web.model.persistence.User;
-import util.ForwardView;
+import core.web.common.logic.exception.CustomHttpExceptions;
+
+import core.web.app.model.persistence.User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
@@ -23,50 +21,55 @@ import java.util.*;
  * Created by alexandremasanes on 21/02/2017.
  */
 @Controller
-@RequestMapping(value = "/espace-assure", method = RequestMethod.GET)
+@RequestMapping(value = "${routes.customerPanel}", method = RequestMethod.GET)
 public class CustomerPanelController extends AppController {
+
+    @Value("${apiSubdomain}")
+    private String apiSubdomain;
 
     public final static String VIEW_NAME = "customerpanel";
     /*
     @PreHandler
-    public ForwardView preHandle(@SessionAttribute User user) {
+    public ForwardingView preHandle(@SessionAttribute User user) {
 
         if(user instanceof Customer)
             return null;
-        return new ForwardView(getWebroot() + "/connexion", HttpStatus.UNAUTHORIZED);
+        return new ForwardingView(getWebroot() + "/connexion", HttpStatus.UNAUTHORIZED);
     }*/
 
 
-    @ModelAttribute("1")
-    protected void preHandle(@SessionAttribute User user) {
+    @ModelAttribute
+    protected Customer getCustomer(@SessionAttribute User user) {
         System.out.println("user :" + user);
         if(!(user instanceof Customer))
-            throw new WithViewUnauthorizedRequestException(
-                    new ForwardView(
-                            getWebroot() + "/connexion"
-                    )
-            );
+            throw new CustomHttpExceptions.UnauthorizedRequestException()
+                                          .withForwarding("/connexion");
+
+        return (Customer) user;
+
 
     }
 
-    @RequestMapping(value = {"",
-                             "/nouveau-contrat",
-                             "/vos-contrats",
-                             "/contrat/{contractKey:\\d+}",
-                             "/contrat/{contractKey:\\d+}/nouveau-sinistre",
-                             "/contrat/{contractKey:\\d+}/sinistres",
-                             "/contrat/{contractKey:\\d+}/sinistre/{sinisterKey:\\d+}"},
-                    method = RequestMethod.GET
-    ) public ModelAndView getIndex(@SessionAttribute User user) {
-        Customer customer;
+    @RequestMapping({
+            "${routes.customerPanel0}",
+            "${routes.customerPanel1}",
+            "${routes.customerPanel2}",
+            "${routes.customerPanel3}",
+            "${routes.customerPanel4}",
+            "${routes.customerPanel5}",
+            "${routes.customerPanel6}"
+    }) public ModelAndView getIndex(
+                                   Customer customer,
+            @RequestHeader("Host") String   host
+    ) {
         ModelMap model;
         List<Contract> contracts;
 
-        customer  = (Customer) user;
         model     = new ModelMap();
         contracts = toSortedList(customer.getContracts());
 
         model.put("API_ACCESS_KEY", customer.getUserAccount().getToken().getValue());
+        model.put("API_SERVER_NAME", apiSubdomain + "." + host);
         model.put("contracts", contracts);
         return render(customer, model);
     }

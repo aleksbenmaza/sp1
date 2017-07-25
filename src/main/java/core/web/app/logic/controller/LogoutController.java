@@ -1,11 +1,11 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import core.business.logic.TokenService;
 import core.business.model.mapping.person.RegisteredUser;
-import core.web.logic.controller.annotation.PreHandler;
 
-import core.web.logic.exception.CustomHttpExceptions.WithViewResourceForbiddenException;
-import core.web.model.persistence.User;
+import core.web.common.logic.exception.CustomHttpExceptions;
+
+import core.web.app.model.persistence.User;
 import util.RedirectView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,20 +23,17 @@ public class LogoutController extends AppController {
     @Autowired
     private TokenService tokenService;
 
-    @PreHandler
-    public void preHandle(
+    @ModelAttribute
+    public void checkUser(
             @SessionAttribute         User   user,
             @RequestHeader("referer") String referer
     ) {
         if(!(user instanceof RegisteredUser))
-            throw new WithViewResourceForbiddenException(
-                    new RedirectView(
-                            resolveReferer(referer)
-                    )
-            );
+            throw new CustomHttpExceptions.ResourceForbiddenException()
+                                          .withRedirect(resolveReferer(referer));
     }
 
-    @RequestMapping(value = "/deconnexion", method = RequestMethod.GET)
+    @RequestMapping(value = "${routes.logout}", method = RequestMethod.GET)
     public RedirectView signOut(
                                       HttpSession session,
             @RequestHeader("referer") String      referer

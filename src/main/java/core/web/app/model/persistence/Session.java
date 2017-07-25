@@ -1,4 +1,4 @@
-package core.web.model.persistence;
+package core.web.app.model.persistence;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

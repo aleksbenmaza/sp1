@@ -1,13 +1,13 @@
-package app.core.business.model.mapping.sinister;
+package core.business.model.mapping.sinister;
 
 
-import app.core.business.model.mapping.IdentifiableByIdImpl;
-import app.core.business.model.mapping.Insurance;
+import core.business.model.mapping.IdentifiableByIdImpl;
+import core.business.model.mapping.Insurance;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 
-import app.core.business.model.mapping.Vehicle;
+import core.business.model.mapping.Vehicle;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

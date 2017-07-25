@@ -1,4 +1,4 @@
-package core.web.model.databinding.command.sinister;
+package core.web.api.model.input.sinister;
 
 
 import com.google.gson.*;

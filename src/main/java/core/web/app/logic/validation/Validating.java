@@ -1,9 +1,10 @@
-package core.web.model.databinding.validation;
+package core.web.app.logic.validation;
 
 import static java.util.Arrays.asList;
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
 
-import core.web.model.databinding.command.Command;
+import core.web.api.logic.validation.Errors;
+import core.web.app.model.databinding.Command;
 import util.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 

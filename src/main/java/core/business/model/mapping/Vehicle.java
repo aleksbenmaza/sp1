@@ -1,10 +1,10 @@
-package app.core.business.model.mapping;
+package core.business.model.mapping;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 
-import app.core.business.model.mapping.person.insuree.Insuree;
-import app.core.business.model.mapping.sinister.Sinister;
+import core.business.model.mapping.person.insuree.Insuree;
+import core.business.model.mapping.sinister.Sinister;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

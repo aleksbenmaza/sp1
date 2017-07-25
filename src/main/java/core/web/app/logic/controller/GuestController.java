@@ -1,11 +1,12 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 
-import core.web.logic.exception.CustomHttpExceptions.WithViewResourceForbiddenException;
-import core.web.model.persistence.Guest;
+import core.web.common.logic.exception.CustomHttpExceptions.ResourceForbiddenException;
 
-import core.web.model.persistence.User;
-import util.RedirectView;
+import core.web.app.model.persistence.Guest;
+
+import core.web.app.model.persistence.User;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -26,14 +27,19 @@ public abstract class GuestController extends AppController {
         return null;
     } */
 
-    @ModelAttribute("0")
-    public void preHandle(
+    @ModelAttribute
+    public void checkUser(
             @SessionAttribute                                   User   user,
-            @RequestHeader(value = "referer", required = false) String referer
+            @RequestHeader(value = "referer", required = false) String referer,
+            HttpMethod httpMethod
     ) {
-        if(!(user instanceof Guest))
-            throw new WithViewResourceForbiddenException(
-                    new RedirectView(resolveReferer(referer))
-            );
+
+        ResourceForbiddenException exception;
+        if(!(user instanceof Guest)) {
+            exception = new ResourceForbiddenException();
+            throw (httpMethod == HttpMethod.GET) ?
+                    exception.withRedirect(resolveReferer(referer)) :
+                    exception;
+        }
     }
 }

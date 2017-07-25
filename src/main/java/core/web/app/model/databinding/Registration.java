@@ -1,4 +1,4 @@
-package core.web.model.databinding.command;
+package core.web.app.model.databinding;
 
 import org.springframework.web.multipart.MultipartFile;
 

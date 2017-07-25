@@ -1,9 +1,9 @@
-package core.web.logic.controller;
+package core.web.api.logic.controller;
 
 
 import static core.business.model.mapping.IdentifiableById.NULL_ID;
 import static core.business.model.mapping.IdentifiableById.Utils.toSortedList;
-import static core.web.model.domaintransfer.Presentation.fromCollection;
+import static core.web.api.model.ouput.Presentation.fromCollection;
 
 import core.business.logic.ContractService;
 import core.business.logic.CustomerService;
@@ -13,20 +13,20 @@ import core.business.model.mapping.Coverage;
 import core.business.model.mapping.person.insuree.Customer;
 import core.business.model.mapping.sinister.Accident;
 import core.business.model.mapping.sinister.PlainSinister;
-import core.web.logic.exception.CustomHttpExceptions.*;
-import core.web.logic.helper.VelocityTemplateResolver;
-import core.web.model.databinding.command.ContractSubmission;
-import core.web.model.databinding.validation.ContractSubmissionValidator;
-import core.web.model.databinding.validation.Errors;
-import core.web.model.databinding.command.sinister.SinisterSubmission;
-import core.web.model.databinding.validation.SepaUploadValidator;
-import core.web.model.databinding.validation.SinisterSubmissionValidator;
-import core.web.model.domaintransfer.customer.*;
-import core.web.model.domaintransfer.customer.sinister.AccidentDTO;
-import core.web.model.domaintransfer.customer.sinister.PlainSinisterDTO;
-import core.web.model.domaintransfer.customer.sinister.PlainSinisterDTO.TypeDTO;
-import core.web.model.domaintransfer.customer.sinister.SinisterDTO;
-import core.web.model.persistence.User;
+import core.web.common.logic.exception.CustomHttpExceptions.*;
+import core.web.common.logic.helper.VelocityTemplateResolver;
+import core.web.api.model.input.ContractSubmission;
+import core.web.api.logic.validation.ContractSubmissionValidator;
+import core.web.api.logic.validation.Errors;
+import core.web.api.model.input.sinister.SinisterSubmission;
+import core.web.api.logic.validation.SepaUploadValidator;
+import core.web.api.logic.validation.SinisterSubmissionValidator;
+import core.web.api.model.ouput.customer.*;
+import core.web.api.model.ouput.customer.sinister.AccidentDTO;
+import core.web.api.model.ouput.customer.sinister.PlainSinisterDTO;
+import core.web.api.model.ouput.customer.sinister.PlainSinisterDTO.TypeDTO;
+import core.web.api.model.ouput.customer.sinister.SinisterDTO;
+import core.web.app.model.persistence.User;
 
 import com.itextpdf.text.DocumentException;
 
@@ -46,7 +46,7 @@ import java.util.List;
  * Created by alexandremasanes on 21/02/2017.
  */
 @RestController // = @Controller + @ResponseBody
-@RequestMapping(value = "/api/customer")
+@RequestMapping(value = "/customer")
 public class CustomerApiController extends ApiController {
 
     @Autowired

@@ -1,6 +1,6 @@
-package app.core.business.model.mapping;
+package core.business.model.mapping;
 
-import app.core.business.model.mapping.damage.Spoilage;
+import core.business.model.mapping.damage.Spoilage;
 
 import javax.persistence.*;
 import javax.persistence.Entity;

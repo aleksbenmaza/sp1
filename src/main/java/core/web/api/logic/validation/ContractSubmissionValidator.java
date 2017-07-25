@@ -1,14 +1,15 @@
-package core.web.model.databinding.validation;
+package core.web.api.logic.validation;
 
 import static java.util.Arrays.asList;
 import static java.net.URLConnection.guessContentTypeFromStream;
 
+import core.web.app.logic.validation.Validating;
 import core.business.model.dao.DAO;
 import core.business.model.mapping.Insurance;
 import core.business.model.mapping.Model;
-import core.web.logic.helper.MessageHelper;
-import core.web.model.databinding.command.Command;
-import core.web.model.databinding.command.ContractSubmission;
+import core.web.common.logic.helper.MessageHelper;
+import core.web.app.model.databinding.Command;
+import core.web.api.model.input.ContractSubmission;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,9 +1,9 @@
-package core.web.model.domaintransfer.customer;
+package core.web.api.model.ouput.customer;
 
 import core.business.model.mapping.*;
 
-import core.web.model.domaintransfer.Presentation;
-import core.web.model.domaintransfer.publik.InsuranceDTO;
+import core.web.api.model.ouput.Presentation;
+import core.web.api.model.ouput.publik.InsuranceDTO;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;

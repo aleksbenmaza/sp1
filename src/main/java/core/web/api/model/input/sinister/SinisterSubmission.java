@@ -1,6 +1,6 @@
-package core.web.model.databinding.command.sinister;
+package core.web.api.model.input.sinister;
 
-import core.web.model.databinding.command.Command;
+import core.web.app.model.databinding.Command;
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Time;

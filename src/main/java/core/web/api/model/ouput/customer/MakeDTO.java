@@ -1,7 +1,7 @@
-package core.web.model.domaintransfer.customer;
+package core.web.api.model.ouput.customer;
 
 import core.business.model.mapping.Make;
-import core.web.model.domaintransfer.Presentation;
+import core.web.api.model.ouput.Presentation;
 
 /**
  * Created by alexandremasanes on 13/04/2017.

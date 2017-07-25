@@ -1,4 +1,4 @@
-package core.web.logic.controller;
+package core.web.common.logic.controller;
 
 import core.business.logic.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

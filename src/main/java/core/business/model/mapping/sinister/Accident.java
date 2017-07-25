@@ -1,6 +1,6 @@
-package app.core.business.model.mapping.sinister;
+package core.business.model.mapping.sinister;
 
-import app.core.business.model.mapping.Vehicle;
+import core.business.model.mapping.Vehicle;
 
 import javax.persistence.*;
 

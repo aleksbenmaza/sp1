@@ -1,15 +1,13 @@
-package app.core.business.logic;
+package core.business.logic;
 
-import static app.core.business.model.mapping.ToBeChecked.Status.*;
+import static core.business.model.mapping.ToBeChecked.Status.*;
 
-import app.core.business.model.mapping.UserAccount;
-import app.core.business.model.mapping.person.insuree.Customer;
-import app.core.web.logic.helper.VelocityTemplateResolver;
-import app.core.web.model.databinding.validation.RegistrationValidator;
+import core.business.model.mapping.UserAccount;
+import core.business.model.mapping.person.insuree.Customer;
+import core.web.common.logic.helper.VelocityTemplateResolver;
+import core.web.app.logic.validation.RegistrationValidator;
 
-import app.core.web.model.databinding.command.Registration;
-
-import app.core.web.model.persistence.*;
+import core.web.app.model.databinding.Registration;
 
 import static com.itextpdf.text.pdf.BaseFont.*;
 
@@ -24,7 +22,6 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
@@ -63,6 +60,10 @@ public class CustomerService extends BaseService {
 
     private final HashMap<String, Registration> awaitingRegistrations;
 
+    //value injections
+
+    @Value("#{systemEnvironment['AAA_SERVERNAME']}")
+    private String serverName;
 
     @Value("${customerService.documentsDir.idCard}")
     private String idCardBaseName;
@@ -70,8 +71,7 @@ public class CustomerService extends BaseService {
     @Value("${customerService.documentsDir.sepa")
     private String sepaFileBaseName;
 
-    @Autowired
-    private RegistrationValidator    registrationValidator;
+    //bean injections
 
     @Autowired
     private UserService              userService;
@@ -112,16 +112,16 @@ public class CustomerService extends BaseService {
 
     @Transactional
     public synchronized boolean register(String token) throws IOException, NoSuchAlgorithmException {
-        Registration registration;
-        Customer customer;
-        UserAccount userAccount;
-        String email;
-        String hash;
-        MultipartFile idCardFile;
-        long nextId;
-        File file;
-        String path;
-        RegistrationResult registrationResult;
+        Registration        registration;
+        Customer            customer;
+        UserAccount         userAccount;
+        String              email;
+        String              hash;
+        MultipartFile       idCardFile;
+        long                nextId;
+        File                file;
+        String              path;
+        RegistrationResult  registrationResult;
 
         registrationResult = new RegistrationResult();
 
@@ -165,11 +165,11 @@ public class CustomerService extends BaseService {
     }
 
     public byte[] generateSepa(Customer customer) throws IOException, DocumentException {
-        ByteArrayOutputStream stream;
-        PdfReader reader;
-        PdfStamper stamper;
-        BaseFont baseFont;
-        PdfContentByte over;
+        ByteArrayOutputStream   stream;
+        PdfReader               reader;
+        PdfStamper              stamper;
+        BaseFont                baseFont;
+        PdfContentByte          over;
 
         String id, formatedId, part0, part1;
 
@@ -246,7 +246,7 @@ public class CustomerService extends BaseService {
 
         mailMessage = new SimpleMailMessage();
 
-        mailMessage.setText(velocityTemplateResolver.getRegistrationValidationMailTemplate(generateToken()));
+        mailMessage.setText(velocityTemplateResolver.getRegistrationValidationMailTemplate(serverName, generateToken()));
 
         mailMessage.setSubject("Bienvenue " + registration.getFirstName() + " " + registration.getLastName());
 

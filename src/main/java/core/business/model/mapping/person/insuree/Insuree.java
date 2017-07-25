@@ -1,4 +1,4 @@
-package app.core.business.model.mapping.person.insuree;
+package core.business.model.mapping.person.insuree;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import app.core.business.model.mapping.Vehicle;
-import app.core.business.model.mapping.person.Person;
+import core.business.model.mapping.Vehicle;
+import core.business.model.mapping.person.Person;
 
 @Entity
 @Table(name = "assures")

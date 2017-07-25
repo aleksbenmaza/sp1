@@ -1,4 +1,4 @@
-package app.core.business.model.mapping.damage;
+package core.business.model.mapping.damage;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

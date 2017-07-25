@@ -1,4 +1,4 @@
-package app.util;
+package util;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                           http://www.springframework.org/schema/context
+	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+    <context:component-scan base-package="core.web.api"/>
+
+
+    <context:property-placeholder location="classpath*:/validation.properties,
+                                            classpath*:/service.properties,
+                                            classpath*:/global.properties"/>
+
+    <bean id="gson" class="com.google.gson.Gson"/>
+
+    <mvc:cors>
+        <mvc:mapping path="/**" allowed-origins="#{systemProperties['AAA_SERVER']}" allowed-headers="Authorization" allowed-methods="*" max-age="3000"/>
+    </mvc:cors>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean id="messageConverter" class="org.springframework.http.converter.json.GsonHttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+</beans>

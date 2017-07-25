@@ -1,16 +1,15 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import core.business.logic.UserService;
 import core.business.model.mapping.UserAccount;
 
-import core.web.logic.exception.CustomHttpExceptions;
-import core.web.model.databinding.command.PasswordReinitialization;
+import core.web.common.logic.exception.CustomHttpExceptions;
+import core.web.app.model.databinding.PasswordReinitialization;
 import util.MessageCode;
 import util.RedirectView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -22,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by alexandremasanes on 22/06/2017.
  */
 @Controller
-@RequestMapping("/mot-de-passe-perdu")
+@RequestMapping("${routes.lostPassword}")
 public class PasswordReinitializationController extends GuestController {
 
     @Autowired
@@ -36,21 +35,21 @@ public class PasswordReinitializationController extends GuestController {
         return render("lostpassword");
     }
 
-    @RequestMapping(value = "/reinitialiser", method = RequestMethod.GET)
-    public ModelAndView getNewPasswordForm() {
+    @RequestMapping(
+            value  = "${routes.passwordReinitialization}",
+            method = RequestMethod.GET
+
+    ) public ModelAndView getNewPasswordForm() {
         return render("passwordreinitialization");
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public Object submitEmailAddress(
-                                HttpSession session,
-                @RequestParam   String      emailAddress,
-                @ModelAttribute MessageCode messageCode
+                                                 HttpSession session,
+                @RequestParam("email_address")   String      emailAddress,
+                @ModelAttribute                  MessageCode messageCode
 
     ) {
-
-        ModelMap model;
-
 
         if(!emailAddress.matches(emailPattern)) {
             messageCode.setValue("validation.email.badPattern");
@@ -67,8 +66,11 @@ public class PasswordReinitializationController extends GuestController {
 
     }
 
-    @RequestMapping(value = "/reinitialiser", method = RequestMethod.POST)
-    public RedirectView submitPassword(
+    @RequestMapping(
+            value  = "${routes.passwordReinitialization}",
+            method = RequestMethod.POST
+
+    ) public RedirectView submitPassword(
             @SessionAttribute UserAccount        userAccount,
             @RequestParam     String             password,
                               RedirectAttributes redirectAttributes

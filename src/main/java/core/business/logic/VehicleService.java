@@ -1,4 +1,4 @@
-package app.core.business.logic;
+package core.business.logic;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

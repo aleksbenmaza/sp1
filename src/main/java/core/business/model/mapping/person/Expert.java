@@ -1,7 +1,7 @@
-package app.core.business.model.mapping.person;
+package core.business.model.mapping.person;
 
-import app.core.business.model.mapping.Coverage;
-import app.core.business.model.mapping.UserAccount;
+import core.business.model.mapping.Coverage;
+import core.business.model.mapping.UserAccount;
 
 import java.util.Set;
 import java.util.HashSet;

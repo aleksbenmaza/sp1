@@ -1,3 +1,4 @@
+const PUBLIC_API_URI = API_ABSOLUTE_URI + "/public";
 let insurances_select     = $(" #insurances ");
 let amount_select         = $(" #amount ");
 let deductible_select     = $(" #deductible ");
@@ -29,9 +30,9 @@ function retrieve_deductible(insurance, amount) {
     let config;
 
     $.ajax(config = {
-        url        : PUBLIC_API_URI + '/insurances/' + insurance.id + '/deductible/' +amount,
+        url        : PUBLIC_API_URI + '/insurances/' + insurance.id + '/deductible/' + amount,
         type       :'GET',
-        dataType   :'text',
+        dataType   :'json',
         beforeSend : function(request) {
             request.setRequestHeader('Authorization', API_ACCESS_KEY);
         },
@@ -56,9 +57,9 @@ function retrieve_insurances() {
     retried = false;
     console.log("ajax");
     $.ajax(config = {
-        url        : PUBLIC_API_URI + '/insurances',
-        type       : 'GET',
-        dataType   : 'json',
+        url         : PUBLIC_API_URI + '/insurances',
+        type        : 'GET',
+        dataType    : 'json',
         beforeSend : function(request) {
             request.setRequestHeader('Authorization', api_access_key);
         },

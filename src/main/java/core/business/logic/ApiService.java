@@ -1,11 +1,11 @@
-package app.core.business.logic;
+package core.business.logic;
 
-import static app.core.business.model.mapping.IdentifiableById.NULL_ID;
+import static core.business.model.mapping.IdentifiableById.NULL_ID;
 
-import app.core.business.model.mapping.Insurance;
-import app.core.business.model.mapping.Make;
-import app.core.business.model.mapping.Model;
-import app.core.web.model.persistence.Session;
+import core.business.model.mapping.Insurance;
+import core.business.model.mapping.Make;
+import core.business.model.mapping.Model;
+import core.web.app.model.persistence.Session;
 
 import org.springframework.stereotype.Service;
 

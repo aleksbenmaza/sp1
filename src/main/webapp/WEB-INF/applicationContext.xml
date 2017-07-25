@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                           http://www.springframework.org/schema/context
+	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+    <context:component-scan base-package="core" />
+
+
+
+    <bean id="sessionFactory" name="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="configLocation">
+            <value>
+                /WEB-INF/hbn.xml
+            </value>
+        </property>
+
+        <property name="packagesToScan"> <!-- be aware : spring and hbn seem to mess up about this -->
+            <value>
+                core.business.model.mapping
+            </value>
+        </property>
+    </bean>
+    <!-- must be c/p into every *-servlet.xml -->
+    <context:property-placeholder location="classpath*:/validation.properties,
+                                            classpath*:/service.properties,
+                                            classpath*:/global.properties"/>
+
+    <!--
+
+        <bean id="transactionManager"
+              class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+            <property name="sessionFactory" ref="sessionFactory" />
+        </bean>
+
+        <tx:annotation-driven proxy-target-class="true"
+                              transaction-manager="transactionManager" /> -->
+
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">file</prop>
+                <prop key="file.resource.loader.class">
+                    org.apache.velocity.runtime.resource.loader.FileResourceLoader
+                </prop>
+                <prop key="file.resource.loader.cache">false</prop>
+            </props>
+        </property>
+        <property name="resourceLoaderPath" value="/WEB-INF/resources/private/velocity/" />
+    </bean>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="587" />
+        <property name="username" value="#{systemProperties['EMAIL_ADDRESS']}" />
+        <property name="password" value="#{systemProperties['EMAIL_PWD']}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize" value="100000"/>
+    </bean>
+
+    <!-- this is a template messageCode that we can pre-load with default state -->
+    <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="alexandre.masanes@gmail.com"/>
+    </bean>
+
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

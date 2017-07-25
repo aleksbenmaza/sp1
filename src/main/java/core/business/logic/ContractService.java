@@ -1,11 +1,11 @@
-package app.core.business.logic;
+package core.business.logic;
 
-import static app.core.business.model.mapping.IdentifiableById.Utils.toSortedList;
+import static core.business.model.mapping.IdentifiableById.Utils.toSortedList;
 import static java.net.URLConnection.guessContentTypeFromStream;
 
-import app.core.business.model.mapping.*;
-import app.core.business.model.mapping.person.insuree.Customer;
-import app.core.web.model.databinding.command.ContractSubmission;
+import core.business.model.mapping.*;
+import core.business.model.mapping.person.insuree.Customer;
+import core.web.api.model.input.ContractSubmission;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

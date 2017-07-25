@@ -1,8 +1,8 @@
-package core.web.model.databinding.validation;
+package core.web.api.logic.validation;
 
-import static core.web.model.databinding.validation.Validating.COMMON_MESSAGE_BASE_CODE;
+import static core.web.app.logic.validation.Validating.COMMON_MESSAGE_BASE_CODE;
 
-import core.web.logic.helper.MessageHelper;
+import core.web.common.logic.helper.MessageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

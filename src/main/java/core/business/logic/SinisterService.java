@@ -1,17 +1,17 @@
-package app.core.business.logic;
+package core.business.logic;
 
-import static app.core.business.model.mapping.ToBeChecked.Status.*;
+import static core.business.model.mapping.ToBeChecked.Status.*;
 
-import app.core.business.model.mapping.Contract;
-import app.core.business.model.mapping.Coverage;
-import app.core.business.model.mapping.Vehicle;
-import app.core.business.model.mapping.sinister.Accident;
-import app.core.business.model.mapping.sinister.PlainSinister;
-import app.core.business.model.mapping.sinister.PlainSinister.Type;
-import app.core.business.model.mapping.sinister.Sinister;
-import app.core.web.model.databinding.command.sinister.AccidentSubmission;
-import app.core.web.model.databinding.command.sinister.PlainSinisterSubmission;
-import app.core.web.model.databinding.command.sinister.SinisterSubmission;
+import core.business.model.mapping.Contract;
+import core.business.model.mapping.Coverage;
+import core.business.model.mapping.Vehicle;
+import core.business.model.mapping.sinister.Accident;
+import core.business.model.mapping.sinister.PlainSinister;
+import core.business.model.mapping.sinister.PlainSinister.Type;
+import core.business.model.mapping.sinister.Sinister;
+import core.web.api.model.input.sinister.AccidentSubmission;
+import core.web.api.model.input.sinister.PlainSinisterSubmission;
+import core.web.api.model.input.sinister.SinisterSubmission;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

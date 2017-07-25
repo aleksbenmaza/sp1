@@ -1,12 +1,12 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import core.business.logic.TokenService;
 import core.business.logic.UserService.*;
 import core.business.model.mapping.UserAccount;
 import core.business.model.mapping.person.insuree.Customer;
-import core.web.model.databinding.command.Login;
-import core.web.model.persistence.Guest;
-import core.web.model.persistence.User;
+import core.web.app.model.databinding.Login;
+import core.web.app.model.persistence.Guest;
+import core.web.app.model.persistence.User;
 import util.MessageCode;
 import util.RedirectView;
 
@@ -24,7 +24,7 @@ import java.util.Hashtable;
  * Created by alexandremasanes on 12/03/2017.
  */
 @Controller
-@RequestMapping(value = "/connexion")
+@RequestMapping("${routes.login}")
 public class LoginController extends GuestController {
 
     public  static final String VIEW_NAME = "login";

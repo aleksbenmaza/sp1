@@ -1,10 +1,10 @@
-package core.web.model.domaintransfer.customer;
+package core.web.api.model.ouput.customer;
 
 import static util.CommonUtils.replaceIfNull;
 
 import core.business.model.mapping.UserAccount;
 import core.business.model.mapping.person.insuree.Customer;
-import core.web.model.domaintransfer.Presentation;
+import core.web.api.model.ouput.Presentation;
 import com.google.gson.annotations.SerializedName;
 
 /**

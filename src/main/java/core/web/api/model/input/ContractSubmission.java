@@ -1,6 +1,7 @@
-package core.web.model.databinding.command;
+package core.web.api.model.input;
 
 import com.google.gson.annotations.SerializedName;
+import core.web.app.model.databinding.Command;
 
 import java.util.Arrays;
 import java.util.Date;

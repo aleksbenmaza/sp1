@@ -1,9 +1,10 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-import core.web.logic.exception.CustomHttpExceptions.ResourceNotFoundException;
+import core.web.common.logic.controller.BaseController;
+import core.web.common.logic.exception.CustomHttpExceptions.ResourceNotFoundException;
 
 import util.SpringMessageVars;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 
@@ -20,32 +22,32 @@ import java.util.Locale;
  * Created by alexandremasanes on 21/02/2017.
  */
 @Controller
-public class ErrorController extends AppController {
-
-    public final static String VIEW_NAME = "error";
+@RequestMapping("/error")
+public class ErrorController extends BaseController {
 
     @Autowired
     protected MessageSource messageSource;
 
-    @RequestMapping(value = "/error", method = GET)
-    public ModelAndView getErrorPage(HttpServletResponse response) throws ResourceNotFoundException {
+    @RequestMapping(method = GET)
+    public ModelAndView getErrorPage(
+            HttpServletRequest  request,
+            HttpServletResponse response
+    ) {
+        System.out.println(request.getServletPath());
+        if(request.getServletPath().contains("api"))
+            return new ModelAndView("blank");
         int statusCode = response.getStatus();
         if(statusCode < 400
         || messageSource.getMessage("error.message" + statusCode, null, Locale.FRENCH) == null)
             throw new ResourceNotFoundException();
-        ModelAndView view = render();
+        ModelAndView view = new ModelAndView("error");
         view.addObject("messageVars", new SpringMessageVars(statusCode));
-        view.addObject("code", statusCode);
+        view.addObject("headTitleCode", "error");
         return view;
     }
 
-    @RequestMapping(value = "/error", method = {POST, PUT, DELETE, HEAD, OPTIONS})
-    public void doNothing() {
-
-    }
-
-    @Override
-    protected String getViewName() {
-        return VIEW_NAME;
+    @RequestMapping(method = {POST, PUT, DELETE, HEAD, OPTIONS})
+    public void doNothing(HttpServletResponse response) {
+        response.setContentLength(0);
     }
 }

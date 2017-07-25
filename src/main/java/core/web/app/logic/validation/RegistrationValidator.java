@@ -1,10 +1,10 @@
-package core.web.model.databinding.validation;
+package core.web.app.logic.validation;
 
-import static core.web.model.databinding.validation.Validating.COMMON_MESSAGE_BASE_CODE;
+import static core.web.app.logic.validation.Validating.COMMON_MESSAGE_BASE_CODE;
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
 
 import core.business.model.dao.DAO;
-import core.web.model.databinding.command.Registration;
+import core.web.app.model.databinding.Registration;
 
 import util.ObjectMapper;
 

@@ -1,4 +1,4 @@
-package core.web.model.domaintransfer.admin;
+package core.web.api.model.ouput.admin;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 /**
  * Created by alexandremasanes on 14/05/2017.
  */
-public class InsuranceDTO extends core.web.model.domaintransfer.publik.InsuranceDTO {
+public class InsuranceDTO extends core.web.api.model.ouput.publik.InsuranceDTO {
 
     @XmlAttribute(name = "min-deductible")
     @SerializedName("min_deductible")

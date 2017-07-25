@@ -6,8 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<jsp:include page="header.jsp"/>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ include file="header.jsp" %>
 <div id="log_reg" class="container">
     <form method="post" id="password_reinitialization_form"  class="form-horizontal">
         <div class="form-group">
@@ -20,4 +20,4 @@
         </div>
     </form>
 </div>
-<jsp:include page="footer.jsp"/>
+<%@ include file="footer.jsp" %>

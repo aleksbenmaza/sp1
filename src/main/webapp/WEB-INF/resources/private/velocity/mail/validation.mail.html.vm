@@ -6,7 +6,7 @@
         Pour valider votre adresse email, veuillez cliquer sur le lien ci dessous
         ou copier/coller dans votre navigateur internet.
     </p>
-    <a href="http://192.168.0.32/inscription/$validationCode">Clicker pour valider</a>
+    <a href="http://$serverName/inscription/$validationCode">Clicker pour valider</a>
     <p>
         ---------------
         Ceci est un mail automatique, merci de ne pas y répondre.

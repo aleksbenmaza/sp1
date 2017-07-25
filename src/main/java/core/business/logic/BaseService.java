@@ -1,10 +1,10 @@
-package app.core.business.logic;
+package core.business.logic;
 
 
-import static app.util.CommonUtils.replaceIfNull;
+import static util.CommonUtils.replaceIfNull;
 
-import app.core.business.model.dao.DAO;
-import app.core.web.logic.helper.MessageHelper;
+import core.business.model.dao.DAO;
+import core.web.common.logic.helper.MessageHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

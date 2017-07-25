@@ -1,10 +1,10 @@
-package app.core.business.model.mapping.person;
+package core.business.model.mapping.person;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 
-import app.core.business.model.mapping.IdentifiableByIdImpl;
-import app.core.business.model.mapping.UserAccount;
+import core.business.model.mapping.IdentifiableByIdImpl;
+import core.business.model.mapping.UserAccount;
 
 import java.io.Serializable;
 

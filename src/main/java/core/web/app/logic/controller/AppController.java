@@ -1,13 +1,15 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import core.business.logic.UserService;
 import core.business.model.mapping.person.Manager;
 import core.business.model.mapping.person.Person;
 import core.business.model.mapping.person.RegisteredUser;
 import core.business.model.mapping.person.insuree.Customer;
-import core.web.model.persistence.Guest;
+import core.web.app.model.persistence.Guest;
+import core.web.common.logic.controller.BaseController;
+import org.springframework.web.bind.annotation.InitBinder;
 import util.HtmlLink;
-import core.web.model.persistence.User;
+import core.web.app.model.persistence.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,9 +32,9 @@ public abstract class AppController extends BaseController {
     public String resolveReferer(String referer) {
         return referer == null || referer.isEmpty() ? getWebroot() : referer;
     }
-
-    @ModelAttribute
-    public void refreshSessionUser(HttpSession session) {
+/*
+    @InitBinder
+    public void initOrUpdateSessionUser(HttpSession session) {
         User user;
         System.out.println(new Object(){}.getClass().getEnclosingMethod().getName());
         if(session.isNew())
@@ -52,7 +54,7 @@ public abstract class AppController extends BaseController {
                     setSessionUser(session, user);
             }
         }
-    }
+    } */
 
 
     protected ModelAndView render(String viewName, Map<String, Object> model) {

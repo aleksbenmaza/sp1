@@ -1,8 +1,8 @@
-package core.web.model.domaintransfer.customer.sinister;
+package core.web.api.model.ouput.customer.sinister;
 
 import core.business.model.mapping.sinister.PlainSinister;
 import core.business.model.mapping.sinister.PlainSinister.Type;
-import core.web.model.domaintransfer.Presentation;
+import core.web.api.model.ouput.Presentation;
 import com.google.gson.annotations.SerializedName;
 
 /**

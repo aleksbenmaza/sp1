@@ -1,4 +1,4 @@
-package core.web.logic.helper;
+package core.web.common.logic.helper;
 
 import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 

@@ -5,6 +5,9 @@
 
 'use strict';
 
+const CUSTOMER_API_URI = API_ABSOLUTE_URI + "/customer";
+const PUBLIC_API_URI   = API_ABSOLUTE_URI + "/public";
+
 let api_access_key = API_ACCESS_KEY;
 
 let app = angular.module('CustomerPanel', [
@@ -40,7 +43,7 @@ app.factory('httpResponseErrorInterceptor', ['$q', '$injector', function($q, $in
                 let deferred = $q.defer();
                 let $http = $injector.get('$http');
                 $.ajax({
-                    url        : PUBLIC_API_URI,
+                    url        : API_ABSOLUTE_URI,
                     type       : 'HEAD',
                     beforeSend : function(request) {
                         request.setRequestHeader('Authorization', api_access_key);

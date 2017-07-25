@@ -1,7 +1,7 @@
-package app.core.business.model.mapping.damage;
+package core.business.model.mapping.damage;
 
-import app.core.business.model.mapping.CarDealer;
-import app.core.business.model.mapping.sinister.Sinister;
+import core.business.model.mapping.CarDealer;
+import core.business.model.mapping.sinister.Sinister;
 
 import javax.persistence.*;
 

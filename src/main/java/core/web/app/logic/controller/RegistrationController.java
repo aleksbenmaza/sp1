@@ -1,11 +1,11 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import core.business.logic.CustomerService;
 import core.business.logic.CustomerService.*;
-import core.web.logic.helper.MessageHelper;
-import core.web.model.databinding.command.Login;
-import core.web.model.databinding.command.Registration;
-import core.web.model.databinding.validation.RegistrationValidator;
+import core.web.common.logic.helper.MessageHelper;
+import core.web.app.model.databinding.Login;
+import core.web.app.model.databinding.Registration;
+import core.web.app.logic.validation.RegistrationValidator;
 
 
 import util.MessageCode;
@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by alexandremasanes on 12/03/2017.
  */
 @Controller
-@RequestMapping("/inscription")
+@RequestMapping("${routes.registration}")
 public class RegistrationController extends GuestController {
 
     public final static String VIEW_NAME = "registration";
@@ -49,16 +49,21 @@ public class RegistrationController extends GuestController {
 
     @RequestMapping(method = RequestMethod.POST)
     public Object signUp(
-            @ModelAttribute Registration       registration,
-            @ModelAttribute MessageCode        messageCode,
-                            Login              login,
-                            BindingResult      bindingResult,
-                            RedirectAttributes redirectAttributes
+            @ModelAttribute        Registration       registration,
+            @ModelAttribute        MessageCode        messageCode,
+                                   Login              login,
+                                   BindingResult      bindingResult,
+                                   RedirectAttributes redirectAttributes
     ) {
+
+        ModelAndView modelAndView;
+
+        modelAndView = render();
+
         if (!login.isEmpty()) {
             registration.setEmailAddress(login.getEmailAddress());
             registration.setPassword(login.getPassword());
-            return render(new ModelMap(registration));
+            return modelAndView;
         }
 
         registrationValidator.validate(registration, bindingResult);
@@ -74,7 +79,7 @@ public class RegistrationController extends GuestController {
 
             if (registrationResult.isSuccessful()) {
                 redirectUri = getWebroot();
-                httpStatus = HttpStatus.CREATED;
+                httpStatus  = HttpStatus.CREATED;
                 messageCode.setValue(registrationResult.getMessageCode());
                 redirectAttributes.addFlashAttribute(messageCode);
                 return new RedirectView(redirectUri, httpStatus);
@@ -83,7 +88,7 @@ public class RegistrationController extends GuestController {
                 messageCode.setValue(registrationResult.getMessageCode());
         }
 
-        ModelAndView modelAndView = render();
+        ;
         modelAndView.setStatus(httpStatus);
         return modelAndView;
     }

@@ -1,9 +1,9 @@
-package app.core.business.model.mapping.person;
+package core.business.model.mapping.person;
 
 
 
-import app.core.business.model.mapping.UserAccount;
-import app.core.web.model.persistence.User;
+import core.business.model.mapping.UserAccount;
+import core.web.app.model.persistence.User;
 
 import javax.persistence.MappedSuperclass;
 import java.util.Objects;

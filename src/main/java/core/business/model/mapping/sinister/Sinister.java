@@ -1,9 +1,9 @@
-package app.core.business.model.mapping.sinister;
+package core.business.model.mapping.sinister;
 
 
 
-import app.core.business.model.mapping.*;
-import app.core.business.model.mapping.damage.Damage;
+import core.business.model.mapping.*;
+import core.business.model.mapping.damage.Damage;
 
 import javax.persistence.*;
 import javax.persistence.Entity;

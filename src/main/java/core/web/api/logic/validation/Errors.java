@@ -1,8 +1,8 @@
-package core.web.model.databinding.validation;
+package core.web.api.logic.validation;
 
 import com.google.gson.annotations.SerializedName;
 
-import core.web.model.databinding.command.Command;
+import core.web.app.model.databinding.Command;
 
 import java.lang.reflect.Field;
 

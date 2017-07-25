@@ -5,10 +5,10 @@
   Time: 12:05
   To change this template use File | Settings | File Templates.
 --%>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<jsp:include page="header.jsp"/>
-<jsp:include page="navbar.jsp"/>
-<jsp:include page="banner.jsp"/>
+<%@ include file="header.jsp" %>
+<%@ include file="navbar.jsp" %>
+<%@ include file="banner.jsp" %>
+<spring:eval var="SERVER_NAME" expression="@systemEnvironment['AAA_SERVER']"/>
     <div id="container">
         <div id="banner">
             <div class="image-border">
@@ -62,7 +62,7 @@
     </div>
     <script type="text/javascript" defer>
         const API_ACCESS_KEY = "${API_ACCESS_KEY}";
-        const PUBLIC_API_URI = "/public";
+        const PUBLIC_API_URI = "http://${API_SUBDOMAIN}.${SERVER_NAME}/public";
     </script>
     <script type="text/javascript" src="${WEBROOT}/resources/script/app/services.js" defer></script>
-<jsp:include page="footer.jsp"/>
+<%@ include file="footer.jsp" %>

@@ -1,15 +1,15 @@
-package app.core.business.logic;
+package core.business.logic;
 
-import static app.util.Hash.*;
+import static util.Hash.*;
 import static java.util.UUID.randomUUID;
 
-import app.core.business.model.mapping.*;
-import app.core.business.model.mapping.person.Person;
-import app.core.business.model.mapping.person.RegisteredUser;
-import app.core.business.model.mapping.person.insuree.Customer;
-import app.core.web.model.databinding.command.Login;
-import app.core.web.model.databinding.command.Registration;
-import app.core.web.model.persistence.User;
+import core.business.model.mapping.*;
+import core.business.model.mapping.person.Person;
+import core.business.model.mapping.person.RegisteredUser;
+import core.business.model.mapping.person.insuree.Customer;
+import core.web.app.model.databinding.Login;
+import core.web.app.model.databinding.Registration;
+import core.web.app.model.persistence.User;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;

@@ -1,4 +1,4 @@
-package core.web.logic.helper;
+package core.web.common.logic.helper;
 
 import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
@@ -23,7 +23,7 @@ import java.util.HashMap;
 @Component
 public class VelocityTemplateResolver {
 
-    public static final String TEMPLATES_MAIL_DIR = "mail";
+    public static final String TEMPLATES_MAIL_DIR          = "mail";
 
     public static final String TEMPLATES_CUSTOMERPANEL_DIR = "customerpanel";
 
@@ -31,11 +31,17 @@ public class VelocityTemplateResolver {
     private VelocityEngine velocityEngine;
 
     @Autowired
-    private MessageSource messageSource;
+    private MessageSource  messageSource;
 
-    public String getRegistrationValidationMailTemplate(String validationCode) {
-        HashMap<String, Object> map = new HashMap<>();
+    public String getRegistrationValidationMailTemplate(String serverName, String validationCode) {
+
+        HashMap<String, Object> map;
+
+        map = new HashMap<>();
+
+        map.put("serverName", serverName);
         map.put("validationCode", validationCode);
+
         return loadTemplate(TEMPLATES_MAIL_DIR + "/validation.mail.html.vm", map);
     }
 
@@ -48,6 +54,7 @@ public class VelocityTemplateResolver {
     }
 
     private String loadTemplate(String templatePath, Map<String, Object> vars) {
+
         StringWriter writer;
         Template template;
         Context context;

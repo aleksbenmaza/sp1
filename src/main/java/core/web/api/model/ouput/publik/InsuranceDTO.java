@@ -1,7 +1,7 @@
-package core.web.model.domaintransfer.publik;
+package core.web.api.model.ouput.publik;
 
 import core.business.model.mapping.Insurance;
-import core.web.model.domaintransfer.Presentation;
+import core.web.api.model.ouput.Presentation;
 import com.google.gson.annotations.SerializedName;
 
 import javax.xml.bind.annotation.XmlAttribute;

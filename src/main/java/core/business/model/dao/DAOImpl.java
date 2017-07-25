@@ -1,9 +1,9 @@
-package app.core.business.model.dao;
+package core.business.model.dao;
 
-import static app.util.CommonUtils.replaceIfNull;
+import static util.CommonUtils.replaceIfNull;
 
-import app.core.business.model.mapping.*;
-import app.core.business.model.mapping.Token;
+import core.business.model.mapping.*;
+import core.business.model.mapping.Token;
 
 import org.hibernate.*;
 import org.hibernate.Transaction;

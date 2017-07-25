@@ -1,7 +1,7 @@
-package app.core.business.model.dao;
+package core.business.model.dao;
 
-import app.core.business.model.mapping.*;
-import app.core.business.model.mapping.Token;
+import core.business.model.mapping.*;
+import core.business.model.mapping.Token;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package core.web.model.domaintransfer.customer.sinister;
+package core.web.api.model.ouput.customer.sinister;
 
 import core.business.model.mapping.sinister.Accident;
 import com.google.gson.annotations.SerializedName;

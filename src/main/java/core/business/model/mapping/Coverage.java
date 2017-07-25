@@ -1,7 +1,7 @@
-package app.core.business.model.mapping;
+package core.business.model.mapping;
 
-import app.core.business.model.mapping.person.Expert;
-import app.core.business.model.mapping.sinister.Sinister;
+import core.business.model.mapping.person.Expert;
+import core.business.model.mapping.sinister.Sinister;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -59,7 +59,7 @@ public class Coverage implements Serializable {
 
     public Coverage(Sinister sinister, Contract contract) {
         if(contract.getVehicle() != sinister.getVehicle() || contract.getVehicle().getId() != sinister.getVehicle().getId())
-            throw new app.core.business.model.mapping.Entity.BusinessException();
+            throw new core.business.model.mapping.Entity.BusinessException();
         this.id = new Id(sinister);
         this.contract = requireNonNull(contract);
         sinister.setCoverage(this);

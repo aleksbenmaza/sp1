@@ -1,4 +1,4 @@
-package app.core.business.model.mapping;
+package core.business.model.mapping;
 
 import java.util.ArrayList;
 import java.util.List;

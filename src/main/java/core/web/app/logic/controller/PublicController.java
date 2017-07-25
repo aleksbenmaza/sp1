@@ -1,14 +1,15 @@
-package core.web.logic.controller;
+package core.web.app.logic.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import core.business.logic.TokenService;
 import core.business.model.mapping.person.RegisteredUser;
 import core.business.model.mapping.Token;
-import core.web.model.persistence.Guest;
-import core.web.model.persistence.User;
+import core.web.app.model.persistence.Guest;
+import core.web.app.model.persistence.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,16 +28,18 @@ public class PublicController extends AppController {
     @Autowired
     private TokenService tokenService;
 
-    @RequestMapping("/")
+    @Value("${apiSubdomain}")
+    private String apiSubdomain;
+
+    @RequestMapping("${routes.public.home}")
     public ModelAndView getHomePage(@SessionAttribute User user) {
         HashMap<String, Object> map = new HashMap<String, Object>();
         return render("home", user, map);
     }
 
-    @RequestMapping("/nos-services")
-    public ModelAndView getServicesPage(
-            @SessionAttribute User user
-    ) throws NoSuchAlgorithmException {
+    @RequestMapping("${routes.public.services}")
+    public ModelAndView getServicesPage(@SessionAttribute User user)
+            throws NoSuchAlgorithmException {
 
         HashMap<String, Object> map = new HashMap<String, Object>();
         String tokenValue;
@@ -54,10 +57,11 @@ public class PublicController extends AppController {
         }
         map.put("headTitleCode", "services");
         map.put("API_ACCESS_KEY", tokenValue);
+        map.put("API_SUBDOMAIN", apiSubdomain);
         return render("services", user, map);
     }
 
-    @RequestMapping("/a-propos")
+    @RequestMapping("${routes.public.about}")
     public ModelAndView getAboutPage(@SessionAttribute User user) {
 
         HashMap<String, Object> map = new HashMap<String, Object>();

@@ -17,6 +17,8 @@
 
     <context:component-scan base-package="core.web.app"/>
 
+
+
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/">
@@ -42,7 +44,10 @@
             <bean class="app.core.web.logic.interceptor.GlobalInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors> -->
-
+    <context:property-placeholder location="classpath*:/validation.properties,
+                                            classpath*:/service.properties,
+                                            classpath*:/global.properties,
+                                            classpath*:/app.controllers.properties"/>
 
     <mvc:annotation-driven ignore-default-model-on-redirect="true"/>
 </beans>

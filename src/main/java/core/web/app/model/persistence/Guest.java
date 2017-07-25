@@ -1,4 +1,4 @@
-package core.web.model.persistence;
+package core.web.app.model.persistence;
 
 /**
  * Created by alexandremasanes on 26/02/2017.

@@ -1,4 +1,4 @@
-package core.web.model.databinding.command;
+package core.web.app.model.databinding;
 
 /**
  * Created by alexandremasanes on 26/02/2017.

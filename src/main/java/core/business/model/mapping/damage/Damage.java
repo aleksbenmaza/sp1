@@ -1,8 +1,8 @@
-package app.core.business.model.mapping.damage;
+package core.business.model.mapping.damage;
 
 
-import app.core.business.model.mapping.Deductible;
-import app.core.business.model.mapping.sinister.Sinister;
+import core.business.model.mapping.Deductible;
+import core.business.model.mapping.sinister.Sinister;
 
 import javax.persistence.*;
 
@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "dommages")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // + embeddedId = MESS
-public abstract class Damage extends app.core.business.model.mapping.Entity implements Serializable {
+public abstract class Damage extends core.business.model.mapping.Entity implements Serializable {
 
     @Embeddable
     public static class Id implements Serializable {

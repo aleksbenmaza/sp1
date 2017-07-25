@@ -1,13 +1,13 @@
-package app.core.business.logic;
+package core.business.logic;
 
 import static java.util.UUID.randomUUID;
 
-import app.core.business.model.mapping.UserAccount;
-import app.core.business.model.mapping.Token;
+import core.business.model.mapping.UserAccount;
+import core.business.model.mapping.Token;
 
-import app.core.web.Server;
-import app.core.web.model.persistence.Guest;
-import app.core.web.model.persistence.User;
+import core.web.common.Server;
+import core.web.app.model.persistence.Guest;
+import core.web.app.model.persistence.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

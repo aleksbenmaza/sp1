@@ -1,7 +1,6 @@
-package app.util;
+package util;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,25 +11,29 @@ import java.util.Map;
 /**
  * Created by alexandremasanes on 19/07/2017.
  */
-public class ForwardView extends AbstractUrlBasedView {
+public class ForwardingView extends AbstractUrlBasedView {
 
     private HttpStatus httpStatus;
 
-    public ForwardView() {
+    public ForwardingView() {
         this("", HttpStatus.OK);
     }
 
-    public ForwardView(String uri) {
+    public ForwardingView(String uri) {
         super(uri);
     }
 
-    public ForwardView(String uri, HttpStatus httpStatus) {
+    public ForwardingView(String uri, HttpStatus httpStatus) {
         this(uri);
         this.httpStatus = httpStatus;
     }
 
     public HttpStatus getHttpStatus() {
         return httpStatus;
+    }
+
+    public void setHttpStatus(HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
     }
 
     @Override

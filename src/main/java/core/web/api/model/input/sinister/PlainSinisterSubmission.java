@@ -1,4 +1,4 @@
-package core.web.model.databinding.command.sinister;
+package core.web.api.model.input.sinister;
 
 /**
  * Created by alexandremasanes on 21/06/2017.

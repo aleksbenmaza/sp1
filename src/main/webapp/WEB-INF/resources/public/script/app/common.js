@@ -2,6 +2,8 @@
  * Created by alexandremasanes on 05/01/2017.
  */
 
+const API_ABSOLUTE_URI = "http://api." + location.hostname;
+
 $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
 
 let datepicker_options = {

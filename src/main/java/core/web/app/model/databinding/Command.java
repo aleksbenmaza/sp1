@@ -1,6 +1,4 @@
-package app.core.web.model.databinding.command;
-
-import java.io.Serializable;
+package core.web.app.model.databinding;
 
 /**
  * Created by alexandremasanes on 05/03/2017.

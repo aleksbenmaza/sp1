@@ -1,4 +1,4 @@
-package app.core.business.model.mapping;
+package core.business.model.mapping;
 
 import java.io.Serializable;
 
@@ -6,13 +6,13 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import app.core.business.model.mapping.person.Person;
-import app.core.business.model.mapping.person.RegisteredUser;
+import core.business.model.mapping.person.Person;
+import core.business.model.mapping.person.RegisteredUser;
 
 
 @Entity
 @Table(name = "comptes_utilisateur")
-public class UserAccount extends app.core.business.model.mapping.Entity implements Serializable {
+public class UserAccount extends core.business.model.mapping.Entity implements Serializable {
 
 	public static final long serialVersionUID = 1482252304755392540L;
 

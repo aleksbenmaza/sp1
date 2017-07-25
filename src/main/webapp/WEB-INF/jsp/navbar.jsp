@@ -5,9 +5,8 @@
   Time: 13:45
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<c:set var="requestURI" value="${WEBROOT.concat(requestScope['javax.servlet.forward.request_uri'])}"/>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<c:set var="requestURI" value="${WEBROOT.concat(requestScope['javax.servlet.withForwarding.request_uri'])}"/>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->

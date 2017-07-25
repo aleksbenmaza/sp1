@@ -1,6 +1,6 @@
-package app.core.business.model.mapping;
+package core.business.model.mapping;
 
-import app.core.business.model.mapping.sinister.PlainSinister;
+import core.business.model.mapping.sinister.PlainSinister;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -10,7 +10,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashSet;
 import java.util.Set;
 

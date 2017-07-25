@@ -1,7 +1,7 @@
-package app.core.business.model.mapping.person;
+package core.business.model.mapping.person;
 
-import app.core.business.model.mapping.UserAccount;
-import app.core.business.model.mapping.person.insuree.Customer;
+import core.business.model.mapping.UserAccount;
+import core.business.model.mapping.person.insuree.Customer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

@@ -1,15 +1,15 @@
-package app.core.business.model.mapping.person.insuree;
+package core.business.model.mapping.person.insuree;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 
-import app.core.business.model.mapping.ToBeChecked;
-import app.core.business.model.mapping.Contract;
-import app.core.business.model.mapping.UserAccount;
-import app.core.business.model.mapping.person.Manager;
-import app.core.business.model.mapping.person.RegisteredUser;
+import core.business.model.mapping.ToBeChecked;
+import core.business.model.mapping.Contract;
+import core.business.model.mapping.UserAccount;
+import core.business.model.mapping.person.Manager;
+import core.business.model.mapping.person.RegisteredUser;
 
 @Entity
 @Table(name = "clients")

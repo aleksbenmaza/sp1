@@ -1,4 +1,4 @@
-package app.core.business.model.mapping.person.insuree;
+package core.business.model.mapping.person.insuree;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

@@ -1,7 +1,7 @@
-package app.core.business.model.dao;
+package core.business.model.dao;
 
-import app.core.business.model.mapping.Entity;
-import app.core.business.model.mapping.IdentifiableByIdImpl;
+import core.business.model.mapping.Entity;
+import core.business.model.mapping.IdentifiableByIdImpl;
 
 import java.util.List;
 

@@ -6,9 +6,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<jsp:include page="header.jsp"/>
-<jsp:include page="navbar.jsp"/>
-<jsp:include page="banner.jsp"/>
+<%@ include file="header.jsp" %>
+<%@ include file="navbar.jsp" %>
+<%@ include file="banner.jsp" %>
 <div id="container">
     <div id="banner">
         <div class="image-border"><a href="#"><img src="${WEBROOT}/resources/image/aix-en-provence-161731.jpg" width="870" height="253" alt="" class="img-responsive" /></a></div>
@@ -48,4 +48,4 @@
         </div>
     </div>
 </div>
-<jsp:include page="footer.jsp"/>
+<%@ include file="footer.jsp" %>

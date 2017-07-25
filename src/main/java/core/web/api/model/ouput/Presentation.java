@@ -1,4 +1,4 @@
-package core.web.model.domaintransfer;
+package core.web.api.model.ouput;
 
 import core.business.model.mapping.Entity;
 import core.business.model.mapping.IdentifiableById;

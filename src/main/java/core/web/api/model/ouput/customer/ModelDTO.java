@@ -1,7 +1,7 @@
-package core.web.model.domaintransfer.customer;
+package core.web.api.model.ouput.customer;
 
 import core.business.model.mapping.Model;
-import core.web.model.domaintransfer.Presentation;
+import core.web.api.model.ouput.Presentation;
 import com.google.gson.annotations.SerializedName;
 
 /**
