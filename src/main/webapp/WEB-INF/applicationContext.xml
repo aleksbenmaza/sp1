@@ -17,28 +17,19 @@
 	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
 
-    <context:component-scan base-package="core" />
+    <context:component-scan base-package="org.aaa.core.web" />
 
 
 
     <bean id="sessionFactory" name="sessionFactory"
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="configLocation">
-            <value>
-                /WEB-INF/hbn.xml
-            </value>
-        </property>
-
-        <property name="packagesToScan"> <!-- be aware : spring and hbn seem to mess up about this -->
-            <value>
-                core.business.model.mapping
-            </value>
-        </property>
+        <property name="configLocation" value="/WEB-INF/hbn.xml"/>
+        <property name="packagesToScan" value="org.aaa.core.business.mapping"/>
     </bean>
     <!-- must be c/p into every *-servlet.xml -->
     <context:property-placeholder location="classpath*:/validation.properties,
                                             classpath*:/service.properties,
-                                            classpath*:/global.properties"/>
+                                            classpath*:/app.controllers.properties"/>
 
     <!--
 
@@ -66,8 +57,8 @@
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com"/>
         <property name="port" value="587" />
-        <property name="username" value="#{systemProperties['EMAIL_ADDRESS']}" />
-        <property name="password" value="#{systemProperties['EMAIL_PWD']}" />
+        <property name="username" value="#{@systemEnvironment['AAA_EMAIL_ADDRESS']}" />
+        <property name="password" value="#{@systemEnvironment['AAA_EMAIL_PASSWORD']}" />
         <property name="javaMailProperties">
             <props>
                 <prop key="mail.smtp.auth">true</prop>
@@ -84,7 +75,7 @@
 
     <!-- this is a template messageCode that we can pre-load with default state -->
     <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
-        <property name="from" value="alexandre.masanes@gmail.com"/>
+        <property name="from" value="Assurance Automobile Aixoise"/>
     </bean>
 
 

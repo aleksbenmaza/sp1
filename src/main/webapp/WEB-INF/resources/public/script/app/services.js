@@ -1,4 +1,3 @@
-const PUBLIC_API_URI = API_ABSOLUTE_URI + "/public";
 let insurances_select     = $(" #insurances ");
 let amount_select         = $(" #amount ");
 let deductible_select     = $(" #deductible ");

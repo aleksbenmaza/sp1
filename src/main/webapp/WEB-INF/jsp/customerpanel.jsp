@@ -5,13 +5,12 @@
   Time: 19:42
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="header.jsp" %>
 <%@ include file="navbar.jsp" %>
 <%@ include file="banner.jsp" %>
-<spring:eval var="" expression="@systemEnvironment['AAA_SERVER']"/>
+<spring:eval expression="@systemEnvironment['AAA_SERVERNAME']" var="SERVER_NAME"/>
+<spring:eval expression="@systemEnvironment['AAA_API_SUBDOMAIN']" var="API_SUBDOMAIN"/>
 <div id="container" ng-app="CustomerPanel">
     <div id="banner">
         <div class="image-border">
@@ -75,8 +74,10 @@
     </div>
 </div>
 <script type="text/javascript">
-    const API_ACCESS_KEY   = "${API_ACCESS_KEY}";
-    const CUSTOMER_API_URI = "http://${API_SUBDOMAIN}.<spring:eval expression="@systemEnvironment['AAA_SERVER']"/>/customer";
+    const API_ACCESS_KEY    = "${user.userAccount.token.value}";
+    const BASE_API_URI      = "http://${API_SUBDOMAIN}.${SERVER_NAME}";
+    const PUBLIC_API_NAME   = "public";
+    const CUSTOMER_API_NAME = "customer";
 </script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/script/lib/angular.1.5.7.min.js')" defer></script>
 <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js" onerror="src_on_error(this, '${WEBROOT}/public/script/angular-route.1.5.7.min.js')" defer></script>-->

@@ -5,7 +5,7 @@
   Time: 14:40
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ include file="header.jsp" %>
 <div id="log_reg" class="container">
     <form:form method="post" id="auth_form" modelAttribute="login" class="form-horizontal">

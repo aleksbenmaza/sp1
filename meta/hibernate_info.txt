@@ -1,0 +1,6 @@
+- When trying to map 0,1/0,1 relationship without join-table,
+  Hibernate may encounter issue to fetch the inverse-side
+
+- Hibernate 5.x now uses recommended JPA 2.1 specs for default fetching types :
+    - *ToOne  -> EAGER
+    - *ToMany -> LAZY

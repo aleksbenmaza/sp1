@@ -2,8 +2,6 @@ html, body {
 	height: 100%;
 }
 
-
-
 body {
 	margin: 0px;
 	padding: 0px;
@@ -98,6 +96,12 @@ hr {
 }
 #things li {
 	padding-left: 77px !important;
+}
+
+.btn-logout {
+	width: 100%;
+	padding: 10% 20% !important;
+	text-align: left;
 }
 
 
@@ -529,21 +533,29 @@ form.sign {
 
 /***** MEDIA QUERIES *****/
 @media (max-width: 984px) {
-	.enable-menu{
+	.enable-menu {
 		display: block;
 	}
-	.enable-menu li{
+	.enable-menu li {
 		display: inline-flex;
 		margin-left: 10px;
 		border: 1px solid #000;
 
 		background: #ECECEC;
 	}
-	.enable-menu li a{
+	.enable-menu li a {
 		padding: 10px;
 	}
 
 	#customer_board {
 		height: 300px;
+	}
+}
+
+@media (max-width: /* bootstrap's value */ 768px) {
+	.btn-logout {
+		width: 100%;
+		padding: 2% 2% !important;
+		text-align: left !important;
 	}
 }

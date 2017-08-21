@@ -4,343 +4,335 @@ CREATE DATABASE aaa;
 USE aaa;
 
 # -----------------------------------------------------------------------------
-#       TABLE : marques
+#       TABLE : makes
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS marques(
-  id INTEGER NOT NULL AUTO_INCREMENT,
-  nom VARCHAR(50) NULL,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (ID) 
+CREATE TABLE IF NOT EXISTS makes(
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id) 
  );
 
 # -----------------------------------------------------------------------------
-#       TABLE : modeles
+#       TABLE : models
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS modeles(
-  id INTEGER NOT NULL AUTO_INCREMENT,
-  nom VARCHAR(50) NULL  ,
-  annee BIGINT(4) NULL,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  marque_id INTEGER,
+CREATE TABLE IF NOT EXISTS models(
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NULL  ,
+  year INTEGER(4) NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  make_id BIGINT NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY(marque_id) REFERENCES marques(id) ON DELETE CASCADE
+  FOREIGN KEY(make_id) REFERENCES makes(id) ON DELETE CASCADE
 
  );
 
 # -----------------------------------------------------------------------------
-#       TABLES : vehicules, h_vehicules
+#       TABLE : companies
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS vehicules(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  modele_id INTEGER NOT NULL,
-  assure_id INTEGER,
-  vin CHAR(17) NOT NULL UNIQUE,
-  immatriculation CHAR(7),
-  carte_grise VARCHAR(128),
-  date_achat DATE,
-  valeur FLOAT,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY(modele_id) REFERENCES modeles(id) ON DELETE CASCADE,
-  FOREIGN KEY(assure_id) REFERENCES assures(id) ON DELETE SET NULL
- );
-
-CREATE TABLE IF NOT EXISTS h_vehicules(
-  id INTEGER NOT NULL AUTO_INCREMENT,
-  vehicule_id INTEGER NOT NULL,
-  assure_id INTEGER,
-  contrat_id INTEGER,
-  date_h TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  immatriculation CHAR(7),
-  date_achat DATE,
-  valeur FLOAT,
-  PRIMARY KEY (id),
-  FOREIGN KEY(vehicule_id) REFERENCES vehicules(id) ON DELETE CASCADE,
-  FOREIGN KEY(assure_id) REFERENCES assures(id) ON DELETE SET NULL,
-  FOREIGN KEY(contrat_id) REFERENCES contrats(id) ON DELETE SET NULL
- );
-
-# -----------------------------------------------------------------------------
-#       TABLE : compagnie
-# -----------------------------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS compagnies(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  nom VARCHAR(64)
+CREATE TABLE IF NOT EXISTS companies(
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(64)
 );
 
 # -----------------------------------------------------------------------------
-#       TABLES : personnes, assures, utilisateurs
+#       TABLES : persons, insurees, third_parties, experts, managers, customers
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS personnes(
-  id INTEGER PRIMARY KEY  AUTO_INCREMENT,
-  nom VARCHAR(25) NULL,
-  prenom VARCHAR(25) NULL,
-  adresse VARCHAR(25) NULL,
-  ville VARCHAR(25) NULL,
-  code_postal BIGINT(5) NULL,
-  tel VARCHAR(13) NULL,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE IF NOT EXISTS persons(
+  id BIGINT PRIMARY KEY  AUTO_INCREMENT,
+  last_name VARCHAR(25) NULL,
+  first_name VARCHAR(25) NULL,
+  adress VARCHAR(25) NULL,
+  city VARCHAR(25) NULL,
+  zip_code SMALLINT NULL,
+  phone_number VARCHAR(13) NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   type TINYINT
  );
 
-CREATE TABLE IF NOT EXISTS assures(
-  id INTEGER PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS insurees(
+  id BIGINT PRIMARY KEY,
   bonus_malus REAL(5,2) DEFAULT 1.0,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (ID) REFERENCES PERSONNES(ID) ON DELETE CASCADE
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS tiers(
-  id INTEGER PRIMARY KEY,
-  compagnie_id INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS third_parties(
+  id BIGINT PRIMARY KEY,
+  company_id BIGINT NOT NULL,
   bonus_malus REAL(5,2) DEFAULT 1.0,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (id) REFERENCES assures(id) ON DELETE CASCADE,
-  FOREIGN KEY (compagnie_id) REFERENCES compagnies(id) ON DELETE CASCADE
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (id) REFERENCES insurees(id) ON DELETE CASCADE,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
  );
 
 CREATE TABLE IF NOT EXISTS experts(
-  id INTEGER PRIMARY KEY,
-  siret CHAR(12) UNIQUE,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (id) REFERENCES personnes(id) ON DELETE CASCADE
+  id BIGINT PRIMARY KEY,
+  rank SMALLINT,
+  siret_number CHAR(12) UNIQUE,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (id) REFERENCES persons(id) ON DELETE CASCADE
 );
 
- CREATE TABLE IF NOT EXISTS administrateurs(
-   id INTEGER PRIMARY KEY,
+ CREATE TABLE IF NOT EXISTS managers(
+   id BIGINT PRIMARY KEY,
    role VARCHAR(128) NULL,
-   maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   FOREIGN KEY(id) REFERENCES personnes(id) ON DELETE CASCADE
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   FOREIGN KEY(id) REFERENCES persons(id) ON DELETE CASCADE
  );
 
- CREATE TABLE IF NOT EXISTS clients(
-  id INTEGER PRIMARY KEY,
-  admin_id INTEGER,
-  carte_identite VARCHAR(100),
-  sepa VARCHAR(100),
-  statut TINYINT,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY(ID) REFERENCES assures(id) ON DELETE CASCADE,
-  FOREIGN KEY(admin_id) REFERENCES administrateurs(id) ON DELETE SET NULL
+ CREATE TABLE IF NOT EXISTS customers(
+  id BIGINT PRIMARY KEY,
+  manager_id BIGINT,
+  has_sepa_document BIT(1) DEFAULT 0,
+  status TINYINT,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY(id) REFERENCES insurees(id) ON DELETE CASCADE,
+  FOREIGN KEY(manager_id) REFERENCES managers(id) ON DELETE SET NULL
 );
 
 # -----------------------------------------------------------------------------
-#       TABLE : COMPTES_UTILISATEUR
+#       TABLES : vehicles, h_vehicles
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS comptes_utilisateur(
-  id INTEGER PRIMARY KEY,
-  email VARCHAR(50) NOT NULL,
-  hash CHAR(40) NULL,
-  token char(8) NULL,
-  maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY(id) REFERENCES personnes(ID) ON DELETE CASCADE
-);
+CREATE TABLE IF NOT EXISTS vehicles(
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  model_id BIGINT NOT NULL,
+  insuree_id BIGINT,
+  vin_number CHAR(17) NOT NULL UNIQUE,
+  registration_number CHAR(7),
+  purchase_date DATE,
+  value FLOAT,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY(model_id) REFERENCES models(id) ON DELETE CASCADE,
+  FOREIGN KEY(insuree_id) REFERENCES insurees(id) ON DELETE SET NULL
+ );
+
+CREATE TABLE IF NOT EXISTS h_vehicles(
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  vehicle_id BIGINT NOT NULL,
+  insuree_id BIGINT,
+  contract_id BIGINT,
+  h_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  registration_number CHAR(7),
+  purchase_date DATE,
+  value FLOAT,
+  PRIMARY KEY (id),
+  FOREIGN KEY(vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+  FOREIGN KEY(insuree_id) REFERENCES insurees(id) ON DELETE SET NULL,
+  FOREIGN KEY(contract_id) REFERENCES contracts(id) ON DELETE SET NULL
+ );
 
 # -----------------------------------------------------------------------------
 #       TABLE : tokens
 # -----------------------------------------------------------------------------
 
 CREATE TABLE tokens (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  compte_utilisateur_id INTEGER UNIQUE,
+  id BIGINT PRIMARY KEY AUTO_INCREMENT
   value VARCHAR(64) DEFAULT NULL,
   old_value VARCHAR(64) DEFAULT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  maj TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  api_server VARCHAR(15) DEFAULT NULL,
-  FOREIGN KEY(compte_utilisateur_id) REFERENCES comptes_utilisateur(id) ON DELETE SET NULL
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  api_server VARCHAR(15) DEFAULT NULL
 );
 
 # -----------------------------------------------------------------------------
-#       TABLE : indemnisations
+#       TABLE : user_accounts
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS indemnisations(
-   id INTEGER AUTO_INCREMENT PRIMARY KEY,
-   assure_id INTEGER NOT NULL,
-   montant FLOAT(10,2) NULL,
-   franchise FLOAT(10,2) NULL,
-   maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   FOREIGN KEY(assure_id) REFERENCES assures(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS user_accounts(
+  id BIGINT PRIMARY KEY,
+  email_address VARCHAR(50) NOT NULL,
+  hash CHAR(40) NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY(id) REFERENCES persons(id) ON DELETE CASCADE
 );
 
 # -----------------------------------------------------------------------------
-#       TABLE : garagistes
+#       TABLE : car_dealers
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS garagistes(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  nom VARCHAR(128) NULL,
-  agree BOOLEAN DEFAULT 0,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS car_dealers(
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(128) NULL,
+  is_certified BIT(1) DEFAULT 0 DEFAULT 0,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
  );
 
 # -----------------------------------------------------------------------------
-#       TABLE : types_sinistres_sans_tiers
+#       TABLE : plain_sinister_types
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS types_sinistres_sans_tiers(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS plain_sinister_types(
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
   code ENUM('INC','VOL','BRI') UNIQUE,
-  libelle VARCHAR(50),
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  name VARCHAR(50),
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 # -----------------------------------------------------------------------------
-#       TABLES : sinistres, accidents, sinistres_sans_tiers
+#       TABLES : sinisters, accidents, plain_sinisters
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS sinistres(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  vehicule_id INTEGER NOT NULL,
-  contrat_id INTEGER,
-  expert_id INTEGER,
-  commentaire VARCHAR(100) NULL,
-  date_s DATE NULL,
-  heure TIME NULL,
-  constat VARCHAR(100) NULL,
-  statut TINYINT,
-  cloture BOOLEAN,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE IF NOT EXISTS sinisters(
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  contract_id BIGINT NOT NULL,
+  expert_id BIGINT,
+  comment VARCHAR(100) NULL,
+  date DATE NULL,
+  time TIME NULL,
+  status TINYINT,
+  is_closed BOOLEAN,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   type BOOLEAN,
-  FOREIGN KEY(vehicule_id) REFERENCES vehicules(id) ON DELETE CASCADE,
-  FOREIGN KEY(contrat_id) REFERENCES contrats(id) ON DELETE SET NULL,
+  FOREIGN KEY(contract_id) REFERENCES contract(id) ON DELETE CASCADE,
   FOREIGN KEY(expert_id) REFERENCES experts(id) ON DELETE SET NULL
 );
 
 
 CREATE TABLE IF NOT EXISTS accidents(
-  id INTEGER PRIMARY KEY,
-  pertes_humaines BOOLEAN NULL,
+  id BIGINT PRIMARY KEY,
+  casualties_count BIGINT NULL,
   taux_resp FLOAT,
-  FOREIGN KEY (id) REFERENCES sinistres(id) ON DELETE CASCADE
+  FOREIGN KEY (id) REFERENCES sinisters(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS sinistres_sans_tiers(
-  id INTEGER PRIMARY KEY,
-  type_id INTEGER NOT NULL,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY(id) REFERENCES sinistres(id) ON DELETE CASCADE,
-  FOREIGN KEY(type_id) REFERENCES types_sinistres_sans_tiers(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS customer_accidents(
+  id BIGINT PRIMARY KEY,
+  FOREIGN KEY(id) REFERENCES accidents(id)
+);
+
+CREATE TABLE IF NOT EXISTS third_party_accidents(
+  id BIGINT PRIMARY KEY,
+  vehicle_id BIGINT NOT NULL,
+  FOREIGN KEY(id) REFERENCES accidents(id),
+  FOREIGN KEY(vehicle_id) REFERENCES vehicles(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS plain_sinisters(
+  id BIGINT PRIMARY KEY,
+  plain_sinister_type_id BIGINT NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY(id) REFERENCES sinisters(id) ON DELETE CASCADE,
+  FOREIGN KEY(type_id) REFERENCES plain_sinister_types(id) ON DELETE CASCADE
 );
 
 # -----------------------------------------------------------------------------
-#       TABLE : types_garantie
+#       TABLE : insurances
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS types_garantie(
-  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS insurances(
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
   code enum('tie','inc','vol','tou') UNIQUE,
-  libelle VARCHAR(100) NULL,
-  montant_defaut FLOAT(13,2) NULL,
-  franchise_min FLOAT(13,2) NULL,
-  franchise_max FLOAT(13,2) NULL,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  name VARCHAR(100) NULL,
+  default_amount FLOAT(13,2) NULL,
+  min_deductible FLOAT(13,2) NULL,
+  max_deductible FLOAT(13,2) NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 # -----------------------------------------------------------------------------
-#       TABLES : DOMMAGES, DETERIORATION, DESTRUCTIONS
+#       TABLES : damages, spoilages, destructions
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS dommages(
-  id INTEGER PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS damages(
+  id BIGINT PRIMARY KEY,
   description VARCHAR(100) NULL,
-  montant FLOAT(12,2) NULL,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  amount FLOAT(12,2) NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   type BOOLEAN,
-  FOREIGN KEY(id) REFERENCES sinistres(id) ON DELETE CASCADE
+  FOREIGN KEY(id) REFERENCES sinisters(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS deteriorations(
-  id INTEGER PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS spoilages(
+  id BIGINT PRIMARY KEY,
   description VARCHAR(100),
-  montant FLOAT,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  garagiste_id INTEGER,
-  taux FLOAT,
-  FOREIGN KEY(id) REFERENCES sinistres(id) ON DELETE CASCADE,
-  FOREIGN KEY(garagiste_id) REFERENCES garagistes(id) ON DELETE SET NULL
+  amount FLOAT,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  car_dealer_id BIGINT,
+  rate FLOAT,
+  FOREIGN KEY(id) REFERENCES sinisters(id) ON DELETE CASCADE,
+  FOREIGN KEY(car_dealer_id) REFERENCES car_dealers(id) ON DELETE SET NULL
 );
 
 
 CREATE TABLE IF NOT EXISTS destructions (
-  id INTEGER NOT NULL,
+  id BIGINT NOT NULL,
   description VARCHAR(100),
-  montant FLOAT,
-  maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  amount FLOAT,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   est_total TINYINT(1),
   PRIMARY KEY(id),
-  FOREIGN KEY(id) REFERENCES sinistres(id) ON DELETE CASCADE
+  FOREIGN KEY(id) REFERENCES sinisters(id) ON DELETE CASCADE
 );
 
 # -----------------------------------------------------------------------------
-#       TABLES : contrats
+#       TABLES : contracts
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS contrats(
-   id INTEGER PRIMARY KEY AUTO_INCREMENT,
-   client_id INTEGER NOT NULL,
-   vehicule_id INTEGER NOT NULL,
-   type_garantie_id INTEGER NOT NULL,
-   montant REAL(5, 2) NULL,
-   date_souscription DATE NULL,
-   etat BIGINT(4) NULL,
-   actif BOOLEAN NOT NULL,
-   contrat VARCHAR(100) NULL,
-   statut TINYINT,
-   maj TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   FOREIGN KEY(client_id) REFERENCES clients(id) ON DELETE CASCADE,
-   FOREIGN KEY(vehicule_id) REFERENCES vehicules(id) ON DELETE CASCADE,
-   FOREIGN KEY(type_garantie_id) REFERENCES types_garantie(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS contracts(
+   id BIGINT PRIMARY KEY AUTO_INCREMENT,
+   customer_id BIGINT NOT NULL,
+   vehicle_id BIGINT NOT NULL,
+   insurance_id BIGINT NOT NULL,
+   amount REAL(5, 2) NULL,
+   subscription_date DATE NULL,
+   active BIT(1) DEFAULT 0 NOT NULL,
+   has_contract_document BIT(1) DEFAULT 0 NULL,
+   status TINYINT,
+   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   FOREIGN KEY(customer_id) REFERENCES customers(id) ON DELETE CASCADE,
+   FOREIGN KEY(vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+   FOREIGN KEY(type_garantie_id) REFERENCES insurances(id) ON DELETE CASCADE
 );
 
 # -----------------------------------------------------------------------------
-#       TABLE : types_sinistres_types_garantie, sinistres_contrats_experts, accidents_accidents, comptes_utilisateur_tokens
+#       TABLE : plain_sinister_types__insurances,
+#               accidents__accidents,
+#               tokens__user_accounts
 # -----------------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS types_sinistres_types_garantie(
-  type_sinistres_id INTEGER NOT NULL,
-  type_garantie_id INTEGER NOT NULL,
-  PRIMARY KEY (type_sinistres_id, type_garantie_id),
-  FOREIGN KEY(type_sinistres_id) REFERENCES types_sinistres_sans_tiers(id) ON DELETE CASCADE,
-  FOREIGN KEY(type_garantie_id) REFERENCES types_garantie(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS types_sinisters__insurances(
+  plain_sinister_type_id BIGINT NOT NULL,
+  insurance_id BIGINT NOT NULL,
+  PRIMARY KEY (plain_sinister_type_id, insurance_id),
+  FOREIGN KEY(plain_sinister_type_id) REFERENCES plain_sinister_types(id) ON DELETE CASCADE,
+  FOREIGN KEY(insurance_id) REFERENCES insurances(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS sinistres_contrats_experts(
-  sinistre_id INTEGER PRIMARY KEY,
-  contrat_id INTEGER NOT NULL,
-  expert_id INTEGER NULL,
-  FOREIGN KEY(sinistre_id) REFERENCES sinistres(id) ON DELETE CASCADE,
-  FOREIGN KEY(contrat_id) REFERENCES contrats(id) ON DELETE CASCADE,
-  FOREIGN KEY(expert_id) REFERENCES experts(id) ON DELETE SET NULL
+CREATE TABLE IF NOT EXISTS accidents__accidents(
+	id_0 BIGINT NOT NULL UNIQUE,
+	id_1 BIGINT NOT NULL UNIQUE,
+	FOREIGN KEY(id_0) REFERENCES customer_accidents(id) ON DELETE CASCADE,
+	FOREIGN KEY(id_1) REFERENCES customer_accidents(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS accidents_accidents(
-	id_0 INTEGER NOT NULL UNIQUE,
-	id_1 INTEGER NOT NULL UNIQUE,
-	FOREIGN KEY(id_0) REFERENCES accidents(id) ON DELETE CASCADE,
-	FOREIGN KEY(id_1) REFERENCES accidents(id) ON DELETE CASCADE
-);
+CREATE TABLE IF NOT EXISTS tokens__user_accounts (
+  token_id BIGINT NOT NULL UNIQUE,
+  user_account_id BIGINT NOT NULL UNIQUE,
+  FOREIGN KEY (token_id) REFERENCES tokens(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_account_id) REFERENCES user_accounts(id) ON DELETE CASCADE
+)
 
 # -----------------------------------------------------------------------------
-#       VIEW : franchises
+#       VIEW : deductibles
 # -----------------------------------------------------------------------------
 
-DROP VIEW IF EXISTS franchises;
+DROP VIEW IF EXISTS deductibles;
 
-CREATE VIEW franchises(type_garantie_id, dommage_id, valeur) AS
-SELECT t.id, d.id, compute_deductible(t.id, d.montant)
-FROM sinistres s LEFT JOIN accidents a                       ON a.id                  = s.id
-                 LEFT JOIN dommages d                        ON d.id                  = s.id
-                 LEFT JOIN vehicules v                       ON v.id                  = s.vehicule_id
-                 LEFT JOIN contrats c                        ON c.vehicule_id         = v.id
-                 LEFT JOIN types_garantie t                  ON c.type_garantie_id    = t.id
-WHERE d.montant IS NOT NULL AND s.statut = 0 GROUP BY s.id;
+CREATE VIEW deductibles(type_garantie_id, sinister_id, value) AS
+SELECT t.id, s.id, compute_deductible(t.id, IF(sp.id IS NULL, v.value, sp.amount))
+FROM sinisters s LEFT JOIN accidents a                       ON a.id                  = s.id
+                 LEFT JOIN spoilages sp                       ON sp.id = s.id
+                 LEFT JOIN vehicles v                       ON v.id                  = s.vehicle_id
+                 LEFT JOIN contracts c                        ON c.vehicle_id         = v.id
+                 LEFT JOIN insurances t                  ON c.insurance_id    = t.id
+WHERE s.status = 0 GROUP BY s.id;
 
 # -----------------------------------------------------------------------------
 #       function : get_hash_salt
@@ -380,7 +372,7 @@ DROP FUNCTION IF EXISTS get_next_id;
 
 DELIMITER $
 
-CREATE FUNCTION get_next_id(in_table_name VARCHAR(64)) RETURNS INTEGER
+CREATE FUNCTION get_next_id(in_table_name VARCHAR(64)) RETURNS BIGINT
 BEGIN
   RETURN (SELECT auto_increment FROM information_schema.tables WHERE auto_increment IS NOT NULL AND table_name = in_table_name LIMIT 1);
 END $
@@ -389,29 +381,29 @@ DELIMITER ;
 
 
 # -----------------------------------------------------------------------------
-#       INSERT : marques
+#       INSERT : makes
 # -----------------------------------------------------------------------------
 
 INSERT INTO
-  marques(nom)
+  makes(name)
 SELECT DISTINCT make FROM vehicles_sources.vehicle_model_year;
 
 # -----------------------------------------------------------------------------
-#       INSERT : modeles
+#       INSERT : models
 # -----------------------------------------------------------------------------
 
 INSERT INTO 
-  modeles(nom, annee, marque_id)
-SELECT vsvmy.Model, Year, m.ID
-FROM Vehicles_sources.Vehicle_Model_Year vsvmy, Marques m
-WHERE vsvmy.make = m.NOM;
+  models(name, year, marque_id)
+SELECT vsvmy.Model, Year, m.id
+FROM Vehicles_sources.Vehicle_Model_Year vsvmy, Makes m
+WHERE vsvmy.make = m.name;
 
 # -----------------------------------------------------------------------------
-#       INSERT : types_garantie
+#       INSERT : insurances
 # -----------------------------------------------------------------------------
 
 INSERT INTO 
-  types_garantie
+  insurances
 VALUES
   (NULL, 1, 'Tiers', 300, 300, 500, NULL),
   (NULL, 2, 'Incendie', 600, 200, 400, NULL),
@@ -419,11 +411,11 @@ VALUES
   (NULL, 4, 'Tout Risque', 1000, 0, 100, NULL);
 
 # -----------------------------------------------------------------------------
-#       INSERT : types_sinistres_sans_tiers
+#       INSERT : plain_sinister_types
 # -----------------------------------------------------------------------------
 
 INSERT INTO
-  types_sinistres_sans_tiers
+  plain_sinister_types
 VALUES
   (NULL,1, 'Incendie'),
   (NULL,2, 'Vol'),
@@ -437,28 +429,28 @@ DROP FUNCTION IF EXISTS compute_deductible;
 
 DELIMITER $
 
-CREATE FUNCTION compute_deductible(in_id_insurance INTEGER, in_amount FLOAT) RETURNS FLOAT
+CREATE FUNCTION compute_deductible(in_insurance_id BIGINT, in_amount FLOAT) RETURNS FLOAT
 BEGIN
-  DECLARE min_deductible, max_deductible, result FLOAT DEFAULT 0.0;
+  DECLARE v_min_deductible, v_max_deductible, result FLOAT DEFAULT 0.0;
 
   IF NOT in_amount THEN
     RETURN 0.0;
   END IF;
 
-  SET in_amount := 0.1*in_amount;
+  SET in_amount := 0.1 * in_amount;
 
-  SELECT franchise_min, franchise_max
-  INTO min_deductible, max_deductible
-  FROM types_garantie
-  WHERE id = in_id_insurance;
+  SELECT min_deductible, max_deductible
+  INTO v_min_deductible, v_max_deductible
+  FROM insurances
+  WHERE id = in_insurance_id;
 
   IF in_amount BETWEEN min_deductible AND max_deductible THEN
     SET result := in_amount;
 
   ELSEIF in_amount > max_deductible THEN
-      SET result := max_deductible;
+      SET result := v_max_deductible;
   ELSE
-      SET result := min_deductible;
+      SET result := v_min_deductible;
   END IF;
 
   RETURN result;
@@ -474,12 +466,12 @@ DROP FUNCTION IF EXISTS is_person_an_insuree;
 
 DELIMITER $
 
-CREATE FUNCTION is_person_an_insuree(in_id INTEGER) RETURNS BIT
+CREATE FUNCTION is_person_an_insuree(in_id BIGINT) RETURNS BIT
 BEGIN
   DECLARE is_person_an_insuree BIT DEFAULT 0;
   SELECT IF(COUNT(*) > 0, 1, 0)
   INTO is_person_an_insuree
-  FROM assures
+  FROM insurees
   WHERE id = in_id;
   RETURN is_person_an_insuree;
 END $
@@ -487,41 +479,21 @@ END $
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       FUNCTION : is_person_an_admin
+#       FUNCTION : is_person_a_manager
 # -----------------------------------------------------------------------------
 
-DROP FUNCTION IF EXISTS is_person_an_admin;
+DROP FUNCTION IF EXISTS is_person_a_manager;
 
 DELIMITER $
 
-CREATE FUNCTION is_person_an_admin(in_id INTEGER) RETURNS BIT
+CREATE FUNCTION is_person_a_manager(in_id BIGINT) RETURNS BIT
 BEGIN
-  DECLARE is_person_an_admin BIT DEFAULT 0;
+  DECLARE is_person_a_manager BIT DEFAULT 0;
   SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_person_an_admin
-  FROM administrateurs
+  INTO is_person_a_manager
+  FROM managers
   WHERE id = in_id;
-  RETURN is_person_an_admin;
-END $
-
-DELIMITER ;
-
-# -----------------------------------------------------------------------------
-#       FUNCTION : is_person_an_expert
-# -----------------------------------------------------------------------------
-
-DROP FUNCTION IF EXISTS is_person_an_expert;
-
-DELIMITER $
-
-CREATE FUNCTION is_person_an_expert(in_id INTEGER) RETURNS BIT
-BEGIN
-  DECLARE is_person_an_expert BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_person_an_expert
-  FROM experts
-  WHERE id = in_id;
-  RETURN is_person_an_expert;
+  RETURN is_person_a_manager;
 END $
 
 DELIMITER ;
@@ -534,13 +506,13 @@ DROP FUNCTION IF EXISTS is_vehicle_covered;
 
 DELIMITER $
 
-CREATE FUNCTION is_vehicle_covered(in_id INTEGER) RETURNS BIT
+CREATE FUNCTION is_vehicle_covered(in_id BIGINT) RETURNS BIT
 BEGIN
   DECLARE is_vehicle_covered BIT DEFAULT 0;
   SELECT IF(COUNT(*) > 0, 1, 0)
   INTO is_vehicle_covered
   FROM contracts
-  WHERE vehicle_id = in_id AND actif = 1;
+  WHERE vehicle_id = in_id AND active = 1;
   RETURN is_vehicle_covered;
 END $
 
@@ -556,116 +528,108 @@ DROP FUNCTION IF EXISTS is_vehicle_owned_by;
 
 DELIMITER $
 
-CREATE FUNCTION is_vehicle_owned_by(in_id INTEGER, in_assure_id INTEGER) RETURNS BIT
+CREATE FUNCTION is_vehicle_owned_by(in_id BIGINT, in_insuree_id BIGINT) RETURNS BIT
 BEGIN
   DECLARE result BIT DEFAULT 0;
   SELECT COUNT(*) != 0
   INTO result
-  FROM vehicules
-  WHERE id = in_id AND assure_id = in_assure_id;
+  FROM vehicles
+  WHERE id = in_id AND insuree_id = in_insuree_id;
   RETURN result;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       FUNCTION : coverage__sinister_matches_contract
+#       FUNCTION : is_present
 # -----------------------------------------------------------------------------
-DROP FUNCTION IF EXISTS coverage__sinister_matches_contract;
+
+DROP FUNCTION IF EXISTS is_present;
 
 DELIMITER $
 
-CREATE FUNCTION coverage__sinister_matches_contract(in_sinister_id INTEGER, in_contract_id INTEGER) RETURNS BIT
+CREATE FUNCTION is_present(in_id BIGINT, VARCHAR(255) in_table_name) RETURNS BIT
 BEGIN
-  DECLARE same_vehicle BIT DEFAULT 0;
-  SELECT s.vehicule_id = c.vehicule_id
-  INTO same_vehicle 
-  FROM contrats c, sinistres s
-  WHERE c.id = in_contract_id AND s.id = in_sinister_id;
-  RETURN same_vehicle;
+  DECLARE stm VARCHAR(255);
+  DECLARE result BIT DEFAULT 0;
+
+  SET stm := CONCAT('SELECT IF(COUNT(*), 1, 0) INTO result FROM ', in_table_name,' WHERE id =', in_id);
+  PREPARE query FROM stm;
+  EXECUTE query;
+  DEALLOCATE query;
+  RETURN result;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       PROCEDURE : check_if_in_assures
+#       FUNCTION : is_sinister_a_plain_sinister
 # -----------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS check_if_in_assures;
+DROP FUNCTION IF EXISTS is_sinister_a_plain_sinister;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_in_assures(IN in_id INTEGER)
+CREATE FUNCTION is_sinister_a_plain_sinister(in_id BIGINT) RETURNS BIT
 BEGIN
-  IF USER() != 'doctrine@localhost' AND NOT is_person_an_insuree(in_id) THEN
+  DECLARE result BIT DEFAULT 0;
+
+  SELECT IF(COUNT(*), 1, 0) INTO result FROM plain_sinisters WHERE id = in_id;
+
+  RETURN result;
+END $
+
+DELIMITER ;
+
+# -----------------------------------------------------------------------------
+#       PROCEDURE : check_if_not_in_insurees
+# -----------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS check_if_not_in_insurees;
+
+DELIMITER $
+
+CREATE PROCEDURE check_if_not_in_insurees(IN in_id BIGINT)
+BEGIN
+  IF(is_present(in_id, 'insurees')) THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `clients` or `tiers`, primary key not found in `assures`';
+    SET MESSAGE_TEXT = 'Cannot insert into `managers` or `experts`, primary key found in `insurees`';
   END IF;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       PROCEDURE : check_if_not_in_assures
+#       PROCEDURE : check_if_not_in_third_parties
 # -----------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS check_if_not_in_assures;
+DROP PROCEDURE IF EXISTS check_if_not_in_third_parties;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_not_in_assures(IN in_id INTEGER)
+CREATE PROCEDURE check_if_not_in_third_parties(IN in_id BIGINT)
 BEGIN
-  IF(is_person_an_insuree(in_id)) THEN
+  IF is_present(in_id, 'third_parties') THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `admins` or `experts`, primary key found in `assures`';
+    SET MESSAGE_TEXT = 'Cannot insert into `customers`, primary key found in `third_parties`';
   END IF;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       PROCEDURE : check_if_not_in_tiers
+#       PROCEDURE : check_if_not_in_customers
 # -----------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS check_if_not_in_tiers;
+DROP PROCEDURE IF EXISTS check_if_not_in_customers;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_not_in_tiers(IN in_id INTEGER)
+CREATE PROCEDURE check_if_not_in_customers(IN in_id BIGINT)
 BEGIN
-  DECLARE is_third_party BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_third_party
-  FROM tiers
-  WHERE id = in_id;
-
-  IF(is_third_party) THEN
+  IF is_present(in_id, 'customers') THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `clients`, primary key found in `tiers`';
-  END IF;
-END $
-
-DELIMITER ;
-
-# -----------------------------------------------------------------------------
-#       PROCEDURE : check_if_not_in_clients
-# -----------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS check_if_not_in_clients;
-
-DELIMITER $
-
-CREATE PROCEDURE check_if_not_in_clients(IN in_id INTEGER)
-BEGIN
-  DECLARE is_customer BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_customer
-  FROM clients
-  WHERE id = in_id;
-
-  IF(is_customer) THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `tiers`, primary key found in `clients`';
+    SET MESSAGE_TEXT = 'Cannot insert into `third_parties`, primary key found in `customers`';
   END IF;
 END $
 
@@ -679,41 +643,29 @@ DROP PROCEDURE IF EXISTS check_if_not_in_accidents;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_not_in_accidents(IN in_id INTEGER)
+CREATE PROCEDURE check_if_not_in_accidents(IN in_id BIGINT)
 BEGIN
-  DECLARE is_in_accidents BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_in_accidents
-  FROM accidents
-  WHERE id = in_id;
-
-  IF(is_in_accidents) THEN
+  IF is_present(in_id, 'accidents') THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `sinistres_sans_tiers`, primary key found in `accidents';
+    SET MESSAGE_TEXT = 'Cannot insert into `plain_sinisters`, primary key found in `accidents';
   END IF;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       PROCEDURE : check_if_not_in_sinistres_sans_tiers
+#       PROCEDURE : check_if_not_in_plain_sinisters
 # -----------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS check_if_not_in_sinistres_sans_tiers;
+DROP PROCEDURE IF EXISTS check_if_not_in_plain_sinisters;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_not_in_sinistres_sans_tiers(IN in_id INTEGER)
+CREATE PROCEDURE check_if_not_in_plain_sinisters(IN in_id BIGINT)
 BEGIN
-  DECLARE is_in_sinistres_sans_tiers BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_in_sinistres_sans_tiers
-  FROM sinistres_sans_tiers
-  WHERE id = in_id;
-
-  IF(is_in_sinistres_sans_tiers) THEN
+  IF is_present(in_id, 'plain_sinisters') THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `accidents`, primary key found in `sinistre_sans_tiers';
+    SET MESSAGE_TEXT = 'Cannot insert into `accidents`, primary key found in `plain_sinisters`';
   END IF;
 END $
 
@@ -727,124 +679,55 @@ DROP PROCEDURE IF EXISTS check_if_not_in_destructions;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_not_in_destructions(IN in_id INTEGER)
+CREATE PROCEDURE check_if_not_in_destructions(IN in_id BIGINT)
 BEGIN
-  DECLARE is_in_destructions BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_in_destructions
-  FROM destructions
-  WHERE id = in_id;
-
-  IF(is_in_destructions) THEN
+  IF is_present(in_id, 'destructions') THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `deteriorations`, primary key found in `destructions';
+    SET MESSAGE_TEXT = 'Cannot insert into `spoilages`, primary key found in `destructions';
   END IF;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       PROCEDURE : check_if_not_in_deteriorations
+#       PROCEDURE : check_if_not_in_spoilages
 # -----------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS check_if_not_in_deteriorations;
+DROP PROCEDURE IF EXISTS check_if_not_in_spoilages;
 
 DELIMITER $
 
-CREATE PROCEDURE check_if_not_in_deteriorations(IN in_id INTEGER)
+CREATE PROCEDURE check_if_not_in_spoilages(IN in_id BIGINT)
 BEGIN
-  DECLARE is_in_deteriorations BIT DEFAULT 0;
-  SELECT IF(COUNT(*) > 0, 1, 0)
-  INTO is_in_deteriorations
-  FROM deteriorations
-  WHERE id = in_id;
-
-  IF(is_in_deteriorations) THEN
+  IF is_present(in_id, 'spoilages') THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `destructions`, primary key found in `deteriorations';
+    SET MESSAGE_TEXT = 'Cannot insert into `destructions`, primary key found in `spoilages';
   END IF;
 END $
 
 DELIMITER ;
 
+
 # -----------------------------------------------------------------------------
-#       PROCEDURE : delete_token_linked_to_account
+#       TRIGGER : on_create_manager
 # -----------------------------------------------------------------------------
 
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS delete_token_linked_to_account;
+DROP TRIGGER IF EXISTS on_create_manager;
 
 DELIMITER $
 
-CREATE PROCEDURE delete_token_linked_to_account(IN in_token_id INTEGER, IN in_account_id INTEGER)
-BEGIN
-    IF in_account_id THEN
-      DELETE FROM tokens WHERE id != in_account_id AND compte_utilisateur_id = in_account_id;
-    END IF;
-END $
-
-DELIMITER ;
-
-# -----------------------------------------------------------------------------
-#       PROCEDURE : save_or_update_token
-# -----------------------------------------------------------------------------
-
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS save_or_update_token;
-
-DELIMITER $
-
-CREATE PROCEDURE save_or_update_token(INOUT inout_id INTEGER, OUT out_created_at TIMESTAMP, OUT out_maj TIMESTAMP, IN in_value VARCHAR(64), IN in_api_server VARCHAR(15), IN in_account_id INTEGER)
-  BEGIN
-    IF in_account_id THEN
-      DELETE FROM tokens WHERE compte_utilisateur_id = in_account_id;
-    END IF;
-
-    IF !in_account_id THEN
-      INSERT INTO tokens(value, api_server, compte_utilisateur_id)
-      VALUES(in_value, in_api_server, IF(in_account_id, in_account_id, null));
-      SELECT id, created_at, maj INTO inout_id, out_created_at, out_maj
-      FROM tokens WHERE id = (SELECT MAX(id) FROM tokens);
-  ELSE
-      UPDATE tokens
-      SET value                := in_value,
-          api_server           := in_api_server,
-         compte_utilisateur_id := IF(in_account_id, in_account_id, null)
-      WHERE id = inout_id;
-  END IF;
-END $
-
-DELIMITER ;
-
-# -----------------------------------------------------------------------------
-#       TRIGGER : on_create_admin
-# -----------------------------------------------------------------------------
-
-DROP TRIGGER IF EXISTS on_create_admin;
-
-DELIMITER $
-
-CREATE TRIGGER on_create_admin
-BEFORE INSERT ON administrateurs
+CREATE TRIGGER on_create_manager
+BEFORE INSERT ON managers
 FOR EACH ROW
 BEGIN
-  DECLARE is_expert BIT DEFAULT 0;
 
-  SELECT IF(e.id IS NULL, 0, 1)
-  INTO is_expert
-  FROM personnes p LEFT JOIN experts e ON p.id = e.id
-  WHERE p.id = NEW.id
-  LIMIT 1;
-
-  IF(is_person_an_insuree(NEW.id)) THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `administrateurs`, primary key found in `assures` !';
+  IF is_present(NEW.id, 'insurees') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `managers`, primary key found in `insurees` !';
   END IF;
 
 
-  IF(is_expert) THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `administrateurs`, primary key found in `experts` !';
+  IF is_present(new.id, 'experts') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `managers`, primary key found in `experts` !';
   END IF;
 
 END $
@@ -863,20 +746,12 @@ CREATE TRIGGER on_create_expert
 BEFORE INSERT ON experts
 FOR EACH ROW
 BEGIN
-  DECLARE is_admin BIT DEFAULT 0;
-
-  SELECT IF(adm.id IS NULL, 0, 1)
-  INTO is_admin
-  FROM personnes p LEFT JOIN administrateurs adm  ON p.id = adm.id
-  WHERE p.id = NEW.id
-  LIMIT 1;
-
-  IF(is_person_an_insuree(NEW.id)) THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `administrateurs`, primary key found in `assures` !';
+  IF is_present(NEW.id, 'insurees') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `managers`, primary key found in `insurees` !';
   END IF;
 
-  IF(is_admin) THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `administrateurs`, primary key found in `experts` !';
+  IF is_present(NEW.id, 'manager') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `managers`, primary key found in `managers` !';
   END IF;
 END $
 
@@ -891,11 +766,14 @@ DROP TRIGGER IF EXISTS on_create_insuree;
 DELIMITER $
 
 CREATE TRIGGER on_create_insuree
-BEFORE INSERT ON assures
+BEFORE INSERT ON insurees
 FOR EACH ROW
 BEGIN
-  IF is_person_an_admin(NEW.id) OR is_person_an_expert(NEW.ID) THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `assures`, primary key found in `experts` or `administrateurs`!';
+  IF is_present(NEW.id, 'managers') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `insurees`, primary key found in `managers`!';
+  END IF;
+  IF is_present(NEW.id, 'experts') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `insurees`, primary key found in `experts`!';
   END IF;
 END $
 
@@ -911,24 +789,12 @@ DROP TRIGGER IF EXISTS on_create_customer;
 DELIMITER $
 
 CREATE TRIGGER on_create_customer
-BEFORE INSERT ON clients
+BEFORE INSERT ON customers
 FOR EACH ROW
 BEGIN
-
-  DECLARE is_third_party BIT DEFAULT 0;
-  CALL check_if_in_assures(NEW.id);
-
-  SELECT IF(t.id IS NULL, 0, 1)
-  INTO is_third_party
-  FROM personnes p LEFT JOIN tiers t
-  ON p.id = t.id
-  WHERE p.id = NEW.id
-  LIMIT 1;
-
-  IF(is_third_party) THEN
+  IF is_present(NEW.id, 'third_parties') THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `clients`, primary key found in `tiers` !';
   END IF;
-
 END $
 
 DELIMITER ;
@@ -942,22 +808,11 @@ DROP TRIGGER IF EXISTS on_create_third_party;
 DELIMITER $
 
 CREATE TRIGGER on_create_third_party
-BEFORE INSERT ON tiers
+BEFORE INSERT ON third_parties
 FOR EACH ROW
 BEGIN
-  DECLARE is_customer BIT DEFAULT 0;
-
-  CALL check_if_in_assures(NEW.id);
-
-  SELECT IF(c.id IS NULL, 0, 1)
-  INTO is_customer
-  FROM personnes p LEFT JOIN clients c
-  ON p.id = c.id
-  WHERE p.id = NEW.id
-  LIMIT 1;
-
-  IF(is_customer) THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `tiers`, primary key found in `clients` !';
+  IF is_present(NEW.id, 'customers') THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot insert into `third_parties`, primary key found in `customers` !';
   END IF;
 
 END $
@@ -976,7 +831,47 @@ CREATE TRIGGER on_create_accident
 BEFORE INSERT ON accidents
 FOR EACH ROW
 BEGIN
-  CALL check_if_not_in_sinistres_sans_tiers(NEW.id);
+  CALL check_if_not_in_plain_sinisters(NEW.id);
+END $
+
+DELIMITER ;
+
+# -----------------------------------------------------------------------------
+#       TRIGGER : on_create_customer_accident
+# -----------------------------------------------------------------------------
+
+DROP TRIGGER IF EXISTS on_create_customer_accident;
+
+DELIMITER $
+
+CREATE TRIGGER on_create_customer_accident
+BEFORE INSERT ON customer_accidents
+FOR EACH ROW
+BEGIN
+  IF is_present(NEW.id, 'third_party_accidents') THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Cannot insert into `customer_accidents`, `id` already referenced in `third_party_accidents`';
+  END IF;
+END $
+
+DELIMITER ;
+
+# -----------------------------------------------------------------------------
+#       TRIGGER : on_create_third_party_accident
+# -----------------------------------------------------------------------------
+
+DROP TRIGGER IF EXISTS on_create_third_party_accident;
+
+DELIMITER $
+
+CREATE TRIGGER on_create_third_party_accident
+BEFORE INSERT ON third_party_accidents
+FOR EACH ROW
+BEGIN
+  IF is_present(NEW.id, 'customer_accidents') THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Cannot insert into `third_party_accidents`, `id` already referenced in `customer_accidents`';
+    END IF;
 END $
 
 DELIMITER ;
@@ -990,7 +885,7 @@ DROP TRIGGER IF EXISTS on_create_plain_sinister;
 DELIMITER $
 
 CREATE TRIGGER on_create_plain_sinister
-BEFORE INSERT ON sinistres_sans_tiers
+BEFORE INSERT ON plain_sinisters
 FOR EACH ROW
 BEGIN
   CALL check_if_not_in_accidents(NEW.id);
@@ -1010,21 +905,21 @@ CREATE TRIGGER on_create_destruction
 BEFORE INSERT ON destructions
 FOR EACH ROW
 BEGIN
-  CALL check_if_not_in_deteriorations(NEW.id);
+  CALL check_if_not_in_spoilages(NEW.id);
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       TRIGGER : on_create_deterioration
+#       TRIGGER : on_create_spoilage
 # -----------------------------------------------------------------------------
 
-DROP TRIGGER IF EXISTS on_create_deterioration;
+DROP TRIGGER IF EXISTS on_create_spoilage;
 
 DELIMITER $
 
-CREATE TRIGGER on_create_deterioration
-BEFORE INSERT ON deteriorations
+CREATE TRIGGER on_create_spoilage
+BEFORE INSERT ON spoilages
 FOR EACH ROW
 BEGIN
   CALL check_if_not_in_destructions(NEW.id);
@@ -1043,21 +938,21 @@ DROP TRIGGER IF EXISTS on_update_vehicle;
 DELIMITER $
 
 CREATE TRIGGER on_update_vehicle
-AFTER UPDATE ON vehicules
+AFTER UPDATE ON vehicles
 FOR EACH ROW
 BEGIN
 
-  IF OLD.assure_id IS NOT NULL 
-  AND OLD.assure_id != NEW.assure_id 
+  IF OLD.insuree_id IS NOT NULL
+  AND OLD.insuree_id != NEW.insuree_id
   AND is_vehicle_covered(NEW.id)THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot update `vehicules`, column `vehicule_id` found in `contrat` !';  
+    SET MESSAGE_TEXT = 'Cannot update `vehicles`, column `vehicle_id` found in `contract` !';
   END IF;
 
-  IF (OLD.immatriculation != NEW.immatriculation AND OLD.carte_grise != NEW.carte_grise) 
-  OR (OLD.valeur != NEW.valeur) OR (OLD.assure_id != NEW.assure_id) THEN
-    INSERT INTO h_vehicules
-    VALUES(NULL, OLD.id, OLD.assure_id, NULL, NULL, OLD.immatriculation, OLD.carte_grise, OLD.date_achat, OLD.valeur);
+  IF (OLD.registration_number != NEW.registration_number)
+  OR (OLD.value != NEW.value) OR (OLD.insuree_id != NEW.insuree_id) THEN
+    INSERT INTO h_vehicles
+    VALUES(NULL, OLD.id, OLD.insuree_id, NULL, NULL, OLD.registration_number, OLD.purchase_date, OLD.value);
   END IF;
 END $
 
@@ -1072,105 +967,57 @@ DROP TRIGGER IF EXISTS on_delete_contract;
 DELIMITER $
 
 CREATE TRIGGER on_delete_contract
-AFTER DELETE ON contrats
+AFTER DELETE ON contracts
 FOR EACH ROW 
 BEGIN
-  INSERT INTO h_contrats(id, date_h, type_garantie_id, client_id, vehicule_id, montant, date_souscription, etat, contrat )
-  VALUES(OLD.id, NULL, OLD.type_garantie_id, OLD.client_id, OLD.vehicule_id, OLD.montant, OLD.date_souscription, OLD.etat, OLD.contrat);
+  INSERT INTO h_contracts(id, h_date, insurance_id, customer_id, vehicle_id, amount, subscription_date, status, has_contract_document)
+  VALUES(OLD.id, NULL, OLD.insurance_id, OLD.customer_id, OLD.vehicle_id, OLD.amount, OLD.subscription_date, OLD.status, OLD.has_contract_document);
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       TRIGGER : on_update_sinister
+#       TRIGGER : on_create_sinister
 # -----------------------------------------------------------------------------
-/* TODO FIX THIS
-DROP TRIGGER IF EXISTS on_update_coverage;
+
+DROP TRIGGER IF EXISTS on_create_sinister;
 
 DELIMITER $
 
-CREATE TRIGGER on_update_coverage
-BEFORE UPDATE ON sinistres_contrats_experts
+CREATE TRIGGER on_create_sinister
+BEFORE INSERT ON sinisters
 FOR EACH ROW
 BEGIN
-  DECLARE is_vehicle_owned BIT DEFAULT 0;
-  DECLARE is_vehicle_covered BIT DEFAULT 0;
-  SELECT IF(assure_id IS NULL, 0, 1),
-         IF(c.id IS NULL, 0, 1)
-  INTO is_vehicle_owned, is_vehicle_covered
-  FROM vehicules v LEFT JOIN contrats c ON c.vehicule_id = v.id LEFT JOIN sinistres s ON NEW.sinistre_id = s.id
-  WHERE v.id = NEW.vehicule_id;
-
-  IF NOT is_vehicle_owned THEN
+  DECLARE v_active BIT;
+  SELECT active INTO v_active FROM contracts WHERE id = NEW.id;
+  IF NOT v_active THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `sinister`, column `assure_id` must not be null in `vehicle`!';
-  END IF;
-
-  IF NEW.expert_id AND NOT is_vehicle_covered THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `sinistres` with column `expert_id` not null, column `vehicule_id` not found in `contrats`!';
-  END IF;
-END $
-
-DELIMITER ; */
-
-# -----------------------------------------------------------------------------
-#       TRIGGER : on_create_accident
-# -----------------------------------------------------------------------------
-
-DROP TRIGGER IF EXISTS on_create_spoilage;
-
-DELIMITER $
-
-CREATE TRIGGER on_create_coverage
-BEFORE INSERT ON deteriorations
-FOR EACH ROW
-BEGIN
-  DECLARE is_vehicle_covered BIT DEFAULT 0;
-  IF NEW.garagiste_id IS NOT NULL THEN
-    SELECT IF(c.vehicule_id IS NULL, 0, 1)
-    INTO is_vehicle_covered
-    FROM sinistres s LEFT JOIN vehicules v ON s.vehicule_id = v.id
-                     LEFT JOIN contrats  c ON c.vehicule_id = v.id
-    WHERE s.id = NEW.id;
-
-    IF NOT is_vehicle_covered THEN
-      DELETE FROM dommages 
-      WHERE id = NEW.id;
-      SIGNAL SQLSTATE '45000'
-      SET MESSAGE_TEXT = 'Cannot insert into `deteriorations` with column `garagiste_id` not null, column `vehicule_id` not found in `contrats`!';
-    END IF;
+    SET MESSAGE_TEXT = 'Cannot insert into `sinisters`, referenced `contracts` table row has `active` column set to `false`';
   END IF;
 END $
 
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       TRIGGER : on_update_accident
+#       TRIGGER : on_create_third_party_accident
 # -----------------------------------------------------------------------------
 
-DROP TRIGGER IF EXISTS on_update_accident;
+DROP TRIGGER IF EXISTS on_create_third_party_accident;
 
 DELIMITER $
 
-CREATE TRIGGER on_update_accident
-BEFORE INSERT ON accidents
+CREATE TRIGGER on_create_third_party_accident
+BEFORE INSERT ON third_party_accidents
 FOR EACH ROW
 BEGIN
-  DECLARE is_vehicle_covered BIT DEFAULT 0;
-  SELECT IF(c.vehicule_id IS NULL, 0, 1)
-  INTO is_vehicle_covered
-  FROM sinistres s LEFT JOIN vehicules v ON s.vehicule_id = v.id
-                   LEFT JOIN contrats  c ON c.vehicule_id = v.id
-  WHERE s.id = NEW.id;
-
-  IF NOT is_vehicle_covered THEN
+  IF is_vehicle_covered(NEW.vehicle_id) THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `accidents` with column `garagiste_id` not null, column `vehicule_id` not found in `contrats`!';
+    SET MESSAGE_TEXT = 'Cannot insert into `third_party_accidents`, `vehicle_id` is referenced by `contrats` row where `active` column is set to `true`';
   END IF;
 END $
 
 DELIMITER ;
+
 
 # -----------------------------------------------------------------------------
 #       TRIGGER : on_create_contract
@@ -1181,27 +1028,25 @@ DROP TRIGGER IF EXISTS on_create_contract;
 DELIMITER $
 
 CREATE TRIGGER on_create_contract
-BEFORE INSERT ON contrats
+BEFORE INSERT ON contracts
 FOR EACH ROW
 BEGIN
-  DECLARE already_active BIT DEFAULT 0;
-
-  IF NOT is_vehicle_owned_by(NEW.vehicule_id, NEW.id) THEN
+  IF NOT is_vehicle_owned_by(NEW.vehicle_id, NEW.id) THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `contracts`, column `contrats.assure_id` does not match `vehicule.assure_id`';
+    SET MESSAGE_TEXT = 'Cannot insert into `contracts`, column `contracts.assure_id` does not match `vehicles.insuree_id`';
   END IF;
 
-  IF NEW.actif THEN
-    SELECT COUNT(*) > 0 INTO already_active
-    FROM contrats c WHERE actif = TRUE AND vehicule_id = NEW.vehicule_id LIMIT 1;
-    IF already_active THEN
+  IF NEW.active THEN
+    IF is_vehicle_covered(NEW.vehicle_id) THEN
       SIGNAL SQLSTATE '45000'
-      SET MESSAGE_TEXT = 'Cannot insert into `contrats` there can be only one row with column `actif` set to TRUE !';
+      SET MESSAGE_TEXT = 'Cannot insert into `contracts` there can be only one row with column `active` set to TRUE for the same `vehicle_id`!';
     END IF;
   END IF;
 END $
 
 DELIMITER ;
+
+
 
 # -----------------------------------------------------------------------------
 #       TRIGGER : on_update_contract
@@ -1212,16 +1057,13 @@ DROP TRIGGER IF EXISTS on_update_contract;
 DELIMITER $
 
 CREATE TRIGGER on_update_contract
-BEFORE UPDATE ON contrats
+BEFORE UPDATE ON contracts
 FOR EACH ROW
 BEGIN
-  DECLARE already_active BIT DEFAULT 0;
-  IF NEW.actif THEN
-    SELECT COUNT(*) > 0 INTO already_active
-    FROM contrats c WHERE actif = TRUE AND vehicule_id = NEW.vehicule_id LIMIT 1;
-    IF already_active THEN
+  IF NEW.active THEN
+    IF is_vehicle_covered(NEW.vehicle_id) THEN
       SIGNAL SQLSTATE '45000'
-      SET MESSAGE_TEXT = 'Cannot update `contrats` there can be only one row with column `actif` set to TRUE !';
+      SET MESSAGE_TEXT = 'Cannot update `contracts` there can be only one row with column `active` set to TRUE for the same `vehicle_id`!';
     END IF;
   END IF;
 END $
@@ -1229,46 +1071,7 @@ END $
 DELIMITER ;
 
 # -----------------------------------------------------------------------------
-#       TRIGGER : on_create_coverage
-# -----------------------------------------------------------------------------
-
-DROP TRIGGER IF EXISTS on_create_coverage;
-
-DELIMITER $
-
-CREATE TRIGGER on_create_coverage
-BEFORE INSERT ON sinistres_contrats_experts
-FOR EACH ROW
-BEGIN
-  IF NOT coverage__sinister_matches_contract(NEW.sinistre_id, NEW.contrat_id) THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot insert into `sinistres_contrats_experts` : column `sinistre.vehicule_id` does not match column `contrats.vehicule_id`';
-  END IF;
-END $
-
-DELIMITER ;
-
-# -----------------------------------------------------------------------------
-#       TRIGGER : on_update_sinister
-# -----------------------------------------------------------------------------
-
-DROP TRIGGER IF EXISTS on_update_coverage;
-
-DELIMITER $
-
-CREATE TRIGGER on_update_coverage
-BEFORE UPDATE ON sinistres_contrats_experts
-FOR EACH ROW
-BEGIN
-  IF NOT coverage__sinister_matches_contract(NEW.sinistre_id, NEW.contrat_id) THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Cannot update `sinistres_contrats_experts` : column `sinistre.vehicule_id` does not match column `contrats.vehicule_id`';
-  END IF;
-END $
-
-DELIMITER ;
-
-# -----------------------------------------------------------------------------
+#       /!\ NOT TO APPLY /!\
 #       TRIGGER : on_create_token, on_udpate_token
 # -----------------------------------------------------------------------------
 
@@ -1280,7 +1083,7 @@ CREATE TRIGGER on_create_token
 BEFORE INSERT ON tokens
 FOR EACH ROW
   BEGIN
-    CALL delete_token_linked_to_account(NEW.id, NEW.compte_utilisateur_id);
+    CALL delete_token_linked_to_account(NEW.id, NEW.user_account_id);
   END $
 
 DELIMITER ;
@@ -1294,7 +1097,7 @@ CREATE TRIGGER on_update_token
 BEFORE UPDATE ON tokens
 FOR EACH ROW
   BEGIN
-    CALL delete_token_linked_to_account(NEW.id, NEW.compte_utilisateur_id);
+    CALL delete_token_linked_to_account(NEW.id, NEW.user_account_id);
   END $
 
 DELIMITER ;
@@ -1309,4 +1112,4 @@ CREATE EVENT clear_tokens
   ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 HOUR
 DO
   DELETE FROM tokens
-  WHERE TO_SECONDS(CURRENT_TIMESTAMP) - TO_SECONDS(maj) >= get_token_lifetime();
+  WHERE TO_SECONDS(CURRENT_TIMESTAMP) - TO_SECONDS(updated_at) >= get_token_lifetime();

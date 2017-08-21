@@ -4,6 +4,7 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
                            http://www.springframework.org/schema/mvc
@@ -13,11 +14,9 @@
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
                            http://www.springframework.org/schema/context
-	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:component-scan base-package="core.web.app"/>
-
-
+    <context:component-scan base-package="org.aaa.core.web.app"/>
 
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -46,9 +45,20 @@
     </mvc:interceptors> -->
     <context:property-placeholder location="classpath*:/validation.properties,
                                             classpath*:/service.properties,
-                                            classpath*:/global.properties,
                                             classpath*:/app.controllers.properties"/>
 
+    <util:properties id="properties" location="classpath*:/validation.properties,
+                                               classpath*:/service.properties,
+                                               classpath*:/app.controllers.properties"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/error"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <bean class="org.aaa.core.web.app.http.interceptor.HttpSessionInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
     <mvc:annotation-driven ignore-default-model-on-redirect="true"/>
 </beans>
 

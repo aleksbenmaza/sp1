@@ -6,6 +6,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" >
 
+
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
@@ -17,20 +18,12 @@
         <servlet-name>app</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-        <!-- <init-param>
-            <param-name>throwExceptionIfNoHandlerFound</param-name>
-            <param-value>1</param-value>
-        </init-param> -->
     </servlet>
 
     <servlet>
         <servlet-name>api</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-       <!-- <init-param>
-            <param-name>throwExceptionIfNoHandlerFound</param-name>
-            <param-value>1</param-value>
-        </init-param> -->
     </servlet>
 
     <servlet-mapping>
@@ -42,6 +35,8 @@
         <servlet-name>app</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+
 
     <error-page>
         <location>/error</location>

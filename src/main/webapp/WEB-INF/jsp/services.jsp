@@ -8,7 +8,8 @@
 <%@ include file="header.jsp" %>
 <%@ include file="navbar.jsp" %>
 <%@ include file="banner.jsp" %>
-<spring:eval var="SERVER_NAME" expression="@systemEnvironment['AAA_SERVER']"/>
+<spring:eval expression="@systemEnvironment['AAA_SERVERNAME']" var="SERVER_NAME"/>
+<spring:eval expression="@systemEnvironment['AAA_API_SUBDOMAIN']" var="API_SUBDOMAIN"/>
     <div id="container">
         <div id="banner">
             <div class="image-border">

@@ -5,7 +5,7 @@
   Time: 13:45
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<%@ taglib prefix="f" uri="http://tagutils"%>
 <c:set var="requestURI" value="${WEBROOT.concat(requestScope['javax.servlet.withForwarding.request_uri'])}"/>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
@@ -22,30 +22,34 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li <c:if test='${requestURI == WEBROOT.concat("/")}'>class="active"</c:if>><a href="${WEBROOT}/" accesskey="1" title=""><span><spring:message code="navbar.homeTitle"/></span></a></li>
-                <li <c:if test='${requestURI == WEBROOT.concat("/nos-services")}'>class="active"</c:if>><a href="${WEBROOT}/nos-services" accesskey="2" title=""><span><spring:message code="navbar.servicesTitle"/> </span></a>
-                <li <c:if test='${requestURI == WEBROOT.concat("/press")}'>class="active"</c:if>><a href="#" accesskey="4" title=""><span><spring:message code="navbar.pressTitle"/></span></a>
-                <li <c:if test='${requestURI == WEBROOT.concat("/a-propos")}'>class="active"</c:if>><a href="${WEBROOT}/a-propos" accesskey="3" title=""><span><spring:message code="navbar.aboutTitle"/></span></a></li>
+                <li <c:if test='${requestURI eq WEBROOT.concat("/")}'>class="active"</c:if>><a href="${WEBROOT}/" accesskey="1" title=""><span><spring:message code="navbar.titles.home"/></span></a></li>
+                <li <c:if test='${requestURI eq WEBROOT.concat("/nos-services")}'>class="active"</c:if>><a href="${WEBROOT}/nos-services" accesskey="2" title=""><span><spring:message code="navbar.titles.services"/> </span></a>
+                <li <c:if test='${requestURI eq WEBROOT.concat("/press")}'>class="active"</c:if>><a href="#" accesskey="4" title=""><span><spring:message code="navbar.titles.press"/></span></a>
+                <li <c:if test='${requestURI eq WEBROOT.concat("/a-propos")}'>class="active"</c:if>><a href="${WEBROOT}/a-propos" accesskey="3" title=""><span><spring:message code="navbar.titles.about"/></span></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <c:if test="${not empty link1}">
-                    <li>
-                        <a href="${link1.url}">
-                            <span>
-                                ${link1.name}
-                            </span>
-                        </a>
-                    </li>
-                </c:if>
-                <c:if test="${not empty link2}">
-                    <li role="presentation">
-                        <a href="${link2.url}">
-                            <span>
-                                ${link2.name}
-                            </span>
-                        </a>
-                    </li>
-                </c:if>
+                <c:choose>
+                    <c:when test="${f:isRegistered(user)}">
+                        <li>
+                            <c:if test="${f:isCustomer(user)}">
+                                <a href="<spring:eval expression="@properties['routes.customerPanel.root']"/>"><span>${f:getShortenedFullName(user)}</span></a>
+                            </c:if>
+                            <c:if test="${f:isManager(user)}">
+                                <a href="<spring:eval expression="@properties['routes.managerPanel.root']"/>"><span><spring:message code="navbar.titles.managerPanel"/></span></a>
+                            </c:if>
+                        </li>
+                        <li role="presentation">
+                            <form method="post" action="<spring:eval expression="@properties['routes.logout']"/>">
+                                    <button type="submit" class="btn btn-link btn-logout"><span><spring:message code="navbar.titles.logout"/> </span></button>
+                            </form>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li role="presentation">
+                            <a href="<spring:eval expression="@properties['routes.login']"/>"><span><spring:message code="navbar.titles.login"/></span></a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->

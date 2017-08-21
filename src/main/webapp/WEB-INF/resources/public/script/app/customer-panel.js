@@ -5,8 +5,8 @@
 
 'use strict';
 
-const CUSTOMER_API_URI = API_ABSOLUTE_URI + "/customer";
-const PUBLIC_API_URI   = API_ABSOLUTE_URI + "/public";
+const PUBLIC_API_URI   = BASE_API_URI + '/' + PUBLIC_API_NAME;
+const CUSTOMER_API_URI = BASE_API_URI + '/' + PUBLIC_API_NAME;
 
 let api_access_key = API_ACCESS_KEY;
 
