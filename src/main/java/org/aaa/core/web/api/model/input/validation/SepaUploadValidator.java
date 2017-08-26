@@ -2,7 +2,7 @@ package org.aaa.core.web.api.model.input.validation;
 
 import static org.aaa.core.web.app.model.validation.Validating.COMMON_MESSAGE_BASE_CODE;
 
-import org.aaa.core.web.common.util.MessageHelper;
+import org.aaa.core.web.common.helper.MessageGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class SepaUploadValidator {
     private long maxFileSize;
 
     @Autowired
-    private MessageHelper messageHelper;
+    private MessageGetter messageHelper;
 
 
     public void validate(byte[] sepa, Appendable errorMessage) throws IOException {
@@ -32,13 +32,13 @@ public class SepaUploadValidator {
 
 
         if(sepa.length > maxFileSize)
-            errorMessage.append(messageHelper.getMessage(COMMON_MESSAGE_BASE_CODE + "tooLargeFile"));
+            errorMessage.append(messageHelper.get(COMMON_MESSAGE_BASE_CODE + "tooLargeFile"));
 
         else {
             byteArrayInputStream = new ByteArrayInputStream(sepa);
             ext = guessContentTypeFromStream(byteArrayInputStream);
             if (ext.equals("pdf"))
-                errorMessage.append(messageHelper.getMessage(COMMON_MESSAGE_BASE_CODE + "invalidFileExtension"));
+                errorMessage.append(messageHelper.get(COMMON_MESSAGE_BASE_CODE + "invalidFileExtension"));
         }
 
     }

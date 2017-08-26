@@ -9,8 +9,7 @@
 <%@ include file="header.jsp" %>
 <%@ include file="navbar.jsp" %>
 <%@ include file="banner.jsp" %>
-<spring:eval expression="@systemEnvironment['AAA_SERVERNAME']" var="SERVER_NAME"/>
-<spring:eval expression="@systemEnvironment['AAA_API_SUBDOMAIN']" var="API_SUBDOMAIN"/>
+<spring:eval expression="@host" var="host"/>
 <div id="container" ng-app="CustomerPanel">
     <div id="banner">
         <div class="image-border">
@@ -75,7 +74,7 @@
 </div>
 <script type="text/javascript">
     const API_ACCESS_KEY    = "${user.userAccount.token.value}";
-    const BASE_API_URI      = "http://${API_SUBDOMAIN}.${SERVER_NAME}";
+    const BASE_API_URI      = "http://${host.apiSubdomain}.${host.domainName}";
     const PUBLIC_API_NAME   = "public";
     const CUSTOMER_API_NAME = "customer";
 </script>

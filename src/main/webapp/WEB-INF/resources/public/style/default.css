@@ -99,9 +99,12 @@ hr {
 }
 
 .btn-logout {
+	font-size: inherit !important;
 	width: 100%;
-	padding: 10% 20% !important;
+	padding: 11% 20% !important;
 	text-align: left;
+	text-decoration-line: none !important;
+
 }
 
 
@@ -552,10 +555,10 @@ form.sign {
 	}
 }
 
-@media (max-width: /* bootstrap's value */ 768px) {
+@media (max-width: /* bootstrap's navbar value */ 768px) {
 	.btn-logout {
 		width: 100%;
-		padding: 2% 2% !important;
+		padding: 2% 3% !important;
 		text-align: left !important;
 	}
 }

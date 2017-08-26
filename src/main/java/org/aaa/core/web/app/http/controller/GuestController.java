@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
  * Created by alexandremasanes on 21/02/2017.
  */
 
-public abstract class GuestController extends AppController {
+public abstract class GuestController extends BaseController {
 /*
     @PreHandler
     public RedirectView preHandler(

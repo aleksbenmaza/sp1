@@ -20,7 +20,7 @@ public interface DAO extends Finder, Recorder, Remover {
 
     List<Model> searchModels(String modelName, long makeId);
 
-    Vehicle findVehicleByRegistrationNumber(String registrationNumber);
+    Vehicle findVehicle(String registrationNumber);
 
     UserAccount findUserAccount(String email, String hash);
 
@@ -28,13 +28,19 @@ public interface DAO extends Finder, Recorder, Remover {
 
     UserAccount findUserAccount(String email);
 
-    boolean emailExists(String email);
+    Model findModel(String name);
+
+    boolean hasMake(String name);
+
+    boolean hasModel(String name);
+
+    boolean hasUserAccount(String email);
 
     Token findToken(String value);
 
-    boolean tokenExists(String token);
+    boolean hasToken(String token);
 
     String getHashSalt();
 
-    int getTokenLifetime();
+    short getTokenLifetime();
 }

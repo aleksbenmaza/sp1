@@ -8,8 +8,8 @@
 <%@ include file="header.jsp" %>
 <%@ include file="navbar.jsp" %>
 <%@ include file="banner.jsp" %>
-<spring:eval expression="@systemEnvironment['AAA_SERVERNAME']" var="SERVER_NAME"/>
-<spring:eval expression="@systemEnvironment['AAA_API_SUBDOMAIN']" var="API_SUBDOMAIN"/>
+<%@ taglib prefix="f" uri="http://tagutils"%>
+<spring:eval expression="@host" var="host"/>
     <div id="container">
         <div id="banner">
             <div class="image-border">
@@ -62,8 +62,8 @@
         </div>
     </div>
     <script type="text/javascript" defer>
-        const API_ACCESS_KEY = "${API_ACCESS_KEY}";
-        const PUBLIC_API_URI = "http://${API_SUBDOMAIN}.${SERVER_NAME}/public";
+        const API_ACCESS_KEY = "${f:isRegistered(user) ? user.userAccount.token.value : user.tokenValue}";
+        const PUBLIC_API_URI = "http://${host.apiSubdomain}.${host.domainName}/public";
     </script>
     <script type="text/javascript" src="${WEBROOT}/resources/script/app/services.js" defer></script>
 <%@ include file="footer.jsp" %>

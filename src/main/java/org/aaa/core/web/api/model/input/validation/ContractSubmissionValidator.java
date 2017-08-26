@@ -7,7 +7,7 @@ import org.aaa.core.web.app.model.validation.Validating;
 import org.aaa.core.business.repository.DAO;
 import org.aaa.core.business.mapping.Insurance;
 import org.aaa.core.business.mapping.Model;
-import org.aaa.core.web.common.util.MessageHelper;
+import org.aaa.core.web.common.helper.MessageGetter;
 import org.aaa.core.web.app.model.Command;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;
 
@@ -43,7 +43,7 @@ public class ContractSubmissionValidator implements Validating {
     private DAO dao;
 
     @Autowired
-    private MessageHelper messageHelper;
+    private MessageGetter messageHelper;
 
     @Override
     public void validate(Command command, Errors errors) throws Exception {
@@ -61,16 +61,16 @@ public class ContractSubmissionValidator implements Validating {
     }
 
     public String getMessage(String code) {
-        return messageHelper.getMessage(code);
+        return messageHelper.get(code);
     }
 
     private void validateInsuranceId(Long id, Errors errors) {
-        if(errors.get("insuranceId") == null && !dao.exists(Insurance.class, id))
+        if(errors.get("insuranceId") == null && !dao.has(Insurance.class, id))
             errors.rejectValue("insuranceId", getMessage(MESSAGE_BASE_CODE+"nonExistentInsurance"));
     }
 
     private void validateModelId(Long id, Errors errors) {
-        if(errors.get("modelId") == null && !dao.exists(Model.class, id))
+        if(errors.get("modelId") == null && !dao.has(Model.class, id))
             errors.rejectValue("insuranceId", getMessage(MESSAGE_BASE_CODE+"nonExistentModel"));
     }
 

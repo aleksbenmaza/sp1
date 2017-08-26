@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 @RequestMapping(value = "/espace-assure", method = RequestMethod.GET)
-public class CustomerPanelController extends AppController {
+public class CustomerPanelController extends BaseController {
 
     public final static String VIEW_NAME = "customerpanel";
 

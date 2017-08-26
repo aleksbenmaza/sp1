@@ -3,6 +3,8 @@ package org.aaa.core.web.api.model.ouput;
 import org.aaa.core.business.mapping.Entity;
 import org.aaa.core.business.mapping.IdentifiableById;
 
+import static java.lang.reflect.Array.newInstance;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +32,24 @@ public abstract class DTO<E extends Entity> implements Serializable {
             result.add(function.apply(entity));
 
         return result;
+    }
+
+    protected static <E extends Serializable, T> T[] aggregate(
+            Collection<E> entities,
+            Function<E, T> function,
+            Class<T> aggregatedType
+    ) {
+        T[] aggregated;
+        int i;
+
+        aggregated = (T[])newInstance(aggregatedType, entities.size());
+        i = 0;
+        for(E entity : entities)
+            aggregated[i++] = function.apply(entity);
+
+        return aggregated;
+
+
     }
 
     protected static long[] getIds(Collection<? extends IdentifiableById> collection) {

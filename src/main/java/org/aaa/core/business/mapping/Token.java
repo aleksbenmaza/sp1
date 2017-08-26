@@ -24,9 +24,6 @@ public class Token extends IdentifiableByIdImpl {
     @Column(name = "old_value")
     private String oldValue;
 
-    @Column(name = "api_server")
-    private String apiServer;
-
     @Generated(GenerationTime.INSERT)
     @Column(name = "created_at")
     private Timestamp createdAt;
@@ -67,13 +64,6 @@ public class Token extends IdentifiableByIdImpl {
         this.oldValue = oldValue;
     }
 
-    public String getApiServer() {
-        return apiServer;
-    }
-
-    public void setApiServer(String apiServer) {
-        this.apiServer = apiServer;
-    }
 
     public Timestamp createdAt() {
         return createdAt;

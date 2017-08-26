@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by alexandremasanes on 23/07/2017.
  */
 @RestController
-public class ApiRootController extends ApiController {
+public class ApiRootController extends BaseController {
 
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

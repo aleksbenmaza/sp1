@@ -8,6 +8,7 @@ import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.core.business.mapping.User;
 import org.aaa.util.RedirectView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,20 +19,18 @@ import javax.servlet.http.HttpSession;
  */
 
 @Controller
-public class LogoutController extends AppController {
+public class LogoutController extends BaseController {
 
-    @Autowired
-    private TokenService tokenService;
+    @Value("${routes.customerPanel.root}")
+    private String customerPanelPath;
 
+    @Value("${routes.login}")
+    private String loginPath;
 
     @ModelAttribute
-    public void checkUser(
-            @SessionAttribute         User   user,
-            @RequestHeader("referer") String referer
-    ) {
+    public void checkUser(@SessionAttribute User user) {
         if(!(user instanceof RegisteredUser))
-            throw new CustomHttpExceptions.ResourceForbiddenException()
-                                          .withRedirect(resolveReferer(referer));
+            throw new CustomHttpExceptions.UnauthorizedRequestException();
     }
 
     @RequestMapping(value = "${routes.logout}", method = RequestMethod.POST)
@@ -39,9 +38,12 @@ public class LogoutController extends AppController {
                                       HttpSession session,
             @RequestHeader("referer") String      referer
     ) {
-
+        System.out.println("signOut");
+        String path;
         session.invalidate();
-        return new RedirectView(resolveReferer(referer));
+
+        path = referer.contains(customerPanelPath) ? loginPath : referer;
+        return new RedirectView(path);
     }
 
     @Override

@@ -7,6 +7,9 @@
 # Built :
 target/
 
+# Sensitive data
+/src/main/resources/import-sources.xml
+
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml

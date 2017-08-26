@@ -17,6 +17,8 @@ public class ContractSubmission implements Command {
     @SerializedName("model_id")
     private Long modelId;
 
+    private Short year;
+
     @SerializedName("vin_number")
     private String vinNumber;
 
@@ -86,6 +88,14 @@ public class ContractSubmission implements Command {
 
     public void setRegistrationDocument(byte[] registrationDocument) {
        this.registrationDocument = registrationDocument;
+    }
+
+    public Short getYear() {
+        return year;
+    }
+
+    public void setYear(Short year) {
+        this.year = year;
     }
 
     @Override

@@ -17,8 +17,12 @@ public class HttpSessionInterceptor extends HandlerInterceptorAdapter {
     @Value("${session.keys.user}")
     private String sessionUserKey;
 
-
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    @Override
+    public boolean preHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler
+    ) {
         HttpSession session;
 
         session = request.getSession();

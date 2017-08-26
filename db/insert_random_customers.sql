@@ -25,3 +25,17 @@ BEGIN
 END $
 
 DELIMITER ;
+
+DELIMITER $
+
+CREATE FUNCTION models__get_min_id(in_name VARCHAR (255)) RETURNS INTEGER
+BEGIN
+  DECLARE min_id INTEGER;
+  SELECT min(id) INTO min_id FROM models WHERE name = in_name;
+  RETURN min_id;
+END $
+DELIMITER ;
+
+UPDATE vehicles set year     := (SELECT year FROM models WHERE id = model_id);
+
+UPDATE vehicles set model_id := (SELECT models__get_min_id(name) FROM models WHERE id = model_id);

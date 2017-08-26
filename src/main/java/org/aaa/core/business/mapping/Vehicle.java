@@ -34,8 +34,16 @@ public class Vehicle extends IdentifiableByIdImpl {
 	private Date purchaseDate;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "model_id", referencedColumnName = "id", nullable = false)
-	private Model model;
+	@JoinColumns({
+			@JoinColumn(
+					name 	 = "model_id",
+					nullable = false
+			),
+			@JoinColumn(
+					name     = "year",
+					nullable = false)
+	})
+	private ModelAndYear modelAndYear;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "insuree_id", referencedColumnName = "id")
@@ -51,15 +59,15 @@ public class Vehicle extends IdentifiableByIdImpl {
 	@OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
 	private Set<ThirdPartyAccident> thirdPartyAccidents;
 
-	public Vehicle(@NonNull Model model) {
-		this.model = requireNonNull(model);
+	public Vehicle(@NonNull ModelAndYear modelAndYear) {
+		this.modelAndYear = modelAndYear;
 		thirdPartyAccidents = new HashSet<ThirdPartyAccident>();
 		contracts  = new HashSet<Contract>();
-		model.addVehicle(this);
+		modelAndYear.addVehicle(this);
 	}
 
-	public Vehicle(Model model, Insuree insuree) {
-		this(model);
+	public Vehicle(ModelAndYear modelAndYear, Insuree insuree) {
+		this(modelAndYear);
 		this.insuree = requireNonNull(insuree);
 		insuree.addVehicle(this);
 	}
@@ -96,8 +104,8 @@ public class Vehicle extends IdentifiableByIdImpl {
 		this.purchaseDate = purchaseDate;
 	}
 
-	public Model getModel() {
-		return model;
+	public ModelAndYear getModelAndYear() {
+		return modelAndYear;
 	}
 
 	public Insuree getInsuree() {

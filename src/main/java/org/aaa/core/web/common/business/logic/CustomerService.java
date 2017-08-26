@@ -1,9 +1,10 @@
 package org.aaa.core.web.common.business.logic;
 
 import static org.aaa.core.business.mapping.ToBeChecked.Status.*;
+
 import org.aaa.core.business.mapping.UserAccount;
 import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.web.common.util.VelocityTemplateResolver;
+import org.aaa.core.web.common.helper.VelocityTemplateResolver;
 import org.aaa.core.web.app.model.validation.RegistrationValidator;
 
 import org.aaa.core.web.app.model.Registration;
@@ -13,7 +14,9 @@ import static com.itextpdf.text.pdf.BaseFont.*;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.*;
 
-import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang.ArrayUtils.toPrimitive;
+import static org.apache.commons.lang.StringUtils.repeat;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -22,6 +25,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import static java.util.Arrays.copyOf;
+import static java.util.stream.IntStream.range;
+import static java.util.stream.Collectors.toList;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,14 +51,14 @@ public class CustomerService extends BaseService {
             return successful;
         }
 
-        public void setSuccessful() {
-            this.successful = true;
+        public void setSuccessful(boolean successful) {
+            this.successful = successful;
         }
     }
 
     private static final short TOKEN_LEN = 8;
 
-    private static final List<Character> tokenCharSet;
+    private static final int[] tokenCharSet;
 
     static {
       tokenCharSet = initTokenCharSet();
@@ -102,7 +109,7 @@ public class CustomerService extends BaseService {
                 "notification.emailSent"
         );
         awaitingRegistrations.put(token, registration);
-        preRegistrationResult.setSuccessful();
+        preRegistrationResult.setSuccessful(true);
         return preRegistrationResult;
     }
 
@@ -177,7 +184,7 @@ public class CustomerService extends BaseService {
         over     = stamper.getOverContent(1);
 
         id           = Long.toString(customer.getId());
-        formatedId   = StringUtils.repeat("0", 21);
+        formatedId   = repeat("0", 21);
         formatedId   = formatedId.substring(0, id.length())+id;
 
 
@@ -227,8 +234,8 @@ public class CustomerService extends BaseService {
 
         do {
             while(tokenBuilder.length() != 8) {
-                randomIndex = random.nextInt(tokenCharSet.size());
-                randomChar  = tokenCharSet.get(randomIndex);
+                randomIndex = random.nextInt(tokenCharSet.length);
+                randomChar  = (char) tokenCharSet[randomIndex];
                 tokenBuilder.append(randomChar);
             }
 
@@ -257,17 +264,19 @@ public class CustomerService extends BaseService {
         }
     }
 
-    private static List<Character> initTokenCharSet() {
-        ArrayList<Character> tokenCharSet;
+    private static int[] initTokenCharSet() {
+        List<Integer> ints;
 
-        tokenCharSet = new ArrayList<Character>();
+        ints = range('0', '9').boxed().collect(toList());
+        ints.addAll(range('A', 'Z').boxed().collect(toList()));
+        ints.addAll(range('a', 'z').boxed().collect(toList()));
 
-        for(char c = '0'; c <= 'z' ; ++c)
-            if(c >= '0' && c <= '9'
-            || c >= 'A' && c <= 'Z'
-            || c >= 'a' && c <= 'z')
-                tokenCharSet.add(c);
-
-        return tokenCharSet;
+        return toPrimitive(
+                copyOf(
+                        ints.toArray(),
+                        ints.size(),
+                        Integer[].class
+                )
+        );
     }
 }

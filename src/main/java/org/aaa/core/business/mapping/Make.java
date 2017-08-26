@@ -28,7 +28,7 @@ public class Make extends IdentifiableByIdImpl {
     private Set<Model> models;
 
     public Make() {
-        models = new HashSet<Model>();
+        models = new HashSet<>();
     }
 
     public String getName() {

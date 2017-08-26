@@ -1,4 +1,4 @@
-package org.aaa.core.web.common.util;
+package org.aaa.core.web.common.helper;
 
 import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 

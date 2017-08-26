@@ -117,7 +117,7 @@ public class UserService extends BaseService {
     }
 
     public boolean emailAddressExists(String emailAddress) {
-        return dao.emailExists(emailAddress);
+        return dao.hasUserAccount(emailAddress);
     }
 
     public void createUserAccount(Registration registration, Customer customer) throws NoSuchAlgorithmException {

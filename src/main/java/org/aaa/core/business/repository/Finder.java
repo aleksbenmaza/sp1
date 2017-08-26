@@ -16,7 +16,7 @@ public interface Finder {
 
     <T extends IdentifiableByIdImpl> T find(Class<T> entityClass, long id);
 
-    <T extends IdentifiableByIdImpl> boolean exists(Class<T> entityClass, long id);
+    <T extends IdentifiableByIdImpl> boolean has(Class<T> entityClass, long id);
 
     <T extends IdentifiableByIdImpl> long getNextId(Class<T> entityClass);
 }

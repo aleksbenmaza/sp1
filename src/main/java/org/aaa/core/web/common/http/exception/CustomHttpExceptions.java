@@ -14,7 +14,7 @@ public final class CustomHttpExceptions {
 
     public static abstract class HttpException extends RuntimeException {
 
-        protected abstract HttpStatus getHttpStatus();
+        public abstract HttpStatus getHttpStatus();
     }
 
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
@@ -27,7 +27,7 @@ public final class CustomHttpExceptions {
     public static class ResourceForbiddenException extends WithAbstractUrlBasedViewException {
 
         @Override
-        protected HttpStatus getHttpStatus() {
+        public HttpStatus getHttpStatus() {
             return HttpStatus.FORBIDDEN;
         }
     }
@@ -39,7 +39,7 @@ public final class CustomHttpExceptions {
     public static class UnauthorizedRequestException extends WithAbstractUrlBasedViewException {
 
         @Override
-        protected HttpStatus getHttpStatus() {
+        public HttpStatus getHttpStatus() {
             return HttpStatus.UNAUTHORIZED;
         }
     }

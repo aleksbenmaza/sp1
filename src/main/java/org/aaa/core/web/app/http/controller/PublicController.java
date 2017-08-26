@@ -23,7 +23,7 @@ import java.util.HashMap;
  */
 @Controller
 @RequestMapping(method = GET)
-public class PublicController extends AppController {
+public class PublicController extends BaseController {
 
     @Value("#{@systemEnvironment['AAA_API_SUBDOMAIN']}")
     private String test;
@@ -52,7 +52,6 @@ public class PublicController extends AppController {
 
         HashMap<String, Object> map = new HashMap<String, Object>();
         String tokenValue;
-        Token token;
 
         tokenValue = user instanceof RegisteredUser ? (
                         ((RegisteredUser)user).getUserAccount().getToken() == null ?
@@ -62,13 +61,11 @@ public class PublicController extends AppController {
                 ((Guest)user).getTokenValue();
         if(tokenValue == null) {
             if (user instanceof RegisteredUser)
-                token = tokenService.createToken(((RegisteredUser) user).getUserAccount());
+                tokenService.createToken(((RegisteredUser) user).getUserAccount());
             else
-                token = tokenService.createToken(null);
-            tokenValue = token.getValue();
+                tokenService.createToken(null);
         }
         map.put("headTitleCode", "services");
-        map.put("API_ACCESS_KEY", tokenValue);
         return render("services", map);
     }
 

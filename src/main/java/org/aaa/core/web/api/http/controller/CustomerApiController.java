@@ -13,8 +13,9 @@ import org.aaa.core.business.mapping.person.insuree.Customer;
 import org.aaa.core.business.mapping.sinister.accident.Accident;
 import org.aaa.core.business.mapping.sinister.PlainSinister;
 import org.aaa.core.business.mapping.sinister.Sinister;
+import org.aaa.core.web.common.business.logic.VehicleService;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions.*;
-import org.aaa.core.web.common.util.VelocityTemplateResolver;
+import org.aaa.core.web.common.helper.VelocityTemplateResolver;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;
 import org.aaa.core.web.api.model.input.validation.ContractSubmissionValidator;
 import org.aaa.core.web.api.model.input.validation.Errors;
@@ -45,7 +46,7 @@ import java.util.List;
  */
 @RestController // = @Controller + @ResponseBody
 @RequestMapping(value = "/customer")
-public class CustomerApiController extends ApiController {
+public class CustomerApiController extends BaseController {
 
     @Autowired
     private CustomerService             customerService;
@@ -55,6 +56,9 @@ public class CustomerApiController extends ApiController {
 
     @Autowired
     private SinisterService             sinisterService;
+
+    @Autowired
+    private VehicleService              vehicleService;
 
     @Autowired
     private ContractSubmissionValidator contractSubmissionValidator;
@@ -91,28 +95,29 @@ public class CustomerApiController extends ApiController {
         return customer.isSepaDocumentPresent();
     }
 
-    @RequestMapping(value = "/makes/{name}", method = GET)
+    @RequestMapping(value = "/makes", method = GET, params = "name")
     public List<MakeDTO> getMakes(
-            @PathVariable String name
+            @RequestParam String name
     ) {
         checkWhiteSpaces(name);
-        return fromCollection(apiService.getMakesByName(name), MakeDTO::new);
+        return fromCollection(vehicleService.getMakesByName(name), MakeDTO::new);
     }
 
-    @RequestMapping(value = "makes/{id}/models/{name}", method = GET)
+    @RequestMapping(value = "makes/{id}/models", method = GET, params = "name")
     public List<ModelDTO> getModels(
             @PathVariable long   id,
-            @PathVariable String name
+            @RequestParam String name
             
     ) {
         checkWhiteSpaces(name);
-        return fromCollection(apiService.getModelsByNameAndMakeId(name, id), ModelDTO::new);
+        return fromCollection(vehicleService.getModelsByNameAndMakeId(name, id), ModelDTO::new);
     }
 
-    @RequestMapping(value = "/models/{name}", method = GET)
+    @RequestMapping(value = "/models", method = GET, params = "name")
     public List<ModelDTO> getModels(
-            @PathVariable String name
+            @RequestParam String name
     ) {
+        checkWhiteSpaces(name);
         return getModels(NULL_ID, name);
     }
 

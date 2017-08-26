@@ -4,7 +4,7 @@ import org.aaa.core.web.common.business.logic.UserService;
 import org.aaa.core.business.mapping.person.Person;
 import org.aaa.core.business.mapping.person.RegisteredUser;
 import org.aaa.core.web.app.http.session.Guest;
-import org.aaa.core.web.common.http.controller.BaseController;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.aaa.core.business.mapping.User;
@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by alexandremasanes on 20/02/2017.
  */
 
-public abstract class AppController extends BaseController {
+public abstract class BaseController {
 
     @Value("${session.keys.user}")
     private String sessionUserKey;
@@ -28,7 +28,7 @@ public abstract class AppController extends BaseController {
     protected UserService userService;
 
     public String resolveReferer(String referer) {
-        return referer == null || referer.isEmpty() ? getWebroot() : referer;
+        return referer == null ? "" : referer;
     }
 
     @InitBinder
@@ -60,7 +60,6 @@ public abstract class AppController extends BaseController {
         if(model == null)
             model = new ModelMap();
 
-        model.put("WEBROOT", getWebroot());
         model.put("headTitleCode", viewName);
 
         return new ModelAndView(viewName, model);

@@ -3,7 +3,7 @@ package org.aaa.core.web.app.http.controller;
 import org.aaa.core.web.common.business.logic.CustomerService;
 import org.aaa.core.web.common.business.logic.CustomerService.*;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
-import org.aaa.core.web.common.util.MessageHelper;
+import org.aaa.core.web.common.helper.MessageGetter;
 import org.aaa.core.web.app.model.Login;
 import org.aaa.core.web.app.model.Registration;
 import org.aaa.core.web.app.model.validation.RegistrationValidator;
@@ -38,7 +38,7 @@ public class RegistrationController extends GuestController {
     private CustomerService       customerService;
 
     @Autowired
-    private MessageHelper         messageHelper;
+    private MessageGetter messageHelper;
 
     @Autowired
     private RegistrationValidator registrationValidator;
@@ -79,7 +79,7 @@ public class RegistrationController extends GuestController {
             registrationResult = customerService.preRegister(registration, serverName);
 
             if (registrationResult.isSuccessful()) {
-                redirectUri = getWebroot();
+                redirectUri = "";
                 messageCode.setValue(registrationResult.getMessageCode());
                 redirectAttributes.addFlashAttribute(messageCode);
                 return new RedirectView(redirectUri, HttpStatus.CREATED);
@@ -107,7 +107,7 @@ public class RegistrationController extends GuestController {
                 "notfication.emailAddressValidation.failure");
 
         redirectAttributes.addFlashAttribute(messageCode);
-        return new RedirectView(getWebroot());
+        return new RedirectView();
     }
 
     @Override

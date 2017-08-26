@@ -5,9 +5,9 @@ import static java.util.UUID.randomUUID;
 import org.aaa.core.business.mapping.UserAccount;
 import org.aaa.core.business.mapping.Token;
 
-import org.aaa.core.web.common.Server;
 import org.aaa.core.web.app.http.session.Guest;
 import org.aaa.core.business.mapping.User;
+import org.aaa.core.web.common.helper.Host;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,11 +28,11 @@ public class TokenService extends BaseService {
         tokens = new HashSet<>();
     }
 
-    @Autowired
-    private Server server;
-
     @Value("#{@dao.tokenLifetime}")
     private int tokenLifetime;
+
+    @Autowired
+    private Host host;
 
     @Transactional
     public boolean isValid(String value) {
@@ -44,11 +44,12 @@ public class TokenService extends BaseService {
             if(t != null && t.getValue().equals(value))
                 token = t;
 
-        if(token == null) {
+        if(token == null)
             token = dao.findToken(value);
-        }
+
         if(token != null)
             tokens.add(token);
+
         System.out.println("token is " + token);
         return token != null && !hasExpired(token);
     }
@@ -82,8 +83,6 @@ public class TokenService extends BaseService {
 
         token.setValue(generateValue());
 
-        token.setApiServer(server.HOST);
-
         if(userAccount != null) {
             userAccount.setToken(token);
             dao.save(userAccount);
@@ -95,11 +94,6 @@ public class TokenService extends BaseService {
         return token;
     }
 
-
-    public int getTokenLifetime() {
-        return tokenLifetime;
-    }
-
     public User getGrantedUser(String tokenValue) {
         UserAccount userAccount;
 
@@ -107,8 +101,6 @@ public class TokenService extends BaseService {
             return null;
 
         userAccount = get(tokenValue).getUserAccount();
-        System.out.println("toto");
-        System.out.println(userAccount);
         return userAccount == null ? new Guest() : userAccount.getUser();
     }
 

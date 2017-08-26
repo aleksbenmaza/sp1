@@ -32,7 +32,10 @@ public class ContractService extends BaseService {
     }
 
     @Transactional
-    public synchronized void addContract(ContractSubmission contractSubmission, Customer customer) throws IOException {
+    public synchronized void addContract(
+            ContractSubmission contractSubmission,
+            Customer           customer
+    ) throws IOException {
         Insurance insurance;
         Model model;
         Vehicle vehicle;
@@ -41,33 +44,37 @@ public class ContractService extends BaseService {
         FileOutputStream outputStream;
         String registrationFileName;
 
-        insurance = (Insurance) dao.find(Insurance.class, contractSubmission.getInsuranceId());
-        model     = (Model) dao.find(Model.class, contractSubmission.getModelId());
+        insurance = dao.find(Insurance.class, contractSubmission.getInsuranceId());
+        model     = dao.find(Model.class, contractSubmission.getModelId());
 
-        vehicle = new Vehicle(model, customer);
-        vehicle.setVinNumber(contractSubmission.getVinNumber());
-        vehicle.setRegistrationNumber(contractSubmission.getRegistrationNumber());
-        vehicle.setPurchaseDate(contractSubmission.getPurchaseDate());
+        for(ModelAndYear modelAndYear : model.getModelsAndYears())
+            if(modelAndYear.getYear() == contractSubmission.getYear()) {
+                vehicle = new Vehicle(modelAndYear);
 
-        registrationDocument = contractSubmission.getRegistrationDocument();
-        registrationFileName = contractDocumentDir +
-                               dao.getNextId(Vehicle.class) +
-                               guessContentTypeFromStream(
-                                       new ByteArrayInputStream(registrationDocument)
-                               );
+                vehicle.setVinNumber(contractSubmission.getVinNumber());
+                vehicle.setRegistrationNumber(contractSubmission.getRegistrationNumber());
+                vehicle.setPurchaseDate(contractSubmission.getPurchaseDate());
+
+                registrationDocument = contractSubmission.getRegistrationDocument();
+                registrationFileName = contractDocumentDir +
+                        dao.getNextId(Vehicle.class) +
+                        guessContentTypeFromStream(
+                                new ByteArrayInputStream(registrationDocument)
+                        );
 
 
+                outputStream = new FileOutputStream(registrationFileName);
+                outputStream.write(registrationDocument);
+                outputStream.close();
 
-        outputStream = new FileOutputStream(registrationFileName);
-        outputStream.write(registrationDocument);
-        outputStream.close();
+                contract = new Contract(insurance, vehicle, customer);
+                contract.setActive(true);
+                contract.setSubscriptionDate(new Date());
+                contract.setStatus(ToBeChecked.Status.AWAITING);
 
-        contract = new Contract(insurance, vehicle, customer);
-        contract.setActive(true);
-        contract.setSubscriptionDate(new Date());
-        contract.setStatus(ToBeChecked.Status.AWAITING);
-
-        dao.save(contract);
+                dao.save(contract);
+                return;
+            }
     }
 
     public String getContractDocumentDir() {

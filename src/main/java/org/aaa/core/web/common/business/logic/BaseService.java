@@ -1,10 +1,10 @@
 package org.aaa.core.web.common.business.logic;
 
 
-import static org.aaa.util.CommonUtils.replaceIfNull;
+import static org.aaa.util.ObjectUtils.replaceIfNull;
 
 import org.aaa.core.business.repository.DAO;
-import org.aaa.core.web.common.util.MessageHelper;
+import org.aaa.core.web.common.helper.MessageGetter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public abstract class BaseService {
     protected DAO dao;
 
     @Autowired
-    private MessageHelper messageHelper;
+    private MessageGetter messageHelper;
 
     @Value("#{@dao.hashSalt}")
     private String hashSalt;
@@ -43,7 +43,7 @@ public abstract class BaseService {
     }
 
     protected String getMessage(String code, Object... vars) {
-        return messageHelper.getMessage(code, vars);
+        return messageHelper.get(code, vars);
     }
 
 }

@@ -1,7 +1,7 @@
 package org.aaa.core.web.api.model.input.validation;
 
 import org.aaa.core.web.app.model.validation.Validating;
-import org.aaa.core.web.common.util.MessageHelper;
+import org.aaa.core.web.common.helper.MessageGetter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 public class SinisterSubmissionValidator implements Validating {
 
     @Autowired
-    private MessageHelper messageHelper;
+    private MessageGetter messageHelper;
 
     @Override
     public String getMessage(String code) {
-        return messageHelper.getMessage(code);
+        return messageHelper.get(code);
     }
 }

@@ -13,6 +13,8 @@ public class AccidentSubmission extends SinisterSubmission {
     @SerializedName("model_id")
     private Integer modelId;
 
+    private Short year;
+
     @Override
     public boolean isEmpty() {
         return super.isEmpty() &&
@@ -34,5 +36,13 @@ public class AccidentSubmission extends SinisterSubmission {
 
     public void setModelId(Integer modelId) {
         this.modelId = modelId;
+    }
+
+    public Short getYear() {
+        return year;
+    }
+
+    public void setYear(Short year) {
+        this.year = year;
     }
 }

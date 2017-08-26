@@ -4,6 +4,7 @@ import static org.aaa.core.business.mapping.ToBeChecked.Status.*;
 
 import org.aaa.core.business.mapping.Contract;
 import org.aaa.core.business.mapping.Model;
+import org.aaa.core.business.mapping.ModelAndYear;
 import org.aaa.core.business.mapping.Vehicle;
 import org.aaa.core.business.mapping.sinister.PlainSinister;
 import org.aaa.core.business.mapping.sinister.PlainSinister.Type;
@@ -60,36 +61,43 @@ public class SinisterService extends BaseService {
 
         if(submission instanceof AccidentSubmission) {
 
-            otherPartyVehicle = dao.findVehicleByRegistrationNumber(
+            otherPartyVehicle = dao.findVehicle(
                     ((AccidentSubmission) submission).getRegistrationNumber()
             );
 
             if(otherPartyVehicle == null) {
                 otherPartyModel = dao.find(Model.class, ((AccidentSubmission) submission).getModelId());
-                otherPartyVehicle = new Vehicle(otherPartyModel);
-                otherPartyVehicle.setRegistrationNumber(
-                        ((AccidentSubmission) submission).getRegistrationNumber()
-                );
+                for(ModelAndYear modelAndYear : otherPartyModel.getModelsAndYears())
+                    if(modelAndYear.getYear() == ((AccidentSubmission) submission).getYear()){
+                        otherPartyVehicle = new Vehicle(modelAndYear);
+                        otherPartyVehicle.setRegistrationNumber(
+                                ((AccidentSubmission) submission).getRegistrationNumber()
+                        );
+                        break;
+                    }
+
             }
-
-            if(otherPartyVehicle.getCurrentContract() != null) {
-                sinister           = new CustomerAccident(contract);
-                otherPartyAccident = new CustomerAccident(otherPartyVehicle.getCurrentContract());
-                otherPartyAccident.setAccident((CustomerAccident)sinister);
-            } else
-                sinister = new ThirdPartyAccident(contract, otherPartyVehicle);
-
+            if(otherPartyVehicle != null)
+                if(otherPartyVehicle.getCurrentContract() != null) {
+                    sinister           = new CustomerAccident(contract);
+                    otherPartyAccident = new CustomerAccident(otherPartyVehicle.getCurrentContract());
+                    otherPartyAccident.setAccident((CustomerAccident)sinister);
+                } else
+                    sinister = new ThirdPartyAccident(contract, otherPartyVehicle);
+            else
+                sinister = null;
         } else {
             type = dao.find(Type.class, ((PlainSinisterSubmission)submission).getTypeId());
 
             sinister = new PlainSinister(contract, type);
         }
+        if(sinister != null ) {
+            sinister.setComment(submission.getComment());
+            sinister.setDate(submission.getDate());
+            sinister.setTime(submission.getTime());
+            sinister.setStatus(AWAITING);
 
-        sinister.setComment(submission.getComment());
-        sinister.setDate(submission.getDate());
-        sinister.setTime(submission.getTime());
-        sinister.setStatus(AWAITING);
-
-        dao.save(sinister);
+            dao.save(sinister);
+        }
     }
 }

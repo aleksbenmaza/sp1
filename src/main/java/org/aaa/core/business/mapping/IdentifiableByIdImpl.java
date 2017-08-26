@@ -9,8 +9,8 @@ import javax.persistence.*;
 public abstract class IdentifiableByIdImpl extends org.aaa.core.business.mapping.Entity implements IdentifiableById {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Access(AccessType.PROPERTY) //allows calling getId without loading whole proxy
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Override
@@ -23,8 +23,17 @@ public abstract class IdentifiableByIdImpl extends org.aaa.core.business.mapping
         this.id = id;
     }
 
-
+    @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o == this
+                || (o != null
+                && o.getClass() == this.getClass()
+                && IdentifiableById.super.equals(o)
+        );
     }
 }

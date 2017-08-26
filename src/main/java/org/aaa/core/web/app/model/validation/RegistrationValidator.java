@@ -82,7 +82,7 @@ public class RegistrationValidator implements Validator {
             errors.rejectValue(
                     "emailAddress",
                     MESSAGE_BASE_CODE+"badEmailPattern");
-        else if(dao.emailExists(email)) {
+        else if(dao.hasUserAccount(email)) {
             errors.rejectValue(
                     "emailAddress",
                     "notification.alreadyUsedEmailAddress"

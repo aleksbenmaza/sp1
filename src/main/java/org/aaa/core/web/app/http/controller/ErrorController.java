@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping("/" + VIEW_NAME)
-public class ErrorController extends AppController {
+public class ErrorController extends BaseController {
 
     public final static String VIEW_NAME = "error";
 
@@ -44,7 +44,7 @@ public class ErrorController extends AppController {
 
     @RequestMapping(method = {POST, PUT, DELETE, HEAD, OPTIONS})
     public void doNothing() {
-
+        System.out.println("ErrorController.doNothing()");
     }
 
     @Override

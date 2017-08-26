@@ -43,7 +43,7 @@ public class PasswordReinitializationController extends GuestController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Object submitEmailAddress(
+    public RedirectView submitEmailAddress(
                                 HttpSession session,
                 @RequestParam   String      emailAddress,
                 @ModelAttribute MessageCode messageCode
@@ -52,16 +52,16 @@ public class PasswordReinitializationController extends GuestController {
 
         if(!emailAddress.matches(emailPattern)) {
             messageCode.setValue("validation.email.badPattern");
-            return render("lostpassword");
+            throw new CustomHttpExceptions.CommandNotValidatedException().withView("lostpassword");
         }
 
         if(userService.emailAddressExists(emailAddress)) {
             session.setAttribute("userAccount", userService.getUserAccount(emailAddress));
-            return new RedirectView(getWebroot() + "/mot-de-passe-perdu/reinitialiser");
+            return new RedirectView("/mot-de-passe-perdu/reinitialiser");
         }
 
         messageCode.setValue("validation.email.unkown");
-        return render("lostpasword");
+        throw new CustomHttpExceptions.CommandNotValidatedException().withView("lostpasword");
 
     }
 

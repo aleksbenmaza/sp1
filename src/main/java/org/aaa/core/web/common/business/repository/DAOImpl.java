@@ -1,8 +1,9 @@
 package org.aaa.core.web.common.business.repository;
 
-import static org.aaa.util.CommonUtils.replaceIfNull;
+import static org.aaa.util.ObjectUtils.replaceIfNull;
 
 import org.aaa.core.business.mapping.*;
+
 
 import org.aaa.core.business.repository.DAO;
 import org.hibernate.*;
@@ -13,6 +14,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.persistence.Table;
 import java.lang.reflect.Field;
@@ -23,6 +25,8 @@ import java.util.function.Function;
 /**
  * Created by alexandremasanes on 21/02/2017.
  */
+
+@SuppressWarnings("unchecked")
 @Repository("dao")
 public final class DAOImpl implements DAO {
 
@@ -31,7 +35,7 @@ public final class DAOImpl implements DAO {
 
     private String hashSalt;
 
-    private Integer tokenLifetime;
+    private short  tokenLifetime;
 
     @Override
     public void save(Entity entity) {
@@ -72,7 +76,6 @@ public final class DAOImpl implements DAO {
 
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends IdentifiableByIdImpl> List<T> find(Class<T> entityClass, long... ids) {
         Query<T> query;
         query = session.createQuery("FROM "+entityClass.getSimpleName());
@@ -80,7 +83,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends IdentifiableByIdImpl> T find(Class<T> entityClass, long id) {
         Query<T> query;
         query = session.createQuery("FROM "+entityClass.getSimpleName()+" " +
@@ -90,7 +92,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Make> searchMakes(String name) {
         Query<Make> query;
         query = session.createQuery("FROM " + Make.class.getSimpleName() + " " +
@@ -100,7 +101,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Model> searchModels(String name) {
         Query<Model> query;
         query = session.createQuery("FROM " + Model.class.getSimpleName() + " " +
@@ -110,7 +110,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Model> searchModels(String modelName, long makeId) {
         Query<Model> query;
         String stm = "FROM " + Model.class.getSimpleName() + " " +
@@ -144,8 +143,7 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T extends IdentifiableByIdImpl> boolean exists(Class<T> entityClass, long id) {
+    public <T extends IdentifiableByIdImpl> boolean has(Class<T> entityClass, long id) {
         String stm;
         Query<Boolean> query;
 
@@ -159,8 +157,7 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public boolean emailExists(String email) {
+    public boolean hasUserAccount(String email) {
         String stm;
         Query<Boolean> query;
 
@@ -174,7 +171,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public float computeDeductibleValue(long insuranceId, float damageAmount) {
         String stm;
         Query<Float> query;
@@ -188,7 +184,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public UserAccount findUserAccount(String emailAddress, String hash) {
         Query<UserAccount> query;
         UserAccount result;
@@ -204,7 +199,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public UserAccount findUserAccount(String email) {
         Query<UserAccount> query;
         UserAccount result;
@@ -218,8 +212,7 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Vehicle findVehicleByRegistrationNumber(String registrationNumber) {
+    public Vehicle findVehicle(String registrationNumber) {
         Query<Vehicle> query;
 
         String stm = "FROM " + Vehicle.class.getSimpleName() + " " +
@@ -233,26 +226,69 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public Model findModel(String name) {
+        String stm;
+        Query<Model> query;
+
+        stm = "FROM " + Model.class.getSimpleName() + " WHERE name = :name";
+
+        query = session.createQuery(stm);
+
+        query.setParameter("name", name);
+
+        return query.uniqueResult();
+    }
+
+    @Override
     public <T extends IdentifiableByIdImpl> long getNextId(Class<T> entityClass) {
         NativeQuery<Long> query;
-
-        String stm = "SELECT get_next_id('"+entityClass.getAnnotation(Table.class).name()+"')";
+        String stm = "SELECT get_next_id('" + entityClass.getAnnotation(Table.class).name() + "')";
 
         query = session.createNativeQuery(stm);
 
         return query.uniqueResult();
     }
 
-
     @Override
-    @SuppressWarnings("unchecked")
-    public boolean tokenExists(String tokenValue) {
+    public boolean hasMake(String name) {
         String stm;
         Query<Boolean> query;
 
-        stm = "SELECT CASE WHEN COUNT(value) > 0 THEN TRUE ELSE FALSE END " +
-                "FROM " + Token.class.getSimpleName() + " " +
+        stm = "SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END " +
+                "FROM " + Make.class.getSimpleName() + " m " +
+                "WHERE name = :name";
+
+        query = session.createQuery(stm);
+
+        query.setParameter("name", name);
+
+        return query.uniqueResult();
+
+    }
+
+    @Override
+    public boolean hasModel(String name) {
+        String stm;
+        Query<Boolean> query;
+
+        stm = "SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END " +
+                "FROM " + Model.class.getSimpleName() + " m " +
+                "WHERE name = :name";
+
+        query = session.createQuery(stm);
+
+        query.setParameter("name", name);
+
+        return query.uniqueResult();
+    }
+
+    @Override
+    public boolean hasToken(String tokenValue) {
+        String stm;
+        Query<Boolean> query;
+
+        stm = "SELECT CASE WHEN COUNT(t) > 0 THEN TRUE ELSE FALSE END " +
+                "FROM " + Token.class.getSimpleName() + " t " +
                 "WHERE value = :tokenValue";
         query = session.createQuery(stm);
         query.setParameter("tokenValue", tokenValue);
@@ -261,7 +297,6 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Token findToken(String tokenValue) {
         String stm;
         Query<Token> query;
@@ -276,40 +311,37 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String getHashSalt() {
-        if(hashSalt == null) {
-            String stm;
-            NativeQuery<String> query;
-
-            stm = "SELECT get_hash_salt()";
-
-            query = session.createNativeQuery(stm);
-
-            hashSalt = query.uniqueResult();
-        };
-
         return hashSalt;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public int getTokenLifetime() {
-        String stm;
-        NativeQuery<Integer> query;
-
-        if(tokenLifetime == null) {
-            stm = "SELECT get_token_lifetime()";
-
-            query = session.createNativeQuery(stm);
-            tokenLifetime = query.uniqueResult();
-        }
-
+    public short getTokenLifetime() {
         return tokenLifetime;
     }
 
+    @PostConstruct
+    protected void init() {
+        String stm;
+        NativeQuery<Object[]> query;
+        Object[] values;
+
+        stm = "SELECT get_hash_salt(), get_token_lifetime()";
+
+        query = session.createNativeQuery(stm);
+
+        values = query.uniqueResult();
+
+        hashSalt      = (String) values[0];
+        tokenLifetime = (
+                (Integer) replaceIfNull(values[1], 0)
+        ).shortValue();
+
+    }
+
     @PreDestroy
-    protected void beforeDispose() {
+    protected void destroy() {
+        session.getSessionFactory().close();
         session.close();
     }
 
