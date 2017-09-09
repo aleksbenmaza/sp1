@@ -11,13 +11,13 @@ import javax.persistence.Entity;
  */
 @Entity
 @Table(name = "third_party_accidents")
-public class ThirdPartyAccident extends Accident {
+public class WithThirdPartyAccident extends Accident {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
 
-    public ThirdPartyAccident(
+    public WithThirdPartyAccident(
             Contract contract,
             Vehicle vehicle
     ) {
@@ -29,5 +29,5 @@ public class ThirdPartyAccident extends Accident {
         return vehicle;
     }
 
-    ThirdPartyAccident() {}
+    WithThirdPartyAccident() {}
 }

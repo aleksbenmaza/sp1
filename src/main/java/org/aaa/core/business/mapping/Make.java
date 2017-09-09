@@ -44,6 +44,6 @@ public class Make extends IdentifiableByIdImpl {
     }
 
     public Set<Model> getModels() {
-        return new HashSet<Model>(models);
+        return new HashSet<>(models);
     }
 }

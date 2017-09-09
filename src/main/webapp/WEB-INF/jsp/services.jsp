@@ -61,7 +61,7 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" defer>
+    <script type="text/javascript">
         const API_ACCESS_KEY = "${f:isRegistered(user) ? user.userAccount.token.value : user.tokenValue}";
         const PUBLIC_API_URI = "http://${host.apiSubdomain}.${host.domainName}/public";
     </script>

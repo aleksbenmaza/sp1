@@ -1,15 +1,14 @@
 package org.aaa.core.business.mapping.person.insuree;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import org.aaa.core.business.mapping.Ownership;
 import org.aaa.core.business.mapping.Vehicle;
 import org.aaa.core.business.mapping.person.Person;
 
@@ -19,14 +18,16 @@ public abstract class Insuree extends Person implements Serializable {
 
 	public static final long serialVersionUID = 1168426245888642040L;
 
-	@OneToMany(mappedBy = "insuree", cascade  = CascadeType.ALL)
-	protected Set<Vehicle> vehicles;
+	@ElementCollection(fetch = FetchType.LAZY)
+	@JoinTable(name = "vehicles__insurees")
+	@MapKeyJoinColumn(name = "vehicle_id", referencedColumnName = "id")
+	protected Map<Vehicle, Ownership> ownershipsByVehicle;
 
 	@Column(name = "bonus_malus")
 	protected Float bonusMalus;
 
 	public Insuree(){
-		vehicles = new HashSet<Vehicle>();
+		ownershipsByVehicle = new HashMap<>();
 	}
 
 	public Float getBonusMalus() {
@@ -37,15 +38,12 @@ public abstract class Insuree extends Person implements Serializable {
 		this.bonusMalus = bonusMalus;
 	}
 
-	public boolean addVehicle(Vehicle vehicle) {
-		boolean bool;
-		if(bool = vehicles.add(requireNonNull(vehicle)))
-			vehicle.setInsuree(this);
-		return bool;
+	public Ownership putOwnership(Vehicle vehicle, Ownership ownership) {
+		return ownershipsByVehicle.put(vehicle, ownership);
 	}
 
-	public Set<Vehicle> getVehicles() {
-		return new HashSet<Vehicle>(vehicles);
+	public Map<Vehicle, Ownership> getOwnershipsByVehicle() {
+		return new HashMap<>(ownershipsByVehicle);
 	}
 
 

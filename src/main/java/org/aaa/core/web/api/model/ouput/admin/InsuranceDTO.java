@@ -32,7 +32,7 @@ public class InsuranceDTO extends org.aaa.core.web.api.model.ouput.publik.Insura
         minDeductible    = insurance.getMinDeductible();
         maxDeductible    = insurance.getMaxDeductible();
         contractsIds     = getIds(insurance.getContracts());
-        sinisterTypesIds = getIds(insurance.getSinisterTypes());
+        //sinisterTypesIds = getIds(insurance.getCoveragesBySinisterType());
 
 
     }

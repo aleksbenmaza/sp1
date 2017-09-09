@@ -63,7 +63,7 @@ public class PublicController extends BaseController {
             if (user instanceof RegisteredUser)
                 tokenService.createToken(((RegisteredUser) user).getUserAccount());
             else
-                tokenService.createToken(null);
+                ((Guest)user).setTokenValue(tokenService.createToken(null).getValue());
         }
         map.put("headTitleCode", "services");
         return render("services", map);

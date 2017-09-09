@@ -10,6 +10,7 @@ import org.aaa.core.business.mapping.person.RegisteredUser;
 import org.aaa.core.business.mapping.person.Person;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+
 @Entity
 @Table(name = "user_accounts")
 public class UserAccount extends org.aaa.core.business.mapping.Entity implements Serializable {
@@ -49,7 +50,7 @@ public class UserAccount extends org.aaa.core.business.mapping.Entity implements
 
 	@Column(name = "email_address")
 	private String emailAddress;
-	
+
 	@Column
 	private String hash;
 
@@ -63,8 +64,8 @@ public class UserAccount extends org.aaa.core.business.mapping.Entity implements
 	}
 
 	public <T extends Person & RegisteredUser> UserAccount(
-					 T 	   user,
-					 Token token
+			T 	   user,
+			Token token
 	) {
 		this(user);
 		check(requireNonNull(token).getUserAccount() == null);

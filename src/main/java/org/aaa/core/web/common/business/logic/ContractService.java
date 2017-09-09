@@ -5,7 +5,9 @@ import static java.net.URLConnection.guessContentTypeFromStream;
 
 import org.aaa.core.business.mapping.*;
 import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.person.insuree.Insuree;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;
+import org.aaa.orm.entry.manytoone.Entry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,17 +45,24 @@ public class ContractService extends BaseService {
         byte[] registrationDocument;
         FileOutputStream outputStream;
         String registrationFileName;
+        Ownership ownership;
+        Entry<Insuree, Ownership> ownershipsInsuree;
 
         insurance = dao.find(Insurance.class, contractSubmission.getInsuranceId());
         model     = dao.find(Model.class, contractSubmission.getModelId());
 
         for(ModelAndYear modelAndYear : model.getModelsAndYears())
             if(modelAndYear.getYear() == contractSubmission.getYear()) {
-                vehicle = new Vehicle(modelAndYear);
+                ownership = new Ownership();
+                ownership.setRegistrationNumber(contractSubmission.getRegistrationNumber());
+                ownership.setPurchaseDate(contractSubmission.getPurchaseDate());
+
+                ownershipsInsuree = new Entry<>(customer);
+                ownershipsInsuree.setValue(ownership);
+
+                vehicle = new Vehicle(modelAndYear, ownershipsInsuree);
 
                 vehicle.setVinNumber(contractSubmission.getVinNumber());
-                vehicle.setRegistrationNumber(contractSubmission.getRegistrationNumber());
-                vehicle.setPurchaseDate(contractSubmission.getPurchaseDate());
 
                 registrationDocument = contractSubmission.getRegistrationDocument();
                 registrationFileName = contractDocumentDir +

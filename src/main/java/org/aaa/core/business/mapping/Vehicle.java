@@ -5,18 +5,19 @@ import javax.persistence.Entity;
 
 import org.aaa.core.business.mapping.person.insuree.Insuree;
 import org.aaa.core.business.mapping.sinister.Sinister;
-import org.aaa.core.business.mapping.sinister.accident.ThirdPartyAccident;
+import org.aaa.core.business.mapping.sinister.accident.WithThirdPartyAccident;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
+import org.aaa.orm.entry.manytoone.Entry;
 import org.hibernate.annotations.Where;
 
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "vehicles")
+@SecondaryTable(name = "vehicles__insurees", pkJoinColumns = @PrimaryKeyJoinColumn(name = "vehicle_id", referencedColumnName = "id"))
 public class Vehicle extends IdentifiableByIdImpl {
 
 	public static final long serialVersionUID = 3403684733912100002L;
@@ -24,14 +25,8 @@ public class Vehicle extends IdentifiableByIdImpl {
 	@Column(name = "vin_number", unique = true)
 	private String vinNumber;
 
-	@Column(name = "registration_number", unique = true)
-	private String registrationNumber;
-
 	@Column(name = "value")
 	private float value;
-
-	@Column(name = "purchase_date")
-	private Date purchaseDate;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumns({
@@ -45,9 +40,8 @@ public class Vehicle extends IdentifiableByIdImpl {
 	})
 	private ModelAndYear modelAndYear;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "insuree_id", referencedColumnName = "id")
-	private Insuree insuree;
+	@AssociationOverride(name = "key", joinColumns = @JoinColumn(columnDefinition = "id", referencedColumnName = "id"))
+	private Entry<Insuree, Ownership> ownershipsInsuree;
 
 	@OneToOne(mappedBy = "vehicle")
 	@Where(clause = "active = 1")
@@ -57,19 +51,19 @@ public class Vehicle extends IdentifiableByIdImpl {
 	private Set<Contract> contracts;
 
 	@OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-	private Set<ThirdPartyAccident> thirdPartyAccidents;
+	private Set<WithThirdPartyAccident> withThirdPartyAccidents;
 
 	public Vehicle(@NonNull ModelAndYear modelAndYear) {
 		this.modelAndYear = modelAndYear;
-		thirdPartyAccidents = new HashSet<ThirdPartyAccident>();
-		contracts  = new HashSet<Contract>();
+		withThirdPartyAccidents = new HashSet<>();
+		contracts  = new HashSet<>();
 		modelAndYear.addVehicle(this);
 	}
 
-	public Vehicle(ModelAndYear modelAndYear, Insuree insuree) {
+	public Vehicle(ModelAndYear modelAndYear, Entry<Insuree, Ownership> ownershipsInsuree) {
 		this(modelAndYear);
-		this.insuree = requireNonNull(insuree);
-		insuree.addVehicle(this);
+		this.ownershipsInsuree = ownershipsInsuree;
+		ownershipsInsuree.getKey().putOwnership(this, ownershipsInsuree.getValue());
 	}
 
 	public float getValue() {
@@ -88,41 +82,25 @@ public class Vehicle extends IdentifiableByIdImpl {
 		this.vinNumber = vinNumber;
 	}
 
-	public String getRegistrationNumber() {
-		return registrationNumber;
-	}
-
-	public void setRegistrationNumber(String registrationNumber) {
-		this.registrationNumber = registrationNumber;
-	}
-
-	public Date getPurchaseDate() {
-		return purchaseDate;
-	}
-
-	public void setPurchaseDate(Date purchaseDate) {
-		this.purchaseDate = purchaseDate;
-	}
 
 	public ModelAndYear getModelAndYear() {
 		return modelAndYear;
 	}
 
-	public Insuree getInsuree() {
-		return insuree;
+	public Entry<Insuree, Ownership> getOwnershipsInsuree() {
+		return ownershipsInsuree;
 	}
 
-	public void setInsuree(Insuree insuree) {
-		insuree.addVehicle(this);
-		this.insuree = insuree;
+	public void setOwnershipsInsuree(Entry<Insuree, Ownership> ownershipsInsuree) {
+		this.ownershipsInsuree = ownershipsInsuree;
 	}
 
-	public Set<Sinister> getThirdPartyAccidents() {
-		return new HashSet<Sinister>(thirdPartyAccidents);
+	public Set<Sinister> getWithThirdPartyAccidents() {
+		return new HashSet<Sinister>(withThirdPartyAccidents);
 	}
 
-	public boolean addThirdPartyAccident(ThirdPartyAccident thirdPartyAccident){
-		return thirdPartyAccidents.add(thirdPartyAccident);
+	public boolean addThirdPartyAccident(WithThirdPartyAccident withThirdPartyAccident){
+		return withThirdPartyAccidents.add(withThirdPartyAccident);
 	}
 
 	public boolean addContract(Contract contract) {

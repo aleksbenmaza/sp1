@@ -25,18 +25,18 @@ public class Model extends IdentifiableByIdImpl {
     @Column
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "make_id", referencedColumnName = "id", nullable = false)
     private Make make;
+
+    @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
+    private Set<ModelAndYear> modelsAndYears;
 
     public Model(Make make) {
         modelsAndYears  = new HashSet<>();
         this.make = requireNonNull(make);
         make.addModel(this);
     }
-
-    @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
-    private Set<ModelAndYear> modelsAndYears;
 
     public String getName(){
         return name;

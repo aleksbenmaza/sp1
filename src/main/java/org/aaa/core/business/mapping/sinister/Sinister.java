@@ -39,7 +39,7 @@ public abstract class Sinister extends IdentifiableByIdImpl implements ToBeCheck
     ) protected Expert expert;
 
     @OneToOne(
-            mappedBy = "sinister",
+            mappedBy = "id.sinister",
             cascade  = CascadeType.ALL,
             fetch    = FetchType.LAZY
     ) protected Damage damage;

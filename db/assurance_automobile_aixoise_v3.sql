@@ -102,10 +102,7 @@ CREATE TABLE IF NOT EXISTS experts(
 CREATE TABLE IF NOT EXISTS vehicles(
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   model_id BIGINT NOT NULL,
-  insuree_id BIGINT,
   vin_number CHAR(17) NOT NULL UNIQUE,
-  registration_number CHAR(7),
-  purchase_date DATE,
   value FLOAT,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY(model_id) REFERENCES models(id) ON DELETE CASCADE,
@@ -300,9 +297,19 @@ CREATE TABLE IF NOT EXISTS contracts(
 CREATE TABLE IF NOT EXISTS types_sinisters__insurances(
   plain_sinister_type_id BIGINT NOT NULL,
   insurance_id BIGINT NOT NULL,
+  rate float,
   PRIMARY KEY (plain_sinister_type_id, insurance_id),
   FOREIGN KEY(plain_sinister_type_id) REFERENCES plain_sinister_types(id) ON DELETE CASCADE,
   FOREIGN KEY(insurance_id) REFERENCES insurances(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS vehicles__insurees(
+  vehicle_id BIGINT PRIMARY KEY,
+  insuree_id BIGINT NOT NULL,
+  registration_number CHAR(7),
+  purchase_date DATE,
+  FOREIGN KEY(vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE,
+  FOREIGN KEY (insuree_id) REFERENCES insurees(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS accidents__accidents(

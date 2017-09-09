@@ -226,15 +226,29 @@ public final class DAOImpl implements DAO {
     }
 
     @Override
+    public Make findMake(String name) {
+        String stm;
+        Query<Make> query;
+
+        stm = "FROM " + Make.class.getSimpleName() + " WHERE LOWER(name) = :name";
+
+        query = session.createQuery(stm);
+
+        query.setParameter("name", name.toLowerCase());
+
+        return query.uniqueResult();
+    }
+
+    @Override
     public Model findModel(String name) {
         String stm;
         Query<Model> query;
 
-        stm = "FROM " + Model.class.getSimpleName() + " WHERE name = :name";
+        stm = "FROM " + Model.class.getSimpleName() + " WHERE LOWER(name) = :name";
 
         query = session.createQuery(stm);
 
-        query.setParameter("name", name);
+        query.setParameter("name", name.toLowerCase());
 
         return query.uniqueResult();
     }
@@ -256,11 +270,11 @@ public final class DAOImpl implements DAO {
 
         stm = "SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END " +
                 "FROM " + Make.class.getSimpleName() + " m " +
-                "WHERE name = :name";
+                "WHERE LOWER(name) = :name";
 
         query = session.createQuery(stm);
 
-        query.setParameter("name", name);
+        query.setParameter("name", name.toLowerCase());
 
         return query.uniqueResult();
 
@@ -273,11 +287,11 @@ public final class DAOImpl implements DAO {
 
         stm = "SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END " +
                 "FROM " + Model.class.getSimpleName() + " m " +
-                "WHERE name = :name";
+                "WHERE LOWER(name) = :name";
 
         query = session.createQuery(stm);
 
-        query.setParameter("name", name);
+        query.setParameter("name", name.toLowerCase());
 
         return query.uniqueResult();
     }

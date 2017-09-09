@@ -27,6 +27,7 @@ public class ModelAndYear implements Serializable {
     private Set<Vehicle> vehicles;
 
     public ModelAndYear(Model model, short year) {
+        vehicles = new HashSet<>();
         this.model = model;
         this.year = year;
     }

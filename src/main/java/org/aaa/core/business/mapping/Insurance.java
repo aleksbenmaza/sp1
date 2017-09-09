@@ -1,7 +1,6 @@
 package org.aaa.core.business.mapping;
 
 import static org.aaa.core.business.mapping.sinister.PlainSinister.Type;
-import org.aaa.core.business.mapping.sinister.PlainSinister;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -11,7 +10,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,13 +49,19 @@ public class Insurance extends IdentifiableByIdImpl {
             cascade  = CascadeType.ALL
     ) private Set<Contract> contracts;
 
-    @ManyToMany(
-            cascade  = CascadeType.ALL,
-            mappedBy = "insurances"
-    ) private Set<PlainSinister.Type> sinisterTypes;
+    @ElementCollection
+    @JoinTable(
+            name               = "plain_sinister_types__insurances",
+            joinColumns = @JoinColumn(
+                    name                 = "insurance_id",
+                    referencedColumnName = "id"
+            )
+    ) @MapKeyJoinColumn(name = "plain_sinister_type_id", referencedColumnName = "id")
+    private Map<Type, Coverage> coveragesBySinisterType;
 
     public Insurance() {
-        contracts = new HashSet<Contract>();
+        contracts = new HashSet<>();
+        coveragesBySinisterType = new HashMap<>();
     }
 
     public String getCode() {
@@ -105,15 +112,15 @@ public class Insurance extends IdentifiableByIdImpl {
         return contracts.add(requireNonNull(contract));
     }
 
-    public Set<PlainSinister.Type> getSinisterTypes() {
-        return new HashSet<PlainSinister.Type>(sinisterTypes);
+    public Map<Type, Coverage> getCoveragesBySinisterType() {
+        return new HashMap<>(coveragesBySinisterType);
     }
 
-    public boolean addSinisterType(Type sinisterType) {
-        if(sinisterTypes.contains(requireNonNull(sinisterType)))
+    public boolean putCoverageBySinisterType(Type sinisterType, Coverage coverage) {
+        if(coveragesBySinisterType.containsKey(requireNonNull(sinisterType)))
             return false;
-        sinisterTypes.add(sinisterType);
-        sinisterType.addInsurance(this);
+        coveragesBySinisterType.put(sinisterType, coverage);
+        sinisterType.putCoverageByInsurance(this, coverage);
         return true;
     }
 }

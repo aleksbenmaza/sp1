@@ -57,7 +57,6 @@ public class Host {
 
     @PostConstruct
     protected void init() throws UnknownHostException, URISyntaxException {
-
         ResponseEntity<String> response;
         HttpStatus httpStatus;
 
@@ -77,6 +76,6 @@ public class Host {
             }
         }
 
-        throw new BeanInitializationException("host.publicIpAdress could not be fetched.");
+        throw new BeanInitializationException("host.publicIpAddress could not be fetched.");
     }
 }

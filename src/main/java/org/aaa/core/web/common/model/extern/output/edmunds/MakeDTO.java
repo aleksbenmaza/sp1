@@ -78,7 +78,6 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
     public Make toEntity() {
         Make make;
         Model model;
-        ModelAndYear modelAndYear;
 
         make = new Make();
 
@@ -88,10 +87,7 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
             model = new Model(make);
             model.setName(modelDTO.getName());
             for (ModelDTO.Year year : modelDTO.years)
-                modelAndYear = new ModelAndYear(model, year.value);
-
-
-
+                new ModelAndYear(model, year.value);
         }
         return make;
     }

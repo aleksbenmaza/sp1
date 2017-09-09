@@ -213,7 +213,7 @@ public class CustomerApiController extends BaseController {
 
         for(Contract contract : customer.getContracts()) {
             if(++i == key)
-                return fromCollection(contract.getInsurance().getSinisterTypes(), TypeDTO::new);
+                return fromCollection(/*contract.getInsurance().getSinisterTypes()*/null, TypeDTO::new);
         }
 
         throw new ResourceNotFoundException();

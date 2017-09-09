@@ -2,19 +2,19 @@ package org.aaa.core.web.common.business.logic;
 
 import static org.aaa.core.business.mapping.ToBeChecked.Status.*;
 
-import org.aaa.core.business.mapping.Contract;
-import org.aaa.core.business.mapping.Model;
-import org.aaa.core.business.mapping.ModelAndYear;
-import org.aaa.core.business.mapping.Vehicle;
+import org.aaa.core.business.mapping.*;
+import org.aaa.core.business.mapping.person.insuree.Insuree;
+import org.aaa.core.business.mapping.person.insuree.ThirdParty;
 import org.aaa.core.business.mapping.sinister.PlainSinister;
 import org.aaa.core.business.mapping.sinister.PlainSinister.Type;
 import org.aaa.core.business.mapping.sinister.Sinister;
-import org.aaa.core.business.mapping.sinister.accident.CustomerAccident;
-import org.aaa.core.business.mapping.sinister.accident.ThirdPartyAccident;
+import org.aaa.core.business.mapping.sinister.accident.WithCustomerAccident;
+import org.aaa.core.business.mapping.sinister.accident.WithThirdPartyAccident;
 import org.aaa.core.web.api.model.input.databinding.sinister.AccidentSubmission;
 import org.aaa.core.web.api.model.input.databinding.sinister.PlainSinisterSubmission;
 import org.aaa.core.web.api.model.input.databinding.sinister.SinisterSubmission;
 
+import org.aaa.orm.entry.manytoone.Entry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -38,13 +38,15 @@ public class SinisterService extends BaseService {
             Contract           contract
     ) throws IOException {
         Sinister         sinister;
-        CustomerAccident otherPartyAccident;
+        WithCustomerAccident otherPartyAccident;
         Model            otherPartyModel;
         Vehicle          contractVehicle, otherPartyVehicle;
         Type             type;
         byte[]           reportDocument;
         FileOutputStream outputStream;
         String           reportFileName;
+        Entry<Insuree, Ownership> ownershipsInsuree;
+        Ownership ownership;
 
         reportDocument = submission.getReportDocument();
         reportFileName = reportDocumentDir +
@@ -68,22 +70,23 @@ public class SinisterService extends BaseService {
             if(otherPartyVehicle == null) {
                 otherPartyModel = dao.find(Model.class, ((AccidentSubmission) submission).getModelId());
                 for(ModelAndYear modelAndYear : otherPartyModel.getModelsAndYears())
-                    if(modelAndYear.getYear() == ((AccidentSubmission) submission).getYear()){
-                        otherPartyVehicle = new Vehicle(modelAndYear);
-                        otherPartyVehicle.setRegistrationNumber(
-                                ((AccidentSubmission) submission).getRegistrationNumber()
-                        );
+                    if(modelAndYear.getYear() == ((AccidentSubmission) submission).getYear()) {
+                        ownership = new Ownership();
+                        ownership.setRegistrationNumber(((AccidentSubmission) submission).getRegistrationNumber());
+                        ownershipsInsuree = new Entry<>(new ThirdParty());
+                        ownershipsInsuree.setValue(ownership);
+                        otherPartyVehicle = new Vehicle(modelAndYear, ownershipsInsuree);
                         break;
                     }
 
             }
             if(otherPartyVehicle != null)
                 if(otherPartyVehicle.getCurrentContract() != null) {
-                    sinister           = new CustomerAccident(contract);
-                    otherPartyAccident = new CustomerAccident(otherPartyVehicle.getCurrentContract());
-                    otherPartyAccident.setAccident((CustomerAccident)sinister);
+                    sinister           = new WithCustomerAccident(contract);
+                    otherPartyAccident = new WithCustomerAccident(otherPartyVehicle.getCurrentContract());
+                    otherPartyAccident.setAccident((WithCustomerAccident)sinister);
                 } else
-                    sinister = new ThirdPartyAccident(contract, otherPartyVehicle);
+                    sinister = new WithThirdPartyAccident(contract, otherPartyVehicle);
             else
                 sinister = null;
         } else {

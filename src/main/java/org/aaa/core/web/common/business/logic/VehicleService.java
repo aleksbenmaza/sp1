@@ -87,21 +87,23 @@ public class VehicleService extends BaseService {
                 for(Make make : makesDTO.toEntities())
                     if(!dao.hasMake(make.getName()))
                         dao.save(make);
-                    else
-                        for(Model model : make.getModels()) {
-                            if((existingModel = dao.findModel(model.getName())) == null)
+                    else {
+                        make = dao.findMake(make.getName());
+                        for (Model model : make.getModels()) {
+                            if ((existingModel = dao.findModel(model.getName())) == null)
                                 dao.save(model);
                             else
                                 outer:
-                                for(ModelAndYear modelAndYear : model.getModelsAndYears()) {
-                                    for (ModelAndYear existingModelAndYear : existingModel.getModelsAndYears())
-                                        if (modelAndYear.getYear() == existingModelAndYear.getYear())
-                                            continue outer;
-                                    new ModelAndYear(existingModel, modelAndYear.getYear());
-                                    dao.save(existingModel);
-                                }
+                                        for (ModelAndYear modelAndYear : model.getModelsAndYears()) {
+                                            for (ModelAndYear existingModelAndYear : existingModel.getModelsAndYears())
+                                                if (modelAndYear.getYear() == existingModelAndYear.getYear())
+                                                    continue outer;
+                                            new ModelAndYear(existingModel, modelAndYear.getYear());
+                                            dao.save(existingModel);
+                                        }
 
                         }
+                    }
             } catch(HttpClientErrorException e) {
                 System.err.println(
                         "Failed to import data : \n\t headers : " +
@@ -115,7 +117,7 @@ public class VehicleService extends BaseService {
 
     @PostConstruct
     protected void init() throws URISyntaxException {
-        System.out.println("importMakes()");
-        importMakes();
+        //System.out.println("importMakes()");
+        //importMakes();
     }
 }

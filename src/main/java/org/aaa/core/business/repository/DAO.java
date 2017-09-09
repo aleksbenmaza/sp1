@@ -28,6 +28,8 @@ public interface DAO extends Finder, Recorder, Remover {
 
     UserAccount findUserAccount(String email);
 
+    Make findMake(String name);
+
     Model findModel(String name);
 
     boolean hasMake(String name);

@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "customer_accidents")
-public class CustomerAccident extends Accident {
+public class WithCustomerAccident extends Accident {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(
@@ -22,9 +22,9 @@ public class CustomerAccident extends Accident {
                     name                 = "id_1",
                     referencedColumnName = "id"
             )
-    ) private CustomerAccident accident;
+    ) private WithCustomerAccident accident;
 
-    public CustomerAccident(Contract contract) {
+    public WithCustomerAccident(Contract contract) {
         super(contract);
     }
 
@@ -32,10 +32,10 @@ public class CustomerAccident extends Accident {
         return accident;
     }
 
-    public void setAccident(CustomerAccident accident) {
+    public void setAccident(WithCustomerAccident accident) {
         accident.accident = this;
         this.accident     = accident;
     }
 
-    CustomerAccident() {}
+    WithCustomerAccident() {}
 }

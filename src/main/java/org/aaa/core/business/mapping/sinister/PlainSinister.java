@@ -2,6 +2,7 @@ package org.aaa.core.business.mapping.sinister;
 
 
 import org.aaa.core.business.mapping.Contract;
+import org.aaa.core.business.mapping.Coverage;
 import org.aaa.core.business.mapping.IdentifiableByIdImpl;
 import org.aaa.core.business.mapping.Insurance;
 
@@ -11,7 +12,9 @@ import javax.persistence.Entity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -39,23 +42,20 @@ public class PlainSinister extends Sinister {
                 mappedBy = "type"
         ) private Set<PlainSinister> plainSinisters;
 
-        @ManyToMany(
-                cascade = CascadeType.ALL
+        @ElementCollection(
+                targetClass = Insurance.class
         ) @JoinTable(
                 name               = "plain_sinister_types__insurances",
                 joinColumns        = @JoinColumn(
                         name                 = "plain_sinister_type_id",
                         referencedColumnName = "id"
-                ),
-                inverseJoinColumns = @JoinColumn(
-                        name                 = "insurance_id",
-                        referencedColumnName = "id"
                 )
-        ) private Set<Insurance> insurances;
+        ) @MapKeyJoinColumn(name = "insurance_id", referencedColumnName = "id")
+        private Map<Insurance, Coverage> coveragesByInsurance;
 
         public Type() {
-            plainSinisters = new HashSet<PlainSinister>();
-            insurances     = new HashSet<Insurance>();
+            plainSinisters = new HashSet<>();
+            coveragesByInsurance = new HashMap<>();
         }
 
         public String getCode() {
@@ -78,15 +78,15 @@ public class PlainSinister extends Sinister {
             return plainSinisters;
         }
 
-        public Set<Insurance> getInsurances() {
-            return new HashSet<Insurance>(insurances);
+        public Map<Insurance, Coverage> getCoveragesByInsurance() {
+            return new HashMap<>(coveragesByInsurance);
         }
 
-        public boolean addInsurance(Insurance insurance) {
-            if(insurances.contains(insurance))
+        public boolean putCoverageByInsurance(Insurance insurance, Coverage coverage) {
+            if(coveragesByInsurance.containsKey(insurance))
                 return false;
-            insurances.add(insurance);
-            insurance.addSinisterType(this);
+            coveragesByInsurance.put(insurance,coverage);
+            insurance.putCoverageBySinisterType(this, coverage);
             return true;
         }
     }
