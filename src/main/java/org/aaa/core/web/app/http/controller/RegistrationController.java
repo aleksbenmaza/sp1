@@ -38,7 +38,7 @@ public class RegistrationController extends GuestController {
     private CustomerService       customerService;
 
     @Autowired
-    private MessageGetter messageHelper;
+    private MessageGetter         messageGetter;
 
     @Autowired
     private RegistrationValidator registrationValidator;
@@ -90,21 +90,19 @@ public class RegistrationController extends GuestController {
 
         throw new CustomHttpExceptions.CommandNotValidatedException().withView(getViewName());
     }
-    /*
-    @RequestMapping(params = "login", method = RequestMethod.POST)
-    public ModelAndView getIndexFromLoginPage(@ModelAttribute Registration registration) {
-        return getIndex(registration);
-    } */
 
     @RequestMapping(value = "/validation", method = RequestMethod.POST)
     public RedirectView validateNewAccount(
             @RequestParam String             validationCode,
+            @RequestParam String             emailAddress,
                           RedirectAttributes redirectAttributes
     ) throws NoSuchAlgorithmException, IOException {
         MessageCode messageCode;
-        messageCode = new MessageCode(customerService.register(validationCode) ?
-                "notfication.emailAddressValidation.success" :
-                "notfication.emailAddressValidation.failure");
+        messageCode = new MessageCode(
+                customerService.register(validationCode) ?
+                "notification.emailAddressValidation.success" :
+                "notification.emailAddressValidation.failure"
+        );
 
         redirectAttributes.addFlashAttribute(messageCode);
         return new RedirectView();

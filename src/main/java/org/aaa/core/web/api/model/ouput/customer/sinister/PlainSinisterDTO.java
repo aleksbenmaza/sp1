@@ -1,16 +1,19 @@
 package org.aaa.core.web.api.model.ouput.customer.sinister;
 
+import org.aaa.core.business.mapping.Coverage;
 import org.aaa.core.business.mapping.sinister.PlainSinister;
-import org.aaa.core.business.mapping.sinister.PlainSinister.Type;
+import org.aaa.core.business.mapping.PlainSinisterType;
 import org.aaa.core.web.api.model.ouput.DTO;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.HashMap;
 
 /**
  * Created by alexandremasanes on 21/06/2017.
  */
 public class PlainSinisterDTO extends SinisterDTO {
 
-    public static class TypeDTO extends DTO<Type> {
+    public static class TypeDTO extends DTO<PlainSinisterType> {
 
         private long id;
 
@@ -18,7 +21,9 @@ public class PlainSinisterDTO extends SinisterDTO {
 
         private String name;
 
-        public TypeDTO(Type type) {
+        private HashMap<Long, Coverage> insuranceIdsCovergages;
+
+        public TypeDTO(PlainSinisterType type) {
             super(type);
             id   = type.getId();
             code = type.getCode();
@@ -29,8 +34,12 @@ public class PlainSinisterDTO extends SinisterDTO {
     @SerializedName("type_name")
     private String typeName;
 
+    @SerializedName("type")
+    private TypeDTO type;
+
     public PlainSinisterDTO(PlainSinister sinister) {
         super(sinister);
         typeName = sinister.getType().getName();
+        type = new TypeDTO(sinister.getType());
     }
 }

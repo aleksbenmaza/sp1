@@ -1,6 +1,6 @@
 package org.aaa.core.web.common.helper;
 
-import org.aaa.core.business.mapping.Entity;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.core.business.mapping.Make;
 import org.aaa.util.ImportSources;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class ImportSourcesGetter {
         importSources = xmlParser.convertFromXMLToObject(ImportSources.class, importSourcePath);
     }
 
-    public ImportSources.DomainObject.Source[] get(Class<? extends Entity> domainObjectClass) {
+    public ImportSources.DomainObject.Source[] get(final Class<? extends IdentifiedByIdEntity> domainObjectClass) {
         System.out.println(importSources);
         for(ImportSources.DomainObject domainObject : importSources.getDomainObjects())
             if (domainObject.getSubjectClass() == domainObjectClass)

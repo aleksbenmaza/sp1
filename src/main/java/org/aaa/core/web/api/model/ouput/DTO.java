@@ -1,7 +1,9 @@
 package org.aaa.core.web.api.model.ouput;
 
-import org.aaa.core.business.mapping.Entity;
-import org.aaa.core.business.mapping.IdentifiableById;
+import com.google.gson.annotations.JsonAdapter;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
+import org.aaa.orm.entity.identifiable.IdentifiableById;
+import org.aaa.orm.entity.UpdatableEntity;
 
 import static java.lang.reflect.Array.newInstance;
 
@@ -14,14 +16,14 @@ import java.util.function.Function;
 /**
  * Created by alexandremasanes on 13/04/2017.
  */
-public abstract class DTO<E extends Entity> implements Serializable {
+public abstract class DTO<E extends UpdatableEntity> implements Serializable {
 
     public DTO(E entity) {
-        if(entity.updatedAt() == null)
-            throw new RuntimeException("Entity must be persisted before !");
+        if(entity.getUpdateTime() == null)
+            throw new RuntimeException("IdentifiedByIdEntity must be persisted before !");
     }
 
-    public static <E extends Entity, P extends DTO<E>> List<P> fromCollection(
+    public static <E extends IdentifiedByIdEntity, P extends DTO<E>> List<P> fromCollection(
             Collection<E> entities, Function<E, P> function) {
         List<P> result;
 
@@ -34,6 +36,7 @@ public abstract class DTO<E extends Entity> implements Serializable {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     protected static <E extends Serializable, T> T[] aggregate(
             Collection<E> entities,
             Function<E, T> function,

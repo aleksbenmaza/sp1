@@ -1,7 +1,6 @@
 package org.aaa.core.business.mapping;
 
-import static org.aaa.core.business.mapping.sinister.PlainSinister.Type;
-
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,7 +20,7 @@ import java.util.Set;
 @Entity
 @Table(name = "insurances")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Insurance extends IdentifiableByIdImpl {
+public class Insurance extends IdentifiedByIdEntity {
 
     @Column(
             unique = true
@@ -50,16 +49,16 @@ public class Insurance extends IdentifiableByIdImpl {
     ) private Set<Contract> contracts;
 
     @ElementCollection
-    @JoinTable(
+    @CollectionTable(
             name               = "plain_sinister_types__insurances",
             joinColumns = @JoinColumn(
                     name                 = "insurance_id",
                     referencedColumnName = "id"
             )
     ) @MapKeyJoinColumn(name = "plain_sinister_type_id", referencedColumnName = "id")
-    private Map<Type, Coverage> coveragesBySinisterType;
+    private Map<PlainSinisterType, Coverage> coveragesBySinisterType;
 
-    public Insurance() {
+    {
         contracts = new HashSet<>();
         coveragesBySinisterType = new HashMap<>();
     }
@@ -112,11 +111,11 @@ public class Insurance extends IdentifiableByIdImpl {
         return contracts.add(requireNonNull(contract));
     }
 
-    public Map<Type, Coverage> getCoveragesBySinisterType() {
+    public Map<PlainSinisterType, Coverage> getCoveragesBySinisterType() {
         return new HashMap<>(coveragesBySinisterType);
     }
 
-    public boolean putCoverageBySinisterType(Type sinisterType, Coverage coverage) {
+    public boolean putCoverageBySinisterType(PlainSinisterType sinisterType, Coverage coverage) {
         if(coveragesBySinisterType.containsKey(requireNonNull(sinisterType)))
             return false;
         coveragesBySinisterType.put(sinisterType, coverage);

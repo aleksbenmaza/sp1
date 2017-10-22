@@ -1,5 +1,6 @@
 package org.aaa.orm.entry.onetoone;
 
+import org.aaa.orm.entity.BaseEntity;
 import org.aaa.orm.entry.BaseEntry;
 
 import javax.persistence.CascadeType;
@@ -12,7 +13,7 @@ import java.io.Serializable;
  */
 
 @Embeddable
-public class Entry<K extends Serializable, V extends Serializable> extends BaseEntry<K, V> {
+public class Entry<K extends BaseEntity, V extends Serializable> extends BaseEntry<K, V> {
 
     @OneToOne(cascade = CascadeType.ALL)
     private K key;
@@ -25,4 +26,6 @@ public class Entry<K extends Serializable, V extends Serializable> extends BaseE
     public K getKey() {
         return key;
     }
+
+    Entry() {}
 }

@@ -7,8 +7,9 @@ import org.aaa.core.business.mapping.person.insuree.Insuree;
 import org.aaa.core.business.mapping.sinister.Sinister;
 import org.aaa.core.business.mapping.sinister.accident.WithThirdPartyAccident;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.orm.entry.manytoone.Entry;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hibernate.annotations.Where;
 
 
@@ -18,7 +19,7 @@ import java.util.Set;
 @Entity
 @Table(name = "vehicles")
 @SecondaryTable(name = "vehicles__insurees", pkJoinColumns = @PrimaryKeyJoinColumn(name = "vehicle_id", referencedColumnName = "id"))
-public class Vehicle extends IdentifiableByIdImpl {
+public class Vehicle extends IdentifiedByIdEntity {
 
 	public static final long serialVersionUID = 3403684733912100002L;
 
@@ -29,18 +30,22 @@ public class Vehicle extends IdentifiableByIdImpl {
 	private float value;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumns({
-			@JoinColumn(
-					name 	 = "model_id",
-					nullable = false
-			),
-			@JoinColumn(
-					name     = "year",
-					nullable = false)
-	})
-	private ModelAndYear modelAndYear;
+	@JoinColumn(name = "model_id", referencedColumnName = "id")
+	private Model model;
 
-	@AssociationOverride(name = "key", joinColumns = @JoinColumn(columnDefinition = "id", referencedColumnName = "id"))
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "year_id", referencedColumnName = "id")
+	private Year year;
+
+	@Embedded
+	@AssociationOverride(
+			name 		= "key",
+			joinColumns = @JoinColumn(
+					table 				 = "vehicles__insurees",
+					name  				 = "insuree_id",
+					referencedColumnName = "id"
+			)
+	)
 	private Entry<Insuree, Ownership> ownershipsInsuree;
 
 	@OneToOne(mappedBy = "vehicle")
@@ -53,15 +58,18 @@ public class Vehicle extends IdentifiableByIdImpl {
 	@OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
 	private Set<WithThirdPartyAccident> withThirdPartyAccidents;
 
-	public Vehicle(@NonNull ModelAndYear modelAndYear) {
-		this.modelAndYear = modelAndYear;
+	public Vehicle(@NonNull Model model, @NonNull Year year) {
+
+		this.model = model;
+		this.year  = year;
 		withThirdPartyAccidents = new HashSet<>();
 		contracts  = new HashSet<>();
-		modelAndYear.addVehicle(this);
+		model.addVehicle(this);
+		year.addVehicle(this);
 	}
 
-	public Vehicle(ModelAndYear modelAndYear, Entry<Insuree, Ownership> ownershipsInsuree) {
-		this(modelAndYear);
+	public Vehicle(Model model, Year year, Entry<Insuree, Ownership> ownershipsInsuree) {
+		this(model, year);
 		this.ownershipsInsuree = ownershipsInsuree;
 		ownershipsInsuree.getKey().putOwnership(this, ownershipsInsuree.getValue());
 	}
@@ -83,8 +91,12 @@ public class Vehicle extends IdentifiableByIdImpl {
 	}
 
 
-	public ModelAndYear getModelAndYear() {
-		return modelAndYear;
+	public Model getModel() {
+		return model;
+	}
+
+	public Year getYear() {
+		return year;
 	}
 
 	public Entry<Insuree, Ownership> getOwnershipsInsuree() {

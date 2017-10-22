@@ -1,14 +1,14 @@
 package org.aaa.core.business.mapping.damage;
 
+import java.io.Serializable;
 
 import org.aaa.core.business.mapping.Deductible;
+import org.aaa.orm.entity.UpdatableEntity;
 import org.aaa.core.business.mapping.sinister.Sinister;
 
 import javax.persistence.*;
 
 import javax.persistence.Entity;
-
-import java.io.Serializable;
 
 /**
  * Created by alexandremasanes on 30/01/2017.
@@ -16,9 +16,10 @@ import java.io.Serializable;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // + embeddedId = MESS
-public abstract class Damage extends org.aaa.core.business.mapping.Entity implements Serializable {
+public abstract class Damage extends UpdatableEntity {
 
-    public static final class Id implements Serializable {
+    @Embeddable
+    public static class Id implements Serializable {
 
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "id", referencedColumnName = "id")
@@ -26,16 +27,16 @@ public abstract class Damage extends org.aaa.core.business.mapping.Entity implem
 
         public Id(Sinister sinister) {
             this.sinister = sinister;
+            check(requireNonNull(sinister).getDamage() == null);
+        }
+
+        public Sinister getSinister() {
+            return sinister;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Id id = (Id) o;
-
-            return sinister.equals(id.sinister);
+           return this == o || o instanceof Id && this.hashCode() == o.hashCode();
         }
 
         @Override
@@ -47,9 +48,9 @@ public abstract class Damage extends org.aaa.core.business.mapping.Entity implem
     }
 
     @EmbeddedId
-    protected Id id;
+    private Id id;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "damage")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "id.damage")
     protected Deductible deductible;
 
     @Column
@@ -58,13 +59,13 @@ public abstract class Damage extends org.aaa.core.business.mapping.Entity implem
     @Column
     protected float amount;
 
-    public Damage(Sinister sinister) {
-        this.id = new Id(requireNonNull(sinister));
-        sinister.setDamage(this);
+    public Damage(Id id) {
+        this.id = id;
+        id.sinister.setDamage(this);
     }
 
-    public Sinister getSinister() {
-        return id.sinister;
+    public final Id getSinister() {
+        return id;
     }
 
     public Deductible getDeductible() {
@@ -72,17 +73,12 @@ public abstract class Damage extends org.aaa.core.business.mapping.Entity implem
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Damage damage = (Damage) o;
-
-        return id.equals(damage.id);
+    public final boolean equals(Object o) {
+        return o instanceof Damage && this.hashCode() == o.hashCode();
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return id.hashCode();
     }
 

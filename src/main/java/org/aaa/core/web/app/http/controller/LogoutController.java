@@ -1,13 +1,10 @@
 package org.aaa.core.web.app.http.controller;
 
-import org.aaa.core.web.common.business.logic.TokenService;
 import org.aaa.core.business.mapping.person.RegisteredUser;
-
-import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
-
 import org.aaa.core.business.mapping.User;
+import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.util.RedirectView;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +35,6 @@ public class LogoutController extends BaseController {
                                       HttpSession session,
             @RequestHeader("referer") String      referer
     ) {
-        System.out.println("signOut");
         String path;
         session.invalidate();
 

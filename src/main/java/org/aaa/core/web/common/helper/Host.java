@@ -3,20 +3,20 @@ package org.aaa.core.web.common.helper;
 import static java.net.InetAddress.getLocalHost;
 
 import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.Map;
 
 /**
  * Created by alexandremasanes on 22/08/2017.
@@ -25,6 +25,12 @@ import java.util.Map;
 @Component
 public class Host {
 
+    @Value("${internalRequest.readTimeout}")
+    private int readTimeout;
+
+    @Value("${internalRequest.connectTimeout}")
+    private int connectTimeout;
+
     @SuppressWarnings("all")
     @Value("#{'${ipPrinterURIs}'.split(';')}")
     private String[] ipPrinterURIs;
@@ -32,8 +38,14 @@ public class Host {
     @Value("#{@systemEnvironment['AAA_SERVERNAME']}")
     private String domainName;
 
-    @Value("#{@systemEnvironment['AAA_API_SUBDOMAIN']}")
-    private String apiSubdomain;
+    @Value("#{@systemEnvironment['AAA_CUSTOMER_API_SUBDOMAIN']}")
+    private String customerApiSubdomain;
+
+    @Value("#{@systemEnvironment['AAA_PUBLIC_API_SUBDOMAIN']}")
+    private String publicApiSubdomain;
+
+    @Value("#{@systemEnvironment['AAA_ADMIN_API_SUBDOMAIN']}")
+    private String adminApiSubdomain;
 
     private String publicIpAddress;
 
@@ -43,8 +55,8 @@ public class Host {
         return domainName;
     }
 
-    public String getApiSubdomain() {
-        return apiSubdomain;
+    public String getCustomerApiSubdomain() {
+        return customerApiSubdomain;
     }
 
     public String getPublicIpAddress() {
@@ -55,21 +67,41 @@ public class Host {
         return privateIpAdress;
     }
 
+    public String getPublicApiSubdomain() {
+        return publicApiSubdomain;
+    }
+
+    public String getAdminApiSubdomain() {
+        return adminApiSubdomain;
+    }
+
     @PostConstruct
     protected void init() throws UnknownHostException, URISyntaxException {
         ResponseEntity<String> response;
         HttpStatus httpStatus;
+        RestTemplate restTemplate;
+
+        restTemplate = new RestTemplate(
+                new HttpComponentsClientHttpRequestFactory() {{
+                    setReadTimeout(readTimeout);
+                    setConnectTimeout(connectTimeout);
+        }});
 
         for(String ipPrinterURI : ipPrinterURIs) {
-            response = new RestTemplate().exchange(
-                    new RequestEntity<String>(
-                            HttpMethod.GET,
-                            new URI("http://" + ipPrinterURI)
-                    ),
-                    String.class
-            );
+            try {
+                response = restTemplate.exchange(
+                        new RequestEntity<String>(
+                                HttpMethod.GET,
+                                new URI("http://" + ipPrinterURI)
+                        ),
+                        String.class
+                );
+            } catch(ResourceAccessException e) {
+                continue;
+            }
             httpStatus = response.getStatusCode();
-            if(httpStatus.is2xxSuccessful() && response.hasBody()) {
+            if(httpStatus.is2xxSuccessful()
+            && response.hasBody()) {
                 publicIpAddress = response.getBody();
                 privateIpAdress = getLocalHost().getHostAddress();
                 return;

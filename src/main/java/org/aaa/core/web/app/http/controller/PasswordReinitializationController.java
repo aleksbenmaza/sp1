@@ -44,9 +44,9 @@ public class PasswordReinitializationController extends GuestController {
 
     @RequestMapping(method = RequestMethod.POST)
     public RedirectView submitEmailAddress(
-                                HttpSession session,
-                @RequestParam   String      emailAddress,
-                @ModelAttribute MessageCode messageCode
+                                                HttpSession session,
+                @ModelAttribute @RequestParam   String      emailAddress,
+                @ModelAttribute                 MessageCode messageCode
 
     ) {
 
@@ -70,9 +70,9 @@ public class PasswordReinitializationController extends GuestController {
             method = RequestMethod.POST
 
     ) public RedirectView submitPassword(
-            @SessionAttribute UserAccount        userAccount,
-            @RequestParam     String             password,
-                              RedirectAttributes redirectAttributes
+            @SessionAttribute             UserAccount        userAccount,
+            @ModelAttribute @RequestParam String             password,
+                                          RedirectAttributes redirectAttributes
     ) throws NoSuchAlgorithmException {
 
         if(userAccount != null) {

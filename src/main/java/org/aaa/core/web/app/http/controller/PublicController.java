@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created by alexandremasanes on 03/03/2017.
@@ -47,31 +49,28 @@ public class PublicController extends BaseController {
 
     @RequestMapping("${routes.public.services}")
     public ModelAndView getServicesPage(
-            @SessionAttribute User user
+                              HttpSession session,
+            @SessionAttribute User        user
     ) throws NoSuchAlgorithmException {
+        HashMap<String, Object> map;
+        String encryptedToken;
 
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        String tokenValue;
-
-        tokenValue = user instanceof RegisteredUser ? (
-                        ((RegisteredUser)user).getUserAccount().getToken() == null ?
-                            null :
-                        ((RegisteredUser)user).getUserAccount().getToken().getValue()
-                ) :
-                ((Guest)user).getTokenValue();
-        if(tokenValue == null) {
+        map = new HashMap<>();
+        encryptedToken = getEncryptedToken(session);
+        if(encryptedToken == null) {
             if (user instanceof RegisteredUser)
-                tokenService.createToken(((RegisteredUser) user).getUserAccount());
+                encryptedToken = tokenService.createToken(((RegisteredUser) user).getUserAccount());
             else
-                ((Guest)user).setTokenValue(tokenService.createToken(null).getValue());
-        }
+                encryptedToken = tokenService.createToken(null);
+            setEncryptedToken(session, encryptedToken);
+        } else
+            setEncryptedToken(session, tokenService.replaceIfExpired(encryptedToken));
         map.put("headTitleCode", "services");
         return render("services", map);
     }
 
     @RequestMapping("${routes.public.about}")
     public ModelAndView getAboutPage() {
-
         HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("headTitleCode", "about");
         return render("about", map);
@@ -82,5 +81,13 @@ public class PublicController extends BaseController {
         throw new RuntimeException(
                 PublicController.class.getName() + " handles several views"
         );
+    }
+
+    private String getEncryptedToken(HttpSession session) {
+        return (String) session.getAttribute("encryptedToken");
+    }
+
+    private void setEncryptedToken(HttpSession session, String encryptedToken) {
+        session.setAttribute("encryptedToken", encryptedToken);
     }
 }

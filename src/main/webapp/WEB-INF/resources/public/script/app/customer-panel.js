@@ -6,7 +6,8 @@
 'use strict';
 
 const PUBLIC_API_URI   = BASE_API_URI + '/' + PUBLIC_API_NAME;
-const CUSTOMER_API_URI = BASE_API_URI + '/' + PUBLIC_API_NAME;
+const CUSTOMER_API_URI = BASE_API_URI + '/' + CUSTOMER_API_NAME;
+const CUSTOMER_TEMPLATE_URI = WEBROOT + '/resources/customer/templates/customerpanel';
 
 let api_access_key = API_ACCESS_KEY;
 
@@ -31,6 +32,18 @@ app.directive("datepicker", function () {
             elem.datepicker(options);
         }
     }
+});
+
+app.factory('httpRequestHeaderInterceptor', function() {
+    return {
+        request : function(config) {
+            if(!config.url.startsWith(CUSTOMER_TEMPLATE_URI)) {
+                delete config.headers['Cookie']; log(config.url.startsWith(CUSTOMER_TEMPLATE_URI));
+                config.headers['Authorization'] = api_access_key;
+            }
+            return config;
+        }
+    };
 });
 
 app.factory('httpResponseErrorInterceptor', ['$q', '$injector', function($q, $injector) {
@@ -203,7 +216,7 @@ app.controller('ContractFormCtrl', ['$scope', '$http', function($scope, $http) {
         str = str.trim();
         if(!str)
             return;
-        $http.get(CUSTOMER_API_URI + (($scope.selected_make) ? '/makes/' + $scope.selected_make.id : '') + '/models/' + str, {
+        $http.get(CUSTOMER_API_URI + (($scope.selected_make) ? '/makes/' + $scope.selected_make.id : '') + '/models/name?' + str, {
             responseType : 'json'
         }).success(function (models) {
             let models_source;
@@ -318,61 +331,60 @@ app.controller('SepaDocumentCtrl', ['$scope', '$http', function($scope, $http) {
         }).error(function(data, status) {
             console.log(status);
         });
-    }
+    };
 
     $scope.post_sepa = function() {
         parse_file_then_send($("#sepa")[0].files[0], $http, CUSTOMER_API_URI + '/sepa', null, 'sepa');
-    }
+    };
 }]);
 
 app.config(['$locationProvider', '$stateProvider', '$urlRouterProvider', '$httpProvider', function($locationProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
     $locationProvider.hashPrefix('');
     $httpProvider.interceptors.push('httpResponseErrorInterceptor');
-    //$urlRouterProvider.otherwise('/espace-assure');
+    $httpProvider.interceptors.push('httpRequestHeaderInterceptor');
+    $urlRouterProvider.otherwise('/espace-assure');
 
     $stateProvider.state('index', {
         url         : WEBROOT + '/espace-assure',
-        templateUrl : CUSTOMER_API_URI + '/template/index.html',
+        templateUrl : CUSTOMER_TEMPLATE_URI + '/index.html',
         controller  : 'IndexCtrl'
     });
 
     $stateProvider.state('new_contract', {
         url         : WEBROOT + '/espace-assure/nouveau-contrat',
-        templateUrl : CUSTOMER_API_URI+'/template/contractform.html',
+        templateUrl : CUSTOMER_TEMPLATE_URI + '/contractform.html',
         controller  : 'ContractFormCtrl'
     });
 
     $stateProvider.state('contracts_list', {
         url         : WEBROOT + '/espace-assure/vos-contrats',
-        templateUrl : CUSTOMER_API_URI+'/template/contractslist.html',
+        templateUrl : CUSTOMER_TEMPLATE_URI + '/contractslist.html',
         controller  : 'ContractsListCtrl'
     });
 
 
     $stateProvider.state('contract', {
         url         : WEBROOT + '/espace-assure/contrat/:contract_key',
-        templateUrl : CUSTOMER_API_URI+'/template/contract.html',
+        templateUrl : CUSTOMER_TEMPLATE_URI + '/contract.html',
         controller  : 'ContractCtrl',
     });
 
     $stateProvider.state('sinisters_list', {
         url         : WEBROOT + '/espace-assure/contrat/:contract_key/sinistres',
-        templateUrl : CUSTOMER_API_URI + '/template/sinisterslist.html',
+        templateUrl : CUSTOMER_TEMPLATE_URI + '/sinisterslist.html',
         controller  : 'SinistersListCtrl'
     });
 
     $stateProvider.state('new_sinister', {
         url         : WEBROOT + '/espace-assure/contrat/:contract_key/nouveau-sinistre',
-        templateUrl : CUSTOMER_API_URI + '/template/sinisterform.html',
+        templateUrl : CUSTOMER_TEMPLATE_URI + '/sinisterform.html',
         controller  : 'SinisterFormCtrl'
     });
 
     $httpProvider.defaults.headers.common['Authorization'] = function() {
-        return api_access_key
+        return api_access_key;
     };
-    console.log($httpProvider.defaults.headers.common);
-    delete $httpProvider.defaults.headers.common['Cookie'];
 }]);
 
 function parse_file_then_send(target_element, http, uri, data, file_field) {

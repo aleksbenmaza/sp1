@@ -1,10 +1,11 @@
-package org.aaa.core.web.common.model.extern.output.edmunds;
+package org.aaa.core.web.common.model.foreign.output.edmunds;
 
 import com.google.gson.annotations.SerializedName;
+
 import org.aaa.core.business.mapping.Make;
 import org.aaa.core.business.mapping.Model;
-import org.aaa.core.business.mapping.ModelAndYear;
-import org.aaa.core.web.common.model.extern.output.ToEntityConvertible;
+import org.aaa.core.business.mapping.Year;
+import org.aaa.core.web.common.model.foreign.output.ToEntityConvertible;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
 
     public static class ModelDTO implements Serializable {
 
-        public static class Year implements Serializable {
+        public static class YearDTO implements Serializable {
 
             private long id;
 
@@ -30,6 +31,14 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
             public short getValue() {
                 return value;
             }
+
+            @Override
+            public String toString() {
+                return getClass().getName() + "{" +
+                        "id=" + id +
+                        ", value=" + value +
+                        '}';
+            }
         }
 
         private String id;
@@ -38,7 +47,8 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
 
         private String niceName;
 
-        private Year[] years;
+        @SerializedName("years")
+        private YearDTO[] yearDTOs;
 
         public String getId() {
             return id;
@@ -52,17 +62,17 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
             return niceName;
         }
 
-        public Year[] getYears() {
-            return years;
+        public YearDTO[] getYearDTOs() {
+            return yearDTOs;
         }
 
         @Override
         public String toString() {
-            return "ModelDTO{" +
+            return getClass().getName() + "{" +
                     "id='" + id + '\'' +
                     ", name='" + name + '\'' +
                     ", niceName='" + niceName + '\'' +
-                    ", years=" + Arrays.toString(years) +
+                    ", years=" + Arrays.toString(yearDTOs) +
                     '}';
         }
     }
@@ -78,6 +88,7 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
     public Make toEntity() {
         Make make;
         Model model;
+        Year year;
 
         make = new Make();
 
@@ -86,8 +97,13 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
         for(ModelDTO modelDTO : modelDTOs) {
             model = new Model(make);
             model.setName(modelDTO.getName());
-            for (ModelDTO.Year year : modelDTO.years)
-                new ModelAndYear(model, year.value);
+            make.addModel(model);
+
+            for (ModelDTO.YearDTO yearDTO : modelDTO.yearDTOs) {
+                year = new Year();
+                year.setValue(yearDTO.value);
+                model.addYear(year);
+            }
         }
         return make;
     }
@@ -106,7 +122,7 @@ public class MakeDTO implements ToEntityConvertible<Make>, Serializable {
 
     @Override
     public String toString() {
-        return "MakeDTO{" +
+        return getClass().getName() + "{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", modelDTOs=" + Arrays.toString(modelDTOs) +

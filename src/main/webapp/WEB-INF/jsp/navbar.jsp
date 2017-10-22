@@ -19,7 +19,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand">
-                <img src="${WEBROOT}/resources/image/aaa.png" class="img-responsive" style="margin-top: -0.4rem;" width="50px" height="60px"/>
+                <img src="${WEBROOT}/resources/public/image/aaa.png" class="img-responsive" style="margin-top: -0.4rem;" width="50px" height="60px"/>
             </a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->

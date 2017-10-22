@@ -7,7 +7,10 @@
         <property name="connection.password">${db_pwd}</property>
         <!-- Related to the connection END -->
         <!-- Related to hibernate properties START -->
-       <!-- <property name="hbm2ddl.auto">update</property> -->
+        <!--
+        <property name="hbm2ddl.auto">update</property>
+        -->
+        <!--<property name="current_session_context_class">thread</property>-->
         <property name="transaction.auto_close_session">false</property>
         <property name="id.new_generator_mappings">false</property>
         <property name="enable_lazy_load_no_trans">true</property>

@@ -15,16 +15,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
  */
 
 public abstract class GuestController extends BaseController {
-/*
-    @PreHandler
-    public RedirectView preHandler(
-            @SessionAttribute                                   User   user,
-            @RequestHeader(value = "referer", required = false) String referer
-    ) throws Exception {
-        if(!(user instanceof Guest))
-            return new RedirectView(resolveReferer(referer));
-        return null;
-    } */
 
     @ModelAttribute
     public void checkUser(

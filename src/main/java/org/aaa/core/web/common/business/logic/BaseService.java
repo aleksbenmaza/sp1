@@ -1,7 +1,7 @@
 package org.aaa.core.web.common.business.logic;
 
 
-import static org.aaa.util.ObjectUtils.replaceIfNull;
+import static org.aaa.util.ObjectUtils.ifNull;
 
 import org.aaa.core.business.repository.DAO;
 import org.aaa.core.web.common.helper.MessageGetter;

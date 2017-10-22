@@ -2,6 +2,7 @@ package org.aaa.core.web.app.http.controller;
 
 
 import org.aaa.core.business.mapping.person.Manager;
+import org.aaa.core.business.mapping.person.RegisteredUser;
 import org.aaa.core.web.common.business.logic.TokenService;
 import org.aaa.core.web.common.business.logic.UserService.*;
 import org.aaa.core.business.mapping.person.insuree.Customer;
@@ -76,6 +77,7 @@ public class LoginController extends GuestController {
                                           .withView(VIEW_NAME);
         } else {
             user = loginResult.getRegisteredUser();
+            tokenService.createToken(((RegisteredUser) user).getUserAccount());
             setSessionUser(httpSession, user);
         }
 

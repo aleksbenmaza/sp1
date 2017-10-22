@@ -3,7 +3,7 @@ package org.aaa.util;
 /**
  * Created by alexandremasanes on 20/02/2017.
  */
-public class HtmlLink {
+public final class HtmlLink {
 
     private String url;
     private String name;

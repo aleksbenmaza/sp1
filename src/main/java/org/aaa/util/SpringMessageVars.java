@@ -3,7 +3,7 @@ package org.aaa.util;
 /**
  * Created by alexandremasanes on 18/04/2017.
  */
-public class SpringMessageVars {
+public final class SpringMessageVars {
 
     public static final char DEFAULT_DELIMITER = ',';
 

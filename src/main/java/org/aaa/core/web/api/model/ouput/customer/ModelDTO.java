@@ -1,7 +1,7 @@
 package org.aaa.core.web.api.model.ouput.customer;
 
 import org.aaa.core.business.mapping.Model;
-import org.aaa.core.business.mapping.ModelAndYear;
+import org.aaa.core.business.mapping.Year;
 import org.aaa.core.web.api.model.ouput.DTO;
 import com.google.gson.annotations.SerializedName;
 
@@ -26,14 +26,14 @@ public class ModelDTO extends DTO<Model> {
 
     public ModelDTO(Model model) {
         super(model);
-        Set<ModelAndYear> modelsAndYears;
+        Set<Year> years;
         int i;
 
-        modelsAndYears = model.getModelsAndYears();
-        years = toPrimitive(
+        years = model.getYears();
+        this.years = toPrimitive(
                 aggregate(
-                        modelsAndYears,
-                        ModelAndYear::getYear,
+                        years,
+                        Year::getValue,
                         Short.class
                 )
         );

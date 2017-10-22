@@ -5,7 +5,7 @@
   Time: 14:40
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ include file="header.jsp" %>
 <div id="log_reg" class="container">
     <form:form method="post" id="auth_form" modelAttribute="login" class="form-horizontal">
@@ -26,5 +26,5 @@
     </form:form>
     <a href="${WEBROOT}/mot-de-passe-perdu"><spring:message code="loginForm.forgottenPasswordLinkText"/></a>
 </div>
-<script type="text/javascript" src="${WEBROOT}/resources/script/app/login.js" defer></script>
+<script type="text/javascript" src="${WEBROOT}/resources/public/script/app/login.js" defer></script>
 <%@ include file="footer.jsp" %>

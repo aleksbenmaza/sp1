@@ -89,7 +89,6 @@ public class CustomerService extends BaseService {
         awaitingRegistrations = new HashMap<String, Registration>();
     }
 
-    @Transactional
     public RegistrationResult preRegister(Registration registration, String serverName) {
         String token;
         RegistrationResult preRegistrationResult;
@@ -114,7 +113,7 @@ public class CustomerService extends BaseService {
     }
 
     @Transactional
-    public synchronized boolean register(String token) throws IOException, NoSuchAlgorithmException {
+    public boolean register(String token) throws IOException, NoSuchAlgorithmException {
         Registration registration;
         Customer customer;
         UserAccount userAccount;
@@ -142,10 +141,16 @@ public class CustomerService extends BaseService {
         customer.setPhoneNumber(registration.getPhoneNumber());
         customer.setStatus(AWAITING);
 
+
         userService.createUserAccount(registration, customer);
 
+        //   dao.save(customer);
+
         idCardFile = registration.getIdCard();
-        nextId     = dao.getNextId(Customer.class);
+
+
+
+        nextId     = customer.getId(); //dao.getNextId(Customer.class);
 
         path = idCardBaseName + nextId + '.' +
                idCardFile.getContentType().split("/")[1];
@@ -156,7 +161,6 @@ public class CustomerService extends BaseService {
 
         registration.getIdCard().transferTo(file);
 
-        dao.save(customer);
 
         awaitingRegistrations.remove(token);
 
@@ -207,6 +211,7 @@ public class CustomerService extends BaseService {
         return stream.toByteArray();
     }
 
+    @Transactional
     public void saveSepa(byte[] sepa, Customer customer) throws IOException {
         FileOutputStream outputStream;
         String fileName;

@@ -8,11 +8,14 @@ import org.aaa.core.business.mapping.Token;
 import org.aaa.core.web.app.http.session.Guest;
 import org.aaa.core.business.mapping.User;
 import org.aaa.core.web.common.helper.Host;
+import org.apache.commons.lang.StringUtils;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -22,10 +25,13 @@ import java.util.*;
 @Service
 public class TokenService extends BaseService {
 
-    private HashSet<Token> tokens;
+    private HashMap<String, TokenEncryptionComponents> cache;
+
+    @Autowired
+    private StandardPBEStringEncryptor jasypt;
 
     {
-        tokens = new HashSet<>();
+        cache  = new HashMap<>();
     }
 
     @Value("#{@dao.tokenLifetime}")
@@ -34,101 +40,160 @@ public class TokenService extends BaseService {
     @Autowired
     private Host host;
 
-    @Transactional
-    public boolean isValid(String value) {
-        Token token;
-
-        token = null;
-
-        for(Token t : tokens)
-            if(t != null && t.getValue().equals(value))
-                token = t;
-
-        if(token == null)
-            token = dao.findToken(value);
-
-        if(token != null)
-            tokens.add(token);
-
-        System.out.println("token is " + token);
-        return token != null && !hasExpired(token);
+    @Transactional(readOnly = true)
+    public boolean valid(String encryptedString) {
+        return valid(cache.computeIfAbsent(encryptedString, this::fromEncryptedString));
     }
 
     @Transactional
-    public Token replaceIfExpired(String value) {
+    public String replaceIfExpired(String encryptedString) {
         Token token;
-        UserAccount userAccount;
+        UUID uuid;
+        TokenEncryptionComponents tokenEncryptionComponents;
 
-        token = get(value);
+        tokenEncryptionComponents = cache.computeIfAbsent(
+                encryptedString,
+                this::fromEncryptedString
+        );
+
+        if(tokenEncryptionComponents == null)
+            return null;
+
+        token = get(tokenEncryptionComponents.uuid);
 
         if(token == null)
             return null;
 
-        if(hasExpired(token)) {
-            token.setOldValue(value);
-
-            token.setValue(generateValue());
+        if(expired(token)) {
+            token.setOldValue(tokenEncryptionComponents.uuid);
+            uuid = randomUUID();
+            token.setValue(uuid);
             System.out.println("dao.save -> SO ?");
             dao.save(token);
+            tokenEncryptionComponents.uuid = uuid;
+            tokenEncryptionComponents.timestamp = token.getUpdateTime();
+            cache.remove(encryptedString);
+            encryptedString = toEncryptedString(tokenEncryptionComponents);
+            cache.put(encryptedString, tokenEncryptionComponents);
         }
 
-        return token;
+        return encryptedString;
     }
 
     @Transactional
-    public Token createToken(UserAccount userAccount) {
+    public String createToken() {
+        return createToken(null);
+    }
+
+    @Transactional
+    public String createToken(UserAccount userAccount) {
         Token token;
+        UUID uuid;
+        TokenEncryptionComponents tokenEncryptionComponents;
+        String encryptedToken;
 
-        token = new Token();
+        tokenEncryptionComponents = new TokenEncryptionComponents();
 
-        token.setValue(generateValue());
+        tokenEncryptionComponents.uuid = uuid = randomUUID();
 
         if(userAccount != null) {
-            userAccount.setToken(token);
-            dao.save(userAccount);
-        } else
+            token = userAccount.getToken();
+            tokenEncryptionComponents.emailAddress = userAccount.getEmailAddress();
+            if(token != null) {
+                token.setOldValue(token.getValue());
+                token.setValue(uuid);
+            } else {
+                token = new Token();
+                token.setValue(uuid);
+                userAccount.setToken(token);
+                dao.save(token);
+            }
+        } else {
+            token = new Token();
+            token.setValue(uuid);
             dao.save(token);
+        }
 
-        tokens.add(token);
+        tokenEncryptionComponents.timestamp = token.getUpdateTime();
 
-        return token;
+        encryptedToken = toEncryptedString(tokenEncryptionComponents);
+
+        cache.put(encryptedToken, tokenEncryptionComponents);
+
+        return encryptedToken;
     }
 
-    public User getGrantedUser(String tokenValue) {
+    @Transactional(readOnly = true)
+    public User getGrantedUser(String encryptedString) {
         UserAccount userAccount;
-
-        if(!isValid(tokenValue))
+        TokenEncryptionComponents tokenEncryptionComponents;
+        tokenEncryptionComponents = cache.computeIfAbsent(encryptedString, this::fromEncryptedString);
+        if(!valid(tokenEncryptionComponents))
             return null;
 
-        userAccount = get(tokenValue).getUserAccount();
-        return userAccount == null ? new Guest() : userAccount.getUser();
+        userAccount = get(tokenEncryptionComponents.uuid).getUserAccount();
+        return userAccount == null ? new Guest() : userAccount.getId().getUser();
     }
 
-    private boolean hasExpired(Token token) {
-        return new Date().getTime() - token.updatedAt().getTime() >= tokenLifetime;
+    private boolean expired(TokenEncryptionComponents tokenEncryptionComponents) {
+        return new Date().compareTo(tokenEncryptionComponents.timestamp) >= tokenLifetime;
     }
 
-    private Token get(String value) {
-        Token token;
-        token = tokens.stream()
-                      .filter(t -> t.getValue().equals(value))
-                      .findFirst()
-                      .orElse(null);
+    private boolean expired(Token token) {
+        return new Date().compareTo(token.getUpdateTime()) >= tokenLifetime;
+    }
 
-        if(token == null) {
-            token = dao.findToken(value);
+    @Transactional(readOnly = true)
+    private Token get(UUID tokenValue) {
+        return dao.findToken(tokenValue);
+    }
 
-            if (token != null)
-                tokens.add(token);
+    private String toEncryptedString(TokenEncryptionComponents tokenEncryptionComponents) {
+        String key;
+        key = StringUtils.join(
+                new Object[] {
+                        tokenEncryptionComponents.uuid,
+                        tokenEncryptionComponents.emailAddress,
+                        tokenEncryptionComponents.timestamp
+                },
+                '#'
+        );
+
+        // this is the authentication token user will send in order to use the web service
+        return jasypt.encrypt(key);
+    }
+
+    private TokenEncryptionComponents fromEncryptedString(String encryptedString) {
+        String[]             decryptedStrings;
+        TokenEncryptionComponents tokenEncryptionComponents;
+
+        decryptedStrings = jasypt.decrypt(encryptedString).split("#");
+
+        tokenEncryptionComponents = new TokenEncryptionComponents();
+        tokenEncryptionComponents.emailAddress = decryptedStrings[1];
+        try {
+            tokenEncryptionComponents.uuid = UUID.fromString(decryptedStrings[0]);
+            tokenEncryptionComponents.timestamp = Timestamp.valueOf(decryptedStrings[2]);
+        } catch (IllegalArgumentException e) {
+            tokenEncryptionComponents = null;
         }
-        return token;
+
+        return tokenEncryptionComponents;
     }
 
-    private static String generateValue() {
-        return randomUUID().toString().replace("-", "");
+    @Transactional(readOnly = true)
+    private boolean valid(TokenEncryptionComponents tokenEncryptionComponents) {
+        Token token;
+
+        token = get(tokenEncryptionComponents.uuid);
+
+        System.out.println("token is " + token);
+        return token != null && !expired(token);
     }
 
-    public static void main(String... args) {
-        System.out.println(generateValue());
+    private class TokenEncryptionComponents {
+        UUID      uuid;
+        String    emailAddress;
+        Timestamp timestamp;
     }
 }

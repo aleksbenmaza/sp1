@@ -8,33 +8,36 @@ import javax.persistence.Table;
 
 import org.aaa.core.business.mapping.person.RegisteredUser;
 import org.aaa.core.business.mapping.person.Person;
+
+import org.aaa.orm.entity.UpdatableEntity;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 @Entity
 @Table(name = "user_accounts")
-public class UserAccount extends org.aaa.core.business.mapping.Entity implements Serializable {
+public class UserAccount extends UpdatableEntity {
 
 	public static final long serialVersionUID = 1482252304755392540L;
 
-	public static final class Id implements Serializable {
+	@Embeddable
+	public static class Id implements Serializable {
 
 		@OneToOne(targetEntity = Person.class, cascade = CascadeType.ALL)
 		@JoinColumn(name = "id", referencedColumnName = "id")
 		private RegisteredUser user;
 
-		public <T extends Person & RegisteredUser> Id(T user) {
+		public <U extends  Person & RegisteredUser> Id(U user) {
 			this.user = user;
+			check(requireNonNull(user).getUserAccount() == null);
+		}
+
+		public RegisteredUser getUser() {
+			return user;
 		}
 
 		@Override
 		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-
-			Id id = (Id) o;
-
-			return user.equals(id.user);
+			return o == this || o instanceof Id && o.hashCode() == this.hashCode();
 		}
 
 		@Override
@@ -57,23 +60,22 @@ public class UserAccount extends org.aaa.core.business.mapping.Entity implements
 	@OneToOne(mappedBy = "userAccount", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Token token;
 
-	public <T extends Person & RegisteredUser> UserAccount(T user) {
-		check(requireNonNull(user).getUserAccount() == null);
-		user.setUserAccount(this);
-		this.id = new Id(user);
+	public UserAccount(Id id) {
+		this.id = id;
+		id.user.setUserAccount(this);
 	}
 
-	public <T extends Person & RegisteredUser> UserAccount(
-			T 	   user,
+	public UserAccount(
+			Id id,
 			Token token
 	) {
-		this(user);
+		this(id);
 		check(requireNonNull(token).getUserAccount() == null);
 		setToken(token);
 	}
 
-	public RegisteredUser getUser(){
-		return id.user;
+	public final Id getId() {
+		return id;
 	}
 
 	public String getEmailAddress() {
@@ -104,12 +106,7 @@ public class UserAccount extends org.aaa.core.business.mapping.Entity implements
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		UserAccount that = (UserAccount) o;
-
-		return id.equals(that.id);
+		return o instanceof UserAccount && this.id.equals(((UserAccount) o).id);
 	}
 
 	@Override

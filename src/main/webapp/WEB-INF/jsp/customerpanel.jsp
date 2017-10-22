@@ -14,7 +14,7 @@
     <div id="banner">
         <div class="image-border">
             <a href="#">
-                <img src="${WEBROOT}/resources/image/cheap-car-insurance-quotes-4.jpg" width="870" height="253" alt=""
+                <img src="${WEBROOT}/resources/public/image/cheap-car-insurance-quotes-4.jpg" width="870" height="253" alt=""
                      class="img-responsive"/>
             </a>
         </div>
@@ -73,14 +73,13 @@
     </div>
 </div>
 <script type="text/javascript">
-    const API_ACCESS_KEY    = "${user.userAccount.token.value}";
-    const BASE_API_URI      = "http://${host.apiSubdomain}.${host.domainName}";
-    const PUBLIC_API_NAME   = "public";
-    const CUSTOMER_API_NAME = "customer";
+    const API_ACCESS_KEY        = "${encryptedToken}";
+    const CUSTOMER_API_BASE_URI = "http://${host.customerApiSubdomain}.${host.domainName}";
+    const PUBLIC_API_BASE_URI   = "http://${host.publicapiSubdomain}.${host.domainName}";
 </script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/script/lib/angular.1.5.7.min.js')" defer></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/angular.1.5.7.min.js')" defer></script>
 <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js" onerror="src_on_error(this, '${WEBROOT}/public/script/angular-route.1.5.7.min.js')" defer></script>-->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/script/lib/angular-ui-router.0.4.2.min.js')" defer></script>
-<script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/script/lib/FileSaver.min.js')" defer></script>
-<script type="text/javascript" src="${WEBROOT}/resources/script/app/customer-panel.js" defer></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/angular-ui-router.0.4.2.min.js')" defer></script>
+<script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/FileSaver.min.js')" defer></script>
+<script type="text/javascript" src="${WEBROOT}/resources/public/script/app/customer-panel.js" defer></script>
 <%@ include file="footer.jsp" %>

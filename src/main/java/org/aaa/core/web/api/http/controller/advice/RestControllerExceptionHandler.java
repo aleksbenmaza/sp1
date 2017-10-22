@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Created by alexandremasanes on 24/03/2017.
  */
 @ControllerAdvice(annotations = RestController.class)
 public class RestControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handle(Exception exception) {
+    @ExceptionHandler(CommandNotValidatedException.class)
+    protected ResponseEntity<Object> handle(CommandNotValidatedException exception) {
 
         HttpStatus httpStatus;
 
@@ -25,13 +27,16 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
 
         if(exception.getClass().isAnnotationPresent(ResponseStatus.class)) {
             httpStatus = exception.getClass().getAnnotation(ResponseStatus.class).value();
-
-            if(exception instanceof CommandNotValidatedException)
-                return new ResponseEntity<>(((CommandNotValidatedException)exception).getErrors() , httpStatus);
+                return new ResponseEntity<>((exception).getErrors() , httpStatus);
         }
         else
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         return new ResponseEntity<>(httpStatus);
+    }
+
+    @ExceptionHandler(Exception.class)
+    protected void handle() {
+        System.out.println("a log amongst a thousand");
     }
 }

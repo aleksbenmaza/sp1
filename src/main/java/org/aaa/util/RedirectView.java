@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 /**
  * Created by alexandremasanes on 28/02/2017.
  */
-public class RedirectView extends org.springframework.web.servlet.view.RedirectView {
+public final class RedirectView extends org.springframework.web.servlet.view.RedirectView {
 
     private HttpStatus httpStatus;
 

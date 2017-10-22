@@ -2,6 +2,7 @@ package org.aaa.core.business.mapping;
 
 import org.aaa.core.business.mapping.person.insuree.Customer;
 import org.aaa.core.business.mapping.sinister.Sinister;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -10,7 +11,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "contracts")
-public class Contract extends IdentifiableByIdImpl implements ToBeChecked {
+public class Contract extends IdentifiedByIdEntity implements ToBeChecked {
 
 	public static final long serialVersionUID = 1683771937667628264L;
 

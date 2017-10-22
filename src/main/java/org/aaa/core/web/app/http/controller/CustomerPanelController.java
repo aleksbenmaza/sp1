@@ -32,7 +32,7 @@ public class CustomerPanelController extends BaseController {
 
 
     @ModelAttribute
-    protected User getAndCheckUser(@SessionAttribute User user) {
+    protected User checkedUser(@SessionAttribute User user) {
         System.out.println("user :" + user);
         if(!(user instanceof Customer))
             throw new CustomHttpExceptions.UnauthorizedRequestException()

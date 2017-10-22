@@ -4,6 +4,8 @@
 
 const API_ABSOLUTE_URI = "http://api." + location.hostname;
 
+const log = console.log;
+
 $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
 
 let datepicker_options = {

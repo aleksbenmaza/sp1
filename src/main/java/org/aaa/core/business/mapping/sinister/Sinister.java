@@ -1,8 +1,8 @@
 package org.aaa.core.business.mapping.sinister;
 
 
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.core.business.mapping.Contract;
-import org.aaa.core.business.mapping.IdentifiableByIdImpl;
 import org.aaa.core.business.mapping.ToBeChecked;
 import org.aaa.core.business.mapping.damage.Damage;
 import org.aaa.core.business.mapping.person.Expert;
@@ -21,7 +21,7 @@ import java.sql.Time;
 @Entity
 @Table(name = "sinisters")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Sinister extends IdentifiableByIdImpl implements ToBeChecked {
+public abstract class Sinister extends IdentifiedByIdEntity implements ToBeChecked {
 
     @ManyToOne(
             cascade = CascadeType.ALL
@@ -70,13 +70,13 @@ public abstract class Sinister extends IdentifiableByIdImpl implements ToBeCheck
     }
 
     public Sinister(Contract contract) {
-        this.contract = org.aaa.core.business.mapping.Entity.requireNonNull(contract);
+        this.contract = IdentifiedByIdEntity.requireNonNull(contract);
         contract.addSinister(this);
     }
 
     public Sinister(Contract contract, Expert expert) {
         this(contract);
-        this.expert = org.aaa.core.business.mapping.Entity.requireNonNull(expert);
+        this.expert = requireNonNull(expert);
         expert.addSinister(this);
     }
 

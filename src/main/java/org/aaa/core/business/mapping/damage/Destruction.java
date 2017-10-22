@@ -2,9 +2,7 @@ package org.aaa.core.business.mapping.damage;
 
 import org.aaa.core.business.mapping.sinister.Sinister;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by alexandremasanes on 20/03/2017.
@@ -16,8 +14,8 @@ public class Destruction extends Damage {
     @Column(name = "is_total")
     private boolean total;
 
-    public Destruction(Sinister sinister) {
-        super(sinister);
+    public Destruction(Id id) {
+        super(id);
     }
 
     public boolean isTotal() {

@@ -11,6 +11,7 @@ import org.aaa.core.web.app.model.Login;
 import org.aaa.core.web.app.model.Registration;
 import org.aaa.core.business.mapping.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -33,19 +34,19 @@ public class UserService extends BaseService {
         }
     }
 
+    @Transactional(readOnly = true)
     public User getUser(long id) {
         return (User) dao.find(Person.class, id);
     }
 
+    @Transactional(readOnly = true)
     public boolean userIsGranted(RegisteredUser user) {
-
-        boolean bool;
-
         return user != null
                 && (!(user instanceof Customer)
                 || ((Customer)user).getStatus() == ToBeChecked.Status.VALID);
     }
 
+    @Transactional(readOnly = true)
     public LoginResult proceedLogin(Login login) throws NoSuchAlgorithmException {
         User        user;
         LoginResult loginResult;
@@ -62,7 +63,7 @@ public class UserService extends BaseService {
         toBeHashed   = emailAddress + getHashSalt() + password;
 
         userAccount  = dao.findUserAccount(emailAddress, encrypt(toBeHashed, SHA_1));
-        System.out.println(userAccount);
+
         loginResult  = new LoginResult();
 
         if(userAccount == null) {
@@ -70,8 +71,8 @@ public class UserService extends BaseService {
             return loginResult;
         }
 
-
-        user = (RegisteredUser)userAccount.getUser();
+        user = userAccount.getId().getUser();
+        System.out.println(user);
         ToBeChecked.Status status;
 
         if(user instanceof Customer
@@ -99,11 +100,16 @@ public class UserService extends BaseService {
         return loginResult;
     }
 
+    @Transactional(readOnly = true)
     public UserAccount getUserAccount(String emailAddress) {
         return dao.findUserAccount(emailAddress);
     }
 
-    public void resetPassword(UserAccount userAccount, String password) throws NoSuchAlgorithmException{
+    @Transactional
+    public void resetPassword(
+            UserAccount userAccount,
+            String password
+    ) throws NoSuchAlgorithmException{
         String hash;
 
         hash = encrypt(userAccount.getEmailAddress() +
@@ -116,11 +122,17 @@ public class UserService extends BaseService {
         dao.save(userAccount);
     }
 
+    @Transactional(readOnly = true)
     public boolean emailAddressExists(String emailAddress) {
         return dao.hasUserAccount(emailAddress);
     }
 
-    public void createUserAccount(Registration registration, Customer customer) throws NoSuchAlgorithmException {
+
+    @Transactional
+    public void createUserAccount(
+            Registration registration,
+            Customer     customer
+    ) throws NoSuchAlgorithmException {
         String hash;
 
         hash = encrypt(registration.getEmailAddress() +
@@ -131,11 +143,13 @@ public class UserService extends BaseService {
         createUserAccount(customer, registration.getEmailAddress(), hash);
     }
 
-    private <T extends Person & RegisteredUser> void createUserAccount(T registredUser,
-                                                                       String emailAddress,
-                                                                       String hash) {
+    private <T extends Person & RegisteredUser> void createUserAccount(
+            T      registeredUser,
+            String emailAddress,
+            String hash
+    ) {
         UserAccount userAccount;
-        userAccount = new UserAccount(registredUser);
+        userAccount = new UserAccount(new UserAccount.Id(registeredUser));
         userAccount.setEmailAddress(emailAddress);
         userAccount.setHash(hash);
         dao.save(userAccount);

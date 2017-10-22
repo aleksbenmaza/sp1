@@ -6,7 +6,11 @@
         Pour valider votre adresse email, veuillez cliquer sur le lien ci dessous
         ou copier/coller dans votre navigateur internet.
     </p>
-    <a href="http://$serverName/inscription/$validationCode">Clicker pour valider</a>
+    <form method="POST" action="http://$serverName/inscription/validation">
+        <input value="$validationCode" hidden>
+        <input value="$emailAddress" hidden>
+        <button type="submit">Clicker pour valider</button>
+    </form>
     <p>
         ---------------
         Ceci est un mail automatique, merci de ne pas y répondre.

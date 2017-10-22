@@ -1,15 +1,14 @@
-let insurances_select     = $(" #insurances ");
-let amount_select         = $(" #amount ");
-let deductible_select     = $(" #deductible ");
+let insurances_select = $(" #insurances ");
+let amount_select = $(" #amount ");
+let deductible_select = $(" #deductible ");
 let default_amount_select = $(" #default_amount ");
-let api_access_key        = API_ACCESS_KEY;
-let insurances            = null;
-let deductible            = null;
-let selected_insurance    = null;
+let api_access_key = API_ACCESS_KEY;
+let insurances = null;
+let deductible = null;
+let selected_insurance = null;
 
-$().ready(run);
 
-function run(){
+$(function() {
     console.log(">>>run>>>");
     let clicked = false;
     on_click(insurances_select, function() {
@@ -21,17 +20,19 @@ function run(){
     });
 
     console.log("<<<run<<<")
-}
-
+});
 
 function retrieve_deductible(insurance, amount) {
     let retried;
     let config;
 
     $.ajax(config = {
-        url        : PUBLIC_API_URI + '/insurances/' + insurance.id + '/deductible/' + amount,
+        url        : PUBLIC_API_URI + '/insurances/' + insurance.id + '/deductibles',
         type       :'GET',
         dataType   :'json',
+        data       : {
+            amount : amount
+        },
         beforeSend : function(request) {
             request.setRequestHeader('Authorization', API_ACCESS_KEY);
         },
@@ -41,6 +42,7 @@ function retrieve_deductible(insurance, amount) {
         error      : function(xhr, status, error) {
             console.log(status.error);
             if(!retried && status == 401) {
+                retried = true;
                 renew_token();
                 $.ajax(config);
             }
@@ -70,6 +72,7 @@ function retrieve_insurances() {
         error      : function(xhr, status, error) {
             console.log(status.error);
             if(!retried && status == 401) {
+                retried = true;
                 renew_token();
                 $.ajax(config);
             }

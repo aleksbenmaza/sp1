@@ -3,17 +3,15 @@ package org.aaa.core.business.mapping.person;
 import javax.persistence.*;
 import javax.persistence.Entity;
 
-import org.aaa.core.business.mapping.IdentifiableByIdImpl;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.core.business.mapping.UserAccount;
-
-import java.io.Serializable;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 @Entity
 @Table(name = "persons")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class      Person
-		        extends IdentifiableByIdImpl
-		        implements Serializable {
+public abstract class Person extends IdentifiedByIdEntity {
 
 	public static final long serialVersionUID = 5018887767387110200L;
 
@@ -44,7 +42,8 @@ public abstract class      Person
 			mappedBy = "id.user",
 			cascade  = CascadeType.ALL,
 			fetch    = FetchType.LAZY
-	) protected UserAccount userAccount;
+	)
+	protected UserAccount userAccount;
 	
 	public String getFirstName() {
 		return firstName;

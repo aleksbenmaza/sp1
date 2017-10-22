@@ -1,9 +1,8 @@
 package org.aaa.util;
 
 
-import org.aaa.core.business.mapping.Entity;
-import org.aaa.core.web.common.model.extern.output.ToEntitiesConvertible;
-import org.aaa.core.web.common.model.extern.output.ToEntityConvertible;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
+import org.aaa.core.web.common.model.foreign.output.ToEntitiesConvertible;
 
 import javax.xml.bind.annotation.*;
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "import-sources")
-public class ImportSources {
+public final class ImportSources {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class DomainObject {
@@ -149,13 +148,13 @@ public class ImportSources {
         }
 
         @XmlAttribute(name = "class")
-        private Class<? extends Entity> subjectClass;
+        private Class<? extends IdentifiedByIdEntity> subjectClass;
 
         @XmlElementWrapper
         @XmlElement(name = "source")
         private Source[] sources;
 
-        public Class<? extends Entity> getSubjectClass() {
+        public Class<? extends IdentifiedByIdEntity> getSubjectClass() {
             return subjectClass;
         }
 

@@ -38,6 +38,11 @@ public class VehicleHistory extends History {
     @JoinColumn(name = "contract_id", referencedColumnName = "id", nullable = false)
     private Contract contract;
 
+    @Override
+    public final boolean equals(Object o) {
+        return o instanceof VehicleHistory && this.id == ((VehicleHistory) o).getId();
+    }
+
     public float getValue() {
         return value;
     }

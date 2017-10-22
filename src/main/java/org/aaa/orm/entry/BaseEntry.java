@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by alexandremasanes on 09/09/2017.
  */
-public abstract class BaseEntry<K extends Serializable, V extends Serializable> implements Map.Entry<K, V> {
+public abstract class BaseEntry<K extends Serializable, V extends Serializable> implements Map.Entry<K, V>, Serializable {
 
     @Embedded
     private V value;

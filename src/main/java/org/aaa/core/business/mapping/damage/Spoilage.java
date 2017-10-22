@@ -1,7 +1,7 @@
 package org.aaa.core.business.mapping.damage;
 
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.core.business.mapping.CarDealer;
-import org.aaa.core.business.mapping.sinister.Sinister;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -20,15 +20,15 @@ public class Spoilage extends Damage {
     @JoinColumn(name = "car_dealer_id", referencedColumnName = "id")
     private CarDealer carDealer;
 
-    public Spoilage(Sinister sinister) {
-        super(sinister);
+    public Spoilage(Id id) {
+        super(id);
     }
 
     public Spoilage(
-            Sinister sinister,
+            Id        id,
             CarDealer carDealer
     ) {
-        this(sinister);
+        this(id);
         setCarDealer(carDealer);
     }
 
@@ -37,7 +37,7 @@ public class Spoilage extends Damage {
     }
 
     public void setCarDealer(CarDealer carDealer) {
-        this.carDealer = org.aaa.core.business.mapping.Entity.requireNonNull(carDealer);
+        this.carDealer = IdentifiedByIdEntity.requireNonNull(carDealer);
         carDealer.addSpoilage(this);
     }
 

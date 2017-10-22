@@ -11,7 +11,7 @@
 <%@ include file="banner.jsp" %>
 <div id="container">
     <div id="banner">
-        <div class="image-border"><a href="#"><img src="${WEBROOT}/resources/image/aix-en-provence-161731.jpg" width="870" height="253" alt="" class="img-responsive" /></a></div>
+        <div class="image-border"><a href="#"><img src="${WEBROOT}/resources/public/image/aix-en-provence-161731.jpg" width="870" height="253" alt="" class="img-responsive" /></a></div>
     </div>
     <div class="col-md-offset-2 same-line">
         <div class="panel panel-default col-md-4">

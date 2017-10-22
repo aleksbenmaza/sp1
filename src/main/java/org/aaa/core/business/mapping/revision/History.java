@@ -1,7 +1,7 @@
 package org.aaa.core.business.mapping.revision;
 
-import org.aaa.core.business.mapping.IdentifiableById;
-import org.hibernate.annotations.Immutable;
+import org.aaa.orm.entity.identifiable.IdentifiableById;
+import org.aaa.orm.entity.ImmutableEntity;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -12,21 +12,25 @@ import java.sql.Timestamp;
 /**
  * Created by alexandremasanes on 23/04/2017.
  */
-@Immutable
+
 @MappedSuperclass
-public abstract class History implements IdentifiableById {
+public abstract class History extends ImmutableEntity implements IdentifiableById {
 
     @Id @GeneratedValue
-    protected Long id;
+    protected long id;
 
-    @GeneratedValue @Column(name = "created_at")
+    @GeneratedValue @Column(name = "created_at", updatable = false, insertable = false)
     protected Timestamp createdAt;
 
     @Override
-    public long getId() {
+    public final long getId() {
         return id;
     }
 
-    History() {
+    @Override
+    public final int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
+
+    History() {}
 }

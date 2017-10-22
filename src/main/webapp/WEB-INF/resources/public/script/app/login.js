@@ -7,7 +7,6 @@ function switch_action(event) {
     event.preventDefault();
     if(this.id == "reg_button") {
             if(!($("#email").val() || $("#pwd").val())) {
-
                 window.location.href = WEBROOT + "/inscription";
                 return false;
             }

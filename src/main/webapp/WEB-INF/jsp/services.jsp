@@ -14,7 +14,7 @@
         <div id="banner">
             <div class="image-border">
                 <a href="#">
-                    <img src="${WEBROOT}/resources/image/Depositphotos_1981846_original.jpg" width="870" height="253" alt="" class="img-responsive" />
+                    <img src="${WEBROOT}/resources/public/image/Depositphotos_1981846_original.jpg" width="870" height="253" alt="" class="img-responsive" />
                 </a>
             </div>
         </div>
@@ -62,8 +62,8 @@
         </div>
     </div>
     <script type="text/javascript">
-        const API_ACCESS_KEY = "${f:isRegistered(user) ? user.userAccount.token.value : user.tokenValue}";
+        const API_ACCESS_KEY = "${encryptedToken}";
         const PUBLIC_API_URI = "http://${host.apiSubdomain}.${host.domainName}/public";
     </script>
-    <script type="text/javascript" src="${WEBROOT}/resources/script/app/services.js" defer></script>
+    <script type="text/javascript" src="${WEBROOT}/resources/public/script/app/services.js" defer></script>
 <%@ include file="footer.jsp" %>

@@ -5,7 +5,7 @@ html, body {
 body {
 	margin: 0px;
 	padding: 0px;
-	background: #C0C4C5 url(/resources/image/page-body-bg.png) repeat;
+	background: #C0C4C5 url(/resources/public/image/page-body-bg.png) repeat;
 	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif !important;
 	font-size: 13px !important;
 	color: #2E2E2E;
@@ -87,6 +87,11 @@ img.aligncenter {
 	margin: 0px auto;
 }
 
+div.panel-heading {
+	background: #353535 !important;
+	color: #AFAFAF !important;
+}
+
 hr {
 	display: none;
 }
@@ -96,6 +101,10 @@ hr {
 }
 #things li {
 	padding-left: 77px !important;
+}
+
+ul.actions-list {
+	overflow: auto;
 }
 
 .btn-logout {

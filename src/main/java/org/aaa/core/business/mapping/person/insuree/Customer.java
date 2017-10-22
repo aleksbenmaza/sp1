@@ -6,11 +6,10 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.persistence.Entity;
 
+import org.aaa.core.business.mapping.*;
 import org.aaa.core.business.mapping.person.Manager;
 import org.aaa.core.business.mapping.person.RegisteredUser;
-import org.aaa.core.business.mapping.ToBeChecked;
-import org.aaa.core.business.mapping.Contract;
-import org.aaa.core.business.mapping.UserAccount;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
 @Entity
 @Table(name = "customers")
@@ -30,16 +29,16 @@ public class Customer extends Insuree implements RegisteredUser, ToBeChecked {
 	@JoinColumn(name = "manager_id", referencedColumnName = "id")
 	private Manager manager;
 
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Contract> contracts;
 
 	public Customer() {
-		contracts = new HashSet<Contract>();
+		contracts = new HashSet<>();
 	}
 
 	public Customer(Manager manager) {
 		this();
-		setManager(org.aaa.core.business.mapping.Entity.requireNonNull(manager));
+		setManager(IdentifiedByIdEntity.requireNonNull(manager));
 	}
 
 	public Manager getManager() {
@@ -83,10 +82,10 @@ public class Customer extends Insuree implements RegisteredUser, ToBeChecked {
 	}
 
 	public Set<Contract> getContracts() {
-		return new HashSet<Contract>(contracts);
+		return contracts;
 	}
 
 	public boolean addContract(Contract contract) {
-		return contracts.add(org.aaa.core.business.mapping.Entity.requireNonNull(contract));
+		return contracts.add(IdentifiedByIdEntity.requireNonNull(contract));
 	}
 }

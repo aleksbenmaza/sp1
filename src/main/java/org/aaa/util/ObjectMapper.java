@@ -7,13 +7,13 @@ import java.util.Map;
 /**
  * Created by alexandremasanes on 10/03/2017.
  */
-public class ObjectMapper {
+public final class ObjectMapper {
 
     public Map<String, Object> map(Object object) {
         Map<String, Object> map;
         Object value;
 
-        map = new HashMap<String, Object>();
+        map = new HashMap<>();
 
         for (Field field : object.getClass().getDeclaredFields()) {
 

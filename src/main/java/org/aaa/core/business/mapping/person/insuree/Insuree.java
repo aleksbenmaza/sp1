@@ -19,7 +19,12 @@ public abstract class Insuree extends Person implements Serializable {
 	public static final long serialVersionUID = 1168426245888642040L;
 
 	@ElementCollection(fetch = FetchType.LAZY)
-	@JoinTable(name = "vehicles__insurees")
+	@CollectionTable(
+			name = "vehicles__insurees",
+			joinColumns = @JoinColumn(
+					name = "insuree_id",
+					referencedColumnName = "id"
+			))
 	@MapKeyJoinColumn(name = "vehicle_id", referencedColumnName = "id")
 	protected Map<Vehicle, Ownership> ownershipsByVehicle;
 

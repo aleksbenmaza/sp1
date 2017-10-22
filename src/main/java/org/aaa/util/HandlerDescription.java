@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by alexandremasanes on 29/04/2017.
  */
-public class HandlerDescription {
+public final class HandlerDescription {
 
     static class Entry<K,V> implements Map.Entry<K,V> {
         final K key;

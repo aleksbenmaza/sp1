@@ -2,17 +2,22 @@ package org.aaa.core.business.repository;
 
 import org.aaa.core.business.mapping.*;
 import org.aaa.core.business.mapping.Token;
+import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.sinister.Sinister;
+import org.aaa.orm.entity.BaseEntity;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by alexandremasanes on 21/02/2017.
  */
 public interface DAO extends Finder, Recorder, Remover {
 
-    boolean refresh(IdentifiableByIdImpl entity);
+    <T extends IdentifiedByIdEntity> boolean refresh(T entity);
 
-    boolean trackBack(Entity entity);
+    <T extends BaseEntity> boolean trackBack(T entity);
 
     List<Make> searchMakes(String name);
 
@@ -32,15 +37,23 @@ public interface DAO extends Finder, Recorder, Remover {
 
     Model findModel(String name);
 
+    Year findYear(short value);
+
     boolean hasMake(String name);
 
     boolean hasModel(String name);
 
-    boolean hasUserAccount(String email);
+    boolean hasYear(short value);
 
-    Token findToken(String value);
+    boolean hasUserAccount(String emailAddress);
 
-    boolean hasToken(String token);
+    Token findToken(UUID tokenValue);
+
+    Contract findContract(Customer customer, long contractId);
+
+    Sinister findSinister(Customer customer, long sinisterId);
+
+    boolean hasToken(UUID tokenValue);
 
     String getHashSalt();
 

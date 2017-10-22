@@ -1,12 +1,17 @@
 package org.aaa.core.web.common.business.logic;
 
 import static org.aaa.core.business.mapping.ToBeChecked.Status.*;
+import static org.aaa.orm.entity.identifiable.IdentifiableById.NULL_ID;
+import static org.aaa.orm.entity.identifiable.IdentifiableById.toSortedList;
 
+import org.aaa.orm.entity.identifiable.IdentifiableById;
+import org.aaa.orm.entry.manytoone.Entry;
 import org.aaa.core.business.mapping.*;
+import org.aaa.core.business.mapping.person.insuree.Customer;
 import org.aaa.core.business.mapping.person.insuree.Insuree;
 import org.aaa.core.business.mapping.person.insuree.ThirdParty;
 import org.aaa.core.business.mapping.sinister.PlainSinister;
-import org.aaa.core.business.mapping.sinister.PlainSinister.Type;
+import org.aaa.core.business.mapping.PlainSinisterType;
 import org.aaa.core.business.mapping.sinister.Sinister;
 import org.aaa.core.business.mapping.sinister.accident.WithCustomerAccident;
 import org.aaa.core.business.mapping.sinister.accident.WithThirdPartyAccident;
@@ -14,13 +19,15 @@ import org.aaa.core.web.api.model.input.databinding.sinister.AccidentSubmission;
 import org.aaa.core.web.api.model.input.databinding.sinister.PlainSinisterSubmission;
 import org.aaa.core.web.api.model.input.databinding.sinister.SinisterSubmission;
 
-import org.aaa.orm.entry.manytoone.Entry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import static java.net.URLConnection.guessContentTypeFromStream;
 
@@ -30,23 +37,42 @@ import static java.net.URLConnection.guessContentTypeFromStream;
 @Service
 public class SinisterService extends BaseService {
 
+    @Autowired
+    private ContractService contractService;
+
     @Value("${sinisterService.documentsDir.report}")
     private String reportDocumentDir;
 
-    public synchronized void addSinister(
+    public List<Sinister> getSinisters(Customer customer, long contractId) {
+        return toSortedList(contractService.getContract(customer, contractId).getSinisters());
+    }
+
+    public Sinister getSinister(Customer customer, long sinisterId) {
+        return dao.findSinister(customer, sinisterId);
+    }
+
+    @Transactional
+    public long addSinister(
             SinisterSubmission submission,
-            Contract           contract
+            Customer           customer,
+            long               contractId
     ) throws IOException {
+        Contract contract;
         Sinister         sinister;
         WithCustomerAccident otherPartyAccident;
         Model            otherPartyModel;
         Vehicle          contractVehicle, otherPartyVehicle;
-        Type             type;
+        PlainSinisterType type;
         byte[]           reportDocument;
         FileOutputStream outputStream;
         String           reportFileName;
         Entry<Insuree, Ownership> ownershipsInsuree;
         Ownership ownership;
+
+        contract = dao.findContract(customer, contractId);
+
+        if(contract == null)
+            return NULL_ID;
 
         reportDocument = submission.getReportDocument();
         reportFileName = reportDocumentDir +
@@ -69,13 +95,13 @@ public class SinisterService extends BaseService {
 
             if(otherPartyVehicle == null) {
                 otherPartyModel = dao.find(Model.class, ((AccidentSubmission) submission).getModelId());
-                for(ModelAndYear modelAndYear : otherPartyModel.getModelsAndYears())
-                    if(modelAndYear.getYear() == ((AccidentSubmission) submission).getYear()) {
+                for(Year year : otherPartyModel.getYears())
+                    if(year.getValue() == ((AccidentSubmission) submission).getYear()) {
                         ownership = new Ownership();
                         ownership.setRegistrationNumber(((AccidentSubmission) submission).getRegistrationNumber());
                         ownershipsInsuree = new Entry<>(new ThirdParty());
                         ownershipsInsuree.setValue(ownership);
-                        otherPartyVehicle = new Vehicle(modelAndYear, ownershipsInsuree);
+                        otherPartyVehicle = new Vehicle(otherPartyModel, year, ownershipsInsuree);
                         break;
                     }
 
@@ -90,7 +116,7 @@ public class SinisterService extends BaseService {
             else
                 sinister = null;
         } else {
-            type = dao.find(Type.class, ((PlainSinisterSubmission)submission).getTypeId());
+            type = dao.find(PlainSinisterType.class, ((PlainSinisterSubmission)submission).getTypeId());
 
             sinister = new PlainSinister(contract, type);
         }
@@ -101,6 +127,8 @@ public class SinisterService extends BaseService {
             sinister.setStatus(AWAITING);
 
             dao.save(sinister);
+            return sinister.getId();
         }
+        return NULL_ID;
     }
 }

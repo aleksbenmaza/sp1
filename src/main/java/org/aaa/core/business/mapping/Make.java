@@ -1,14 +1,12 @@
 package org.aaa.core.business.mapping;
 
 
-import org.hibernate.annotations.*;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,8 +16,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "makes")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Make extends IdentifiableByIdImpl {
+//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+public class Make extends IdentifiedByIdEntity {
 
     @Column
     private String name;

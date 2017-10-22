@@ -1,6 +1,7 @@
 package org.aaa.core.business.mapping;
 
 
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.Generated;
@@ -10,19 +11,20 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * Created by alexandremasanes on 28/04/2017.
  */
 @Entity
 @Table(name = "tokens")
-public class Token extends IdentifiableByIdImpl {
+public class Token extends IdentifiedByIdEntity {
 
     @Column
-    private String value;
+    private UUID value;
 
     @Column(name = "old_value")
-    private String oldValue;
+    private UUID oldValue;
 
     @Generated(GenerationTime.INSERT)
     @Column(name = "created_at")
@@ -48,19 +50,19 @@ public class Token extends IdentifiableByIdImpl {
         setUserAccount(requireNonNull(userAccount));
     }
 
-    public String getValue() {
+    public UUID getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(UUID value) {
         this.value = value;
     }
 
-    public String getOldValue() {
+    public UUID getOldValue() {
         return oldValue;
     }
 
-    public void setOldValue(String oldValue) {
+    public void setOldValue(UUID oldValue) {
         this.oldValue = oldValue;
     }
 

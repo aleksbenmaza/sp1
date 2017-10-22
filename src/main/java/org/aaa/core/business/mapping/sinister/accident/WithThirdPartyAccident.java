@@ -1,5 +1,6 @@
 package org.aaa.core.business.mapping.sinister.accident;
 
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.core.business.mapping.Contract;
 import org.aaa.core.business.mapping.Vehicle;
 
@@ -22,7 +23,7 @@ public class WithThirdPartyAccident extends Accident {
             Vehicle vehicle
     ) {
         super(contract);
-        this.vehicle = org.aaa.core.business.mapping.Entity.requireNonNull(vehicle);
+        this.vehicle = IdentifiedByIdEntity.requireNonNull(vehicle);
     }
 
     public Vehicle getVehicle() {

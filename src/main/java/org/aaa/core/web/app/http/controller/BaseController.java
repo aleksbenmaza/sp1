@@ -1,11 +1,11 @@
 package org.aaa.core.web.app.http.controller;
 
+import org.aaa.core.web.app.http.session.Constants;
 import org.aaa.core.web.common.business.logic.UserService;
 import org.aaa.core.business.mapping.person.Person;
 import org.aaa.core.business.mapping.person.RegisteredUser;
 import org.aaa.core.web.app.http.session.Guest;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.aaa.core.business.mapping.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,6 @@ import java.util.Map;
 
 public abstract class BaseController {
 
-    @Value("${session.keys.user}")
-    private String sessionUserKey;
-
     @Autowired
     protected UserService userService;
 
@@ -35,13 +32,13 @@ public abstract class BaseController {
     public void checkSessionUser(HttpSession session) {
         User user;
         System.out.println(new Object(){}.getClass().getEnclosingMethod().getName());
-        if(session.isNew() || getSessionUser(session) == null) {
+        if(session.isNew() || getUser(session) == null) {
             user = new Guest();
             setSessionUser(session, user);
         } else {
             System.out.println(getClass());
 
-            user = getSessionUser(session);
+            user = getUser(session);
 
             if (user instanceof Person) {
                 user = userService.getUser(((Person) user).getId());
@@ -77,12 +74,12 @@ public abstract class BaseController {
         return render(getViewName(), null);
     }
 
-    protected User getSessionUser(HttpSession session) {
-        return (User) session.getAttribute(sessionUserKey);
+    protected User getUser(HttpSession session) {
+        return (User) session.getAttribute(Constants.ATTRIBUTE_USER);
     }
 
     protected void setSessionUser(HttpSession session, User user) {
-        session.setAttribute(sessionUserKey, user);
+        session.setAttribute(Constants.ATTRIBUTE_USER, user);
     }
 
     protected abstract String getViewName();

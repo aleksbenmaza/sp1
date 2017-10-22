@@ -29,8 +29,4 @@ public class XMLParser {
 
         return t;
     }
-
-    public static void main(String... args) throws JAXBException {
-        System.out.println(new XMLParser().convertFromXMLToObject(ImportSources.class, "/Users/alexandremasanes/Desktop/Ben Hamed/java/aaa_web/src/main/resources/import-sources.xml"));
-    }
 }

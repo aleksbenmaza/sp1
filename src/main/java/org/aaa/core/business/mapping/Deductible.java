@@ -1,66 +1,80 @@
 package org.aaa.core.business.mapping;
 
+import java.io.Serializable;
+
 import org.aaa.core.business.mapping.damage.Damage;
+
+import org.aaa.orm.entity.BaseEntity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
-
 import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
-import java.io.Serializable;
 
 /**
  * Created by alexandremasanes on 29/03/2017.
  */
 
-@SuppressWarnings("unused")
 @Entity
 @Immutable
 @Table(name = "deductibles")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-public class Deductible implements Serializable {
+public class Deductible extends BaseEntity {
 
-    @Id
-    @OneToOne
-    @JoinColumn(
-            name                 = "damage_id",
-            referencedColumnName = "id"
-    ) private Damage damage;
+    @Embeddable
+    public static class Id implements Serializable {
+
+        @OneToOne(cascade = CascadeType.ALL)
+        @JoinColumn(
+                name                 = "damage_id",
+                referencedColumnName = "id"
+        ) private Damage damage;
+
+        public Damage getDamage() {
+            return damage;
+        }
+
+        public void setDamage(Damage damage) {
+            this.damage = damage;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o == this || o instanceof Deductible && o.hashCode() == this.hashCode();
+        }
+
+        @Override
+        public int hashCode() {
+            return damage.hashCode();
+        }
+
+        Id() {}
+    }
+
+    @EmbeddedId
+    private Id id;
 
     @Column(
     ) private float value;
-
-    @ManyToOne
-    @JoinColumn(
-            name                 = "insurance_id",
-            referencedColumnName = "id"
-    ) private Insurance insurance;
 
     public float getValue() {
         return value;
     }
 
-    public Insurance getInsurance() {
-        return insurance;
-    }
-
-    public Damage getDamage() {
-        return damage;
+    public final Id getId() {
+        return id;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Deductible that = (Deductible) o;
-
-        return damage != null ? damage.equals(that.damage) : that.damage == null;
+    public final boolean equals(Object o) {
+        return o instanceof Deductible && o.equals(this);
     }
 
     @Override
-    public int hashCode() {
-        return damage != null ? damage.hashCode() : 0;
+    public final int hashCode() {
+        return id.hashCode();
     }
+
+    private Deductible() {}
 }

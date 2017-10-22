@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping("/" + VIEW_NAME)
-public class ErrorController extends BaseController {
+public class ErrorController extends BaseController implements org.aaa.core.web.common.http.controller.ErrorController {
 
     public final static String VIEW_NAME = "error";
 
@@ -33,8 +33,7 @@ public class ErrorController extends BaseController {
     @RequestMapping(method = GET)
     public ModelAndView getErrorPage(HttpServletResponse response) {
         int statusCode = response.getStatus();
-        if(statusCode < 400
-        || messageSource.getMessage("error.message" + statusCode, null, Locale.FRENCH) == null)
+        if(messageSource.getMessage("error.message" + statusCode, null, Locale.FRENCH) == null)
             throw new ResourceNotFoundException();
         ModelAndView view = render();
         view.addObject("messageVars", new SpringMessageVars(statusCode));

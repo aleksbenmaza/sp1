@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by alexandremasanes on 19/07/2017.
  */
-public class ForwardingView extends AbstractUrlBasedView {
+public final class ForwardingView extends AbstractUrlBasedView {
 
     private HttpStatus httpStatus;
 

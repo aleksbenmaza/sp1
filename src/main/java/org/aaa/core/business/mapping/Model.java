@@ -1,5 +1,6 @@
 package org.aaa.core.business.mapping;
 
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -7,10 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,8 +17,8 @@ import java.util.Set;
 @Entity
 @Immutable
 @Table(name = "models")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Model extends IdentifiableByIdImpl {
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Model extends IdentifiedByIdEntity {
 
     @Column
     private String name;
@@ -29,11 +27,15 @@ public class Model extends IdentifiableByIdImpl {
     @JoinColumn(name = "make_id", referencedColumnName = "id", nullable = false)
     private Make make;
 
+    @ManyToMany(mappedBy = "models", cascade = CascadeType.ALL)
+    private Set<Year> years;
+
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
-    private Set<ModelAndYear> modelsAndYears;
+    private Set<Vehicle> vehicles;
 
     public Model(Make make) {
-        modelsAndYears  = new HashSet<>();
+        years     = new HashSet<>();
+        vehicles  = new HashSet<>();
         this.make = requireNonNull(make);
         make.addModel(this);
     }
@@ -50,12 +52,21 @@ public class Model extends IdentifiableByIdImpl {
         return make;
     }
 
-    public Set<ModelAndYear> getModelsAndYears() {
-        return new HashSet<>(modelsAndYears);
+    public Set<Year> getYears() {
+        return new HashSet<>(years);
     }
 
-    public boolean addModelAndYear(ModelAndYear modelAndYear) {
-        return modelsAndYears.add(modelAndYear);
+    public Set<Vehicle> getVehicles() {
+        return new HashSet<>(vehicles);
+    }
+
+    public boolean addYear(Year year) {
+        return !year.getModels().contains(this) && years.add(year);
+    }
+
+    public boolean addVehicle(Vehicle vehicle) {
+        check(years.contains(vehicle.getYear()));
+        return vehicles.add(vehicle);
     }
 
     Model() {}

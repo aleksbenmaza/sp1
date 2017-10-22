@@ -1,6 +1,7 @@
 package org.aaa.core.business.mapping;
 
 import org.aaa.core.business.mapping.damage.Spoilage;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "car_dealers")
-public class CarDealer extends IdentifiableByIdImpl {
+public class CarDealer extends IdentifiedByIdEntity {
 
     @Column
     private String name;
@@ -24,8 +25,8 @@ public class CarDealer extends IdentifiableByIdImpl {
     @OneToMany(mappedBy = "carDealer", cascade = CascadeType.ALL)
     private Set<Spoilage> spoilages;
 
-    public CarDealer() {
-        spoilages = new HashSet<Spoilage>();
+    {
+        spoilages = new HashSet<>();
     }
 
     public String getName() {

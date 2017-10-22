@@ -1,6 +1,6 @@
 package org.aaa.core.web.api.model.ouput.customer;
 
-import static org.aaa.util.ObjectUtils.replaceIfNull;
+import static org.aaa.util.ObjectUtils.ifNull;
 
 import org.aaa.core.business.mapping.UserAccount;
 import org.aaa.core.business.mapping.person.insuree.Customer;

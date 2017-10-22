@@ -1,8 +1,8 @@
-package org.aaa.core.web.common.model.extern.output.edmunds;
+package org.aaa.core.web.common.model.foreign.output.edmunds;
 
 import com.google.gson.annotations.SerializedName;
 import org.aaa.core.business.mapping.Make;
-import org.aaa.core.web.common.model.extern.output.ToEntitiesConvertible;
+import org.aaa.core.web.common.model.foreign.output.ToEntitiesConvertible;
 
 import java.util.Arrays;
 
@@ -21,7 +21,7 @@ public class MakesDTO implements ToEntitiesConvertible<Make> {
         Make[] makes;
         int i;
 
-        makes = new Make[makeDTOs.length];
+        makes = new Make[makesCount];
         i = 0;
 
         for(MakeDTO makeDTO : makeDTOs)
@@ -32,7 +32,7 @@ public class MakesDTO implements ToEntitiesConvertible<Make> {
 
     @Override
     public String toString() {
-        return "MakesDTO{" +
+        return getClass().getName() + "{" +
                 "makesCount=" + makesCount +
                 ", makes=" + Arrays.toString(makeDTOs) +
                 '}';

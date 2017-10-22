@@ -1,9 +1,10 @@
-#parse("macro/msg.vm")
-#set($index = "&#36;index")
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="customer_board" class="panel panel-default col-md-9">
-    <div class="panel-heading" style=" background: #353535; color: #AFAFAF;">
-        <label class="title" style="">
-            #msg("customerpanel.sinisterslist.panelTitle"){{sinisters[0].contract.id}}
+    <div class="panel-heading">
+        <label class="title">
+            <spring:message code="customerpanel.sinisterslist.panelTitle"/> {{sinisters[0].contract.id}}
         </label>
     </div>
     <div class="panel-body" style="height: 246px; overflow: auto">
@@ -13,14 +14,13 @@
                     <table class="table-striped">
                         <tr>
                             <td class="col-md-1"></td>
-                            <td class="col-md-3">#msg("id")</td>
-                            <td class="col-md-3">#msg("date")</td>
-                            <td class="col-md-3">#msg("time")</td>
-                            <td class="col-md-3">#msg("closed")</td>
-                            <td class="col-md-3">#msg("responsibilityRate")</td>
-                            <td class="col-md-3">#msg("type")</td>
+                            <td class="col-md-3"><spring:message code="id"/></td>
+                            <td class="col-md-3"><spring:message code="date"/></td>
+                            <td class="col-md-3"><spring:message code="time"/></td>
+                            <td class="col-md-3"><spring:message code="closed"/></td>
+                            <td class="col-md-3"><spring:message code="responsibilityRate"/></td>
+                            <td class="col-md-3"><spring:message code="type"/></td>
                         </tr>
-
                         <tr ng-repeat="sinister in sinisters">
                             <td class="col-md-1"><button ng-controller="NavCtrl" class="btn btn-md" ng-click="go('contract', {contract_key:$index+1})"></button></td>
                             <td class="col-md-3">{{sinister.id}}</td>
@@ -38,9 +38,9 @@
 </div>
 <div>
     <div id="contracts_list" class="panel panel-default col-md-3">
-        <div class="panel-heading" style=" background: #353535; color: #AFAFAF;">
-            <label class="title" style="">
-                #msg("customerpanel.navPanelTitle")
+        <div class="panel-heading">
+            <label class="title">
+                <spring:message code="customerpanel.navPanelTitle"/>
             </label>
         </div>
         <div ng-controller="NavCtrl" class="panel-body list-group">

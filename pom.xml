@@ -12,6 +12,14 @@
             <id>org.gridgain</id>
             <url>http://www.gridgainsystems.com/nexus/content/repositories/external/</url>
         </repository>
+        <repository>
+            <id>alfresco</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>redhat</id>
+            <url>https://maven.repository.redhat.com/ga/</url>
+        </repository>
     </repositories>
     <properties>
         <spring.version>4.3.6.RELEASE</spring.version>
@@ -32,6 +40,20 @@
             <groupId>org.checkerframework</groupId>
             <artifactId>jdk8</artifactId>
             <version>2.1.14</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -69,6 +91,24 @@
             <artifactId>spring-context-support</artifactId>
             <version>4.3.6.RELEASE</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-messaging -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>4.3.6.RELEASE</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>4.3.6.RELEASE</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-oxm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>4.3.6.RELEASE</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
         <dependency>
             <groupId>javax.mail</groupId>
@@ -80,12 +120,21 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
-        </dependency><!--
+        </dependency>
+        <!--
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.6.3</version>
-        </dependency> -->
+        </dependency>
+        -->
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -110,12 +159,27 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>6.0.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.2.8.Final</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
+        <!--
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>5.2.8.Final</version>
+        </dependency>
+        -->
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-c3p0 -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -157,14 +221,25 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jasypt/jasypt -->
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.3.redhat_3</version>
+        </dependency>
     </dependencies>
     <build>
-        <testResources>
-        <!-- config and Spring files for Junit Spring loader -->
+        <resources>
+            <resource>
+                <directory>src/main/webapp/WEB-INF/</directory>
+            </resource>
+        </resources>
+       <!-- <testResources>
+        config and Spring files for Junit Spring loader
             <testResource>
                 <directory>src/main/webapp/WEB-INF/</directory>
             </testResource>
-        </testResources>
+        </testResources> -->
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -173,8 +248,8 @@
                 <configuration>
                     <username>admin</username>
                     <password>admin</password>
-                    <url>http://localhost:8080/</url>
-                    <server>aaa_app_server</server>
+                    <url>http://localhost:8080/manager</url>
+                    <server>aaa_server</server>
                     <contextReloadable>true</contextReloadable>
                     <path>/</path>
                 </configuration>

@@ -21,7 +21,7 @@ public class Expert extends Person implements RegisteredUser {
     @OneToMany(mappedBy = "expert", cascade = CascadeType.ALL)
     private Set<Sinister> sinisters;
 
-    public Expert(){
+    public Expert() {
         sinisters = new HashSet<>();
     }
 

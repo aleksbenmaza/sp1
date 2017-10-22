@@ -2,27 +2,37 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
-       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
                            http://www.springframework.org/schema/context
 	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd
 	                       http://www.springframework.org/schema/task
 	                       http://www.springframework.org/schema/task/spring-task.xsd
-                           http://www.springframework.org/schema/util
-	                       http://www.springframework.org/schema/util/spring-util.xsd">
-
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
     <context:component-scan base-package="org.aaa.core.web"/>
 
-    <task:annotation-driven />
-
+    <task:annotation-driven/>
 
     <bean id="sessionFactory" name="sessionFactory"
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="configLocation" value="/WEB-INF/hbn.xml"/>
+        <property name="configLocation" value="classpath:hbn.xml"/>
         <property name="packagesToScan" value="org.aaa.core.business.mapping"/>
     </bean>
+    <bean id="strongEncryptor"
+          class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="algorithm" value="PBEWithMD5AndTripleDES"/>
+        <property name="password" value="jasypt"/>
+    </bean>
+    <!--
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceXmlLocation" encryptedString="classpath*:/META-INF/persistence.xml"/>
+        <property name="persistenceUnitName" encryptedString="aaa"/>
+
+    </bean> -->
     <!-- must be c/p into every *-servlet.xml -->
     <context:property-placeholder location="classpath*:/validation.properties,
                                             classpath*:/service.properties,
@@ -30,16 +40,14 @@
                                             classpath*:/helper.properties,
                                             classpath*:/task.properties"/>
 
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
 
-    <!--
-
-        <bean id="transactionManager"
-              class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-            <property name="sessionFactory" ref="sessionFactory" />
-        </bean>
-
-        <tx:annotation-driven proxy-target-class="true"
-                              transaction-manager="transactionManager" /> -->
+    <tx:annotation-driven mode="proxy"
+                          proxy-target-class="true"
+                          transaction-manager="transactionManager"/>
 
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="velocityProperties">
@@ -67,22 +75,25 @@
         </property>
     </bean>
 
+    <!--<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller"/>-->
+
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- one of the properties available; the maximum file size in bytes -->
         <property name="maxUploadSize" value="100000"/>
     </bean>
+    <!--
+    <bean id="openEntityManagerInViewInterceptor" class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+
+    </bean>-->
 
     <!-- this is a template messageCode that we can pre-load with default state -->
     <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
         <property name="from" value="Assurance Automobile Aixoise"/>
     </bean>
-
-
     <bean id="messageSource"
           class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages"/>
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
-
 </beans>

@@ -1,8 +1,8 @@
 package org.aaa.core.web.api.http.controller;
 
 
-import static org.aaa.core.business.mapping.IdentifiableById.NULL_ID;
-import static org.aaa.core.business.mapping.IdentifiableById.Utils.toSortedList;
+import static org.aaa.orm.entity.identifiable.IdentifiableById.NULL_ID;
+import static org.aaa.orm.entity.identifiable.IdentifiableById.toSortedList;
 import static org.aaa.core.web.api.model.ouput.DTO.fromCollection;
 
 import org.aaa.core.web.common.business.logic.ContractService;
@@ -15,7 +15,6 @@ import org.aaa.core.business.mapping.sinister.PlainSinister;
 import org.aaa.core.business.mapping.sinister.Sinister;
 import org.aaa.core.web.common.business.logic.VehicleService;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions.*;
-import org.aaa.core.web.common.helper.VelocityTemplateResolver;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;
 import org.aaa.core.web.api.model.input.validation.ContractSubmissionValidator;
 import org.aaa.core.web.api.model.input.validation.Errors;
@@ -31,13 +30,16 @@ import org.aaa.core.business.mapping.User;
 
 import com.itextpdf.text.DocumentException;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import org.aaa.util.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,12 +71,10 @@ public class CustomerApiController extends BaseController {
     @Autowired
     private SepaUploadValidator         sepaUploadValidator;
 
-    @Autowired
-    private VelocityTemplateResolver    velocityTemplateResolver;
-
-
     @ModelAttribute
-    public Customer getCustomer(@RequestHeader("Authorization") String token) {
+    public Customer getCustomer(
+            @RequestHeader("Authorization") String token
+    ) {
         User user;
 
         user = tokenService.getGrantedUser(token);
@@ -86,6 +86,15 @@ public class CustomerApiController extends BaseController {
             throw new ResourceForbiddenException();
 
         return (Customer) user;
+    }
+
+    @ModelAttribute
+    public void checkCustomer(
+            Customer customer,
+            @PathVariable long customerId
+    ) {
+        if(customer.getId() != customerId)
+            throw new ResourceForbiddenException();
     }
 
     @RequestMapping(value = "/granted", method = GET)
@@ -128,114 +137,69 @@ public class CustomerApiController extends BaseController {
         return new CustomerDTO(customer);
     }
 
-    @RequestMapping(value = "/contracts", method = GET)
+    @RequestMapping(value = "/customers/{customerId}/contracts", method = GET)
     public List<ContractDTO> getCustomerContracts(
             Customer customer
     ) {
         return fromCollection(
-                contractService.getCustomerContracts(customer),
+                contractService.getContracts(customer),
                 ContractDTO::new
         );
     }
 
-    @RequestMapping(value = "/contracts/{key}", method = GET)
+    @RequestMapping(value = "/customers/{customerId}/contracts/{contractId}", method = GET)
     public ContractDTO getContract(
-            Customer customer,
-            @PathVariable                   int key
+            @PathVariable int      contractId,
+                          Customer customer
     ) {
-        int i;
-
-        i = 0;
-        for(Contract contract : toSortedList(customer.getContracts())) {
-            if(++i == key)
-                return new ContractDTO(contract);
-        }
-        throw new ResourceNotFoundException();
+        return new ContractDTO(contractService.getContract(customer, contractId));
     }
 
-    @RequestMapping(value = "/contracts/{key}/sinisters", method = GET)
+    @RequestMapping(value = "/customers/{customerId}/contracts/{contractId}/sinisters", method = GET)
     public List<SinisterDTO> getSinisters(
-            Customer customer,
-            @PathVariable                   int    key
+            @PathVariable int      contractId,
+                          Customer customer
     ) {
 
         List<SinisterDTO> sinisters;
         int i;
 
         sinisters = new ArrayList<>();
-        i = 0;
-        for(Contract contract : toSortedList(customer.getContracts())) {
-            if(++i == key) {
-                contract.getSinisters().forEach(
-                        (sinister) ->  sinisters.add(
-                                sinister instanceof Accident ?
-                                        new AccidentDTO((Accident) sinister) :
-                                        new PlainSinisterDTO((PlainSinister) sinister)
-                        )
-                );
-                return sinisters;
-            }
-        }
-        throw new ResourceNotFoundException();
-    }
 
-    @RequestMapping(value = "/contracts/{contractKey}/sinisters/{sinisterKey}", method = GET)
-    public SinisterDTO getSinister(
-            Customer customer,
-            @PathVariable                   int    contractKey,
-            @PathVariable                   int    sinisterKey
-    ) {
-
-        int i, y;
-
-        i = y = 0;
-
-        for(Contract contract : toSortedList(customer.getContracts()))
-            if(++i == contractKey) {
-
-                for(Sinister sinister : toSortedList(contract.getSinisters()))
-                    if(++y == sinisterKey)
-                        return sinister instanceof Accident ?
+        sinisterService.getSinisters(customer, contractId).forEach(
+                (sinister) ->  sinisters.add(
+                        sinister instanceof Accident ?
                                 new AccidentDTO((Accident) sinister) :
-                                new PlainSinisterDTO((PlainSinister) sinister);
-            }
-
-        throw new ResourceNotFoundException();
+                                new PlainSinisterDTO((PlainSinister) sinister)
+                )
+        );
+        return sinisters;
     }
 
-    @RequestMapping(value = "/contracts/{key}/sinisters/types", method = GET)
-    public List<TypeDTO> getTypes(
-            @PathVariable                   int    key,
-            Customer customer
+    @RequestMapping(value = "/customers/{customerId}/sinisters/{sinisterId}", method = GET)
+    public SinisterDTO getSinister(
+            @PathVariable  int      sinisterId,
+                           Customer customer
     ) {
-        int i;
-        i = 0;
 
-        for(Contract contract : customer.getContracts()) {
-            if(++i == key)
-                return fromCollection(/*contract.getInsurance().getSinisterTypes()*/null, TypeDTO::new);
-        }
+        Sinister sinister;
 
-        throw new ResourceNotFoundException();
+        sinister = sinisterService.getSinister(customer, sinisterId);
+        if(sinister == null)
+            return null;
+
+        return sinister instanceof Accident ?
+                new AccidentDTO((Accident) sinister) :
+                new PlainSinisterDTO((PlainSinister) sinister);
+
     }
 
-    @RequestMapping(value = "/template/{templateName}.{extension}", method = GET)
-    public String getTemplate(
-            @PathVariable String templateName,
-            @PathVariable String extension
-    ) {
-        String template;
-        template = velocityTemplateResolver.getCustomerpanelTemplate(templateName+"."+extension);
-        if(template == null)
-            throw new ResourceNotFoundException();
-        return template;
-    }
 
     @ResponseStatus(CREATED)
-    @RequestMapping(value = "/contracts", method = POST)
+    @RequestMapping(value = "/customers/{customerId}/contracts", method = POST)
     public void postContract(
-            Customer customer,
-            @RequestBody                    ContractSubmission contractSubmission
+            @RequestBody ContractSubmission contractSubmission,
+                         Customer           customer
     ) throws Exception {
         Errors errors;
 
@@ -251,14 +215,14 @@ public class CustomerApiController extends BaseController {
     }
 
     @ResponseStatus(CREATED)
-    @RequestMapping(value = "/contracts/{key}/sinisters", method = POST)
-    public void postSinister(
-            @PathVariable                   int                key,
-            Customer customer,
-            @RequestBody                    SinisterSubmission sinisterSubmission
-    ) throws Exception { System.out.println("ready");
+    @RequestMapping(value = "/customers/{customerId}/contracts/{contractId}/sinisters", method = POST)
+    public long postSinister(
+            @PathVariable  long               contractId,
+            @RequestBody   SinisterSubmission sinisterSubmission,
+                           Customer           customer
+    ) throws Exception {
         Errors   errors;
-        int      i;
+        long id;
 
         errors = new Errors(SinisterSubmission.class);
         sinisterSubmissionValidator.validate(sinisterSubmission, errors);
@@ -266,18 +230,14 @@ public class CustomerApiController extends BaseController {
         if(!errors.isEmpty())
             throw new CommandNotValidatedException(errors);
 
-        i = 0;
 
-        for(Contract contract : customer.getContracts())
-            if(++i == key) {
-                sinisterService.addSinister(sinisterSubmission, contract);
-                return;
-            }
+        if((id = sinisterService.addSinister(sinisterSubmission, customer, contractId)) == NULL_ID)
+            throw new BadRequestException();
 
-        throw new ResourceNotFoundException();
+        return id;
     }
 
-    @RequestMapping(value = "/sepa", method = GET)
+    @RequestMapping(value = "/customers/{customerId}?sepa", method = GET)
     public byte[] getSepa(
             Customer customer
     ) throws IOException, DocumentException {
@@ -285,11 +245,11 @@ public class CustomerApiController extends BaseController {
         return customerService.generateSepa(customer);
     }
 
-    @ResponseStatus(CREATED)
-    @RequestMapping(value = "/sepa", method = POST)
-    public void postSepa(
-            Customer customer,
-            @RequestBody                    byte[] sepa
+    @ResponseStatus(NO_CONTENT)
+    @RequestMapping(value = "/customers/{customerId}", method = PATCH)
+    public void patchCustomer(
+            @RequestBody byte[]   sepa,
+                         Customer customer
     ) throws IOException {
         StringBuilder errorMessage = new StringBuilder();
         sepaUploadValidator.validate(sepa, errorMessage);

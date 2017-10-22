@@ -1,9 +1,11 @@
 package org.aaa.orm.entry.manytoone;
 
+import org.aaa.orm.entity.BaseEntity;
 import org.aaa.orm.entry.BaseEntry;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
@@ -12,9 +14,10 @@ import java.io.Serializable;
  */
 
 @Embeddable
-public class Entry<K extends Serializable, V extends Serializable> extends BaseEntry<K, V> {
+public class Entry<K extends BaseEntity, V extends Serializable> extends BaseEntry<K, V> {
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "insuree_id", referencedColumnName = "id")
     private K key;
 
     public Entry(K key) {
@@ -25,4 +28,6 @@ public class Entry<K extends Serializable, V extends Serializable> extends BaseE
     public K getKey() {
         return key;
     }
+
+    Entry() {}
 }

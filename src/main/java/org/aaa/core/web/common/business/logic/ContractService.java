@@ -1,6 +1,6 @@
 package org.aaa.core.web.common.business.logic;
 
-import static org.aaa.core.business.mapping.IdentifiableById.Utils.toSortedList;
+import static org.aaa.orm.entity.identifiable.IdentifiableById.toSortedList;
 import static java.net.URLConnection.guessContentTypeFromStream;
 
 import org.aaa.core.business.mapping.*;
@@ -28,13 +28,16 @@ public class ContractService extends BaseService {
     private String contractDocumentDir;
 
 
-    @SuppressWarnings("unchecked")
-    public List<Contract> getCustomerContracts(Customer customer) {
-        return (List<Contract>) toSortedList(customer.getContracts());
+    public List<Contract> getContracts(Customer customer) {
+        return toSortedList(customer.getContracts());
+    }
+
+    public Contract getContract(Customer customer, long contractId) {
+        return dao.findContract(customer, contractId);
     }
 
     @Transactional
-    public synchronized void addContract(
+    public void addContract(
             ContractSubmission contractSubmission,
             Customer           customer
     ) throws IOException {
@@ -51,8 +54,8 @@ public class ContractService extends BaseService {
         insurance = dao.find(Insurance.class, contractSubmission.getInsuranceId());
         model     = dao.find(Model.class, contractSubmission.getModelId());
 
-        for(ModelAndYear modelAndYear : model.getModelsAndYears())
-            if(modelAndYear.getYear() == contractSubmission.getYear()) {
+        for(Year year : model.getYears())
+            if(year.getValue() == contractSubmission.getYear()) {
                 ownership = new Ownership();
                 ownership.setRegistrationNumber(contractSubmission.getRegistrationNumber());
                 ownership.setPurchaseDate(contractSubmission.getPurchaseDate());
@@ -60,7 +63,7 @@ public class ContractService extends BaseService {
                 ownershipsInsuree = new Entry<>(customer);
                 ownershipsInsuree.setValue(ownership);
 
-                vehicle = new Vehicle(modelAndYear, ownershipsInsuree);
+                vehicle = new Vehicle(model, year, ownershipsInsuree);
 
                 vehicle.setVinNumber(contractSubmission.getVinNumber());
 

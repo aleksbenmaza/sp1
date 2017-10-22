@@ -1,7 +1,7 @@
 package org.aaa.core.business.repository;
 
-import org.aaa.core.business.mapping.Entity;
-import org.aaa.core.business.mapping.IdentifiableByIdImpl;
+import org.aaa.orm.entity.BaseEntity;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
 import java.util.List;
 
@@ -10,13 +10,13 @@ import java.util.List;
  */
 public interface Finder {
 
-    <T extends Entity> List<T>  find(Class<T> entityClass);
+    <T extends BaseEntity>                    List<T> find(Class<T> entityClass);
 
-    <T extends IdentifiableByIdImpl> List<T> find(Class<T> entityClass, long... ids);
+    <T extends IdentifiedByIdEntity> List<T> find(Class<T> entityClass, long... ids);
 
-    <T extends IdentifiableByIdImpl> T find(Class<T> entityClass, long id);
+    <T extends IdentifiedByIdEntity> T       find(Class<T> entityClass, long id);
 
-    <T extends IdentifiableByIdImpl> boolean has(Class<T> entityClass, long id);
+    <T extends IdentifiedByIdEntity> boolean has(Class<T> entityClass, long id);
 
-    <T extends IdentifiableByIdImpl> long getNextId(Class<T> entityClass);
+    <T extends IdentifiedByIdEntity> long    getNextId(Class<T> entityClass);
 }

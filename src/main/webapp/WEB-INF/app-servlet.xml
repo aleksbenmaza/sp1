@@ -26,34 +26,28 @@
         <property name="defaultLocale" value="fr" />
     </bean>
 
-    <mvc:resources mapping="/resources/**" location="/WEB-INF/resources/public/"
+    <mvc:resources mapping="/resources/public/**" location="/WEB-INF/resources/public/"
                    cache-period="31556926"/>
 
-    <!--<mvc:annotation-driven ignore-default-model-on-redirect="true" message-codes-resolver="org.springframework.http.converter.json.GsonHttpMessageConverter"/>-->
-<!--
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/resources/**"/>
-            <mvc:exclude-mapping path="/error"/>
-            <bean class="app.core.web.logic.interceptor.GlobalInterceptor"/>
-        </mvc:interceptor>
-    </mvc:interceptors> -->
     <context:property-placeholder location="classpath*:/validation.properties,
                                             classpath*:/service.properties,
                                             classpath*:/app.controller.properties"/>
 
     <util:properties id="properties" location="classpath*:/app.controller.properties"/>
 
-
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/error"/>
             <mvc:exclude-mapping path="/resources/**"/>
-            <bean class="org.aaa.core.web.app.http.interceptor.HttpSessionInterceptor"/>
+            <ref bean="hibernateSessionInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/error"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <ref bean="httpSessionInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
     <mvc:annotation-driven ignore-default-model-on-redirect="true"/>
 </beans>
-

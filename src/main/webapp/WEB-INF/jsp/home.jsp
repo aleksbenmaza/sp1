@@ -12,7 +12,7 @@
         <div id="banner">
             <div class="image-border">
                 <a href="#">
-                    <img src="${WEBROOT}/resources/image/provence_ban.jpg" class="img-responsive" alt="" />
+                    <img src="${WEBROOT}/resources/public/image/provence_ban.jpg" class="img-responsive" alt="" />
                 </a>
             </div>
         </div>
