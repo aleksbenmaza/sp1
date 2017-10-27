@@ -1,8 +1,8 @@
 package org.aaa.core.web.api.model.ouput.customer.sinister;
 
-import org.aaa.core.business.mapping.Coverage;
-import org.aaa.core.business.mapping.sinister.PlainSinister;
-import org.aaa.core.business.mapping.PlainSinisterType;
+import org.aaa.core.business.mapping.entity.Coverage;
+import org.aaa.core.business.mapping.entity.sinister.PlainSinister;
+import org.aaa.core.business.mapping.entity.PlainSinisterType;
 import org.aaa.core.web.api.model.ouput.DTO;
 import com.google.gson.annotations.SerializedName;
 

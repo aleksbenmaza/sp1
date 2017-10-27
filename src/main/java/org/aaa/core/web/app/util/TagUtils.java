@@ -1,10 +1,10 @@
 package org.aaa.core.web.app.util;
 
-import org.aaa.core.business.mapping.person.Manager;
-import org.aaa.core.business.mapping.person.Person;
-import org.aaa.core.business.mapping.person.RegisteredUser;
-import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.person.Manager;
+import org.aaa.core.business.mapping.entity.person.Person;
+import org.aaa.core.business.mapping.entity.person.RegisteredUser;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.User;
 
 /**
  * Created by alexandremasanes on 17/08/2017.

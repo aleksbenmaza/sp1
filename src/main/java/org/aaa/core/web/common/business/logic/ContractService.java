@@ -3,9 +3,9 @@ package org.aaa.core.web.common.business.logic;
 import static org.aaa.orm.entity.identifiable.IdentifiableById.toSortedList;
 import static java.net.URLConnection.guessContentTypeFromStream;
 
-import org.aaa.core.business.mapping.*;
-import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.business.mapping.person.insuree.Insuree;
+import org.aaa.core.business.mapping.entity.*;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.person.insuree.Insuree;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;
 import org.aaa.orm.entry.manytoone.Entry;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +28,16 @@ public class ContractService extends BaseService {
     private String contractDocumentDir;
 
 
-    public List<Contract> getContracts(Customer customer) {
+    public List<Contract> get(Customer customer) {
         return toSortedList(customer.getContracts());
     }
 
-    public Contract getContract(Customer customer, long contractId) {
+    public Contract get(Customer customer, long contractId) {
         return dao.findContract(customer, contractId);
     }
 
     @Transactional
-    public void addContract(
+    public Contract create(
             ContractSubmission contractSubmission,
             Customer           customer
     ) throws IOException {
@@ -67,26 +67,27 @@ public class ContractService extends BaseService {
 
                 vehicle.setVinNumber(contractSubmission.getVinNumber());
 
-                registrationDocument = contractSubmission.getRegistrationDocument();
-                registrationFileName = contractDocumentDir +
-                        dao.getNextId(Vehicle.class) +
-                        guessContentTypeFromStream(
-                                new ByteArrayInputStream(registrationDocument)
-                        );
-
-
-                outputStream = new FileOutputStream(registrationFileName);
-                outputStream.write(registrationDocument);
-                outputStream.close();
-
                 contract = new Contract(insurance, vehicle, customer);
                 contract.setActive(true);
                 contract.setSubscriptionDate(new Date());
                 contract.setStatus(ToBeChecked.Status.AWAITING);
 
                 dao.save(contract);
-                return;
+
+                registrationDocument = contractSubmission.getRegistrationDocument();
+                registrationFileName = contractDocumentDir +
+                        vehicle.getId() +
+                        guessContentTypeFromStream(
+                                new ByteArrayInputStream(registrationDocument)
+                        );
+
+                outputStream = new FileOutputStream(registrationFileName);
+                outputStream.write(registrationDocument);
+                outputStream.close();
+
+                return contract;
             }
+        return null;
     }
 
     public String getContractDocumentDir() {

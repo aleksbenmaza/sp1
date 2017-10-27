@@ -1,9 +1,7 @@
 package org.aaa.core.web.api.model.ouput.admin;
 
 import com.google.gson.annotations.SerializedName;
-import org.aaa.core.business.mapping.Coverage;
-import org.aaa.core.business.mapping.Insurance;
-import org.aaa.core.business.mapping.PlainSinisterType;
+import org.aaa.core.business.mapping.entity.Insurance;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

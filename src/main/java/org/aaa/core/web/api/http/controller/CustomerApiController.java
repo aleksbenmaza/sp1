@@ -1,18 +1,16 @@
 package org.aaa.core.web.api.http.controller;
 
-
 import static org.aaa.orm.entity.identifiable.IdentifiableById.NULL_ID;
-import static org.aaa.orm.entity.identifiable.IdentifiableById.toSortedList;
 import static org.aaa.core.web.api.model.ouput.DTO.fromCollection;
 
+import org.aaa.core.business.mapping.entity.Contract;
 import org.aaa.core.web.common.business.logic.ContractService;
 import org.aaa.core.web.common.business.logic.CustomerService;
 import org.aaa.core.web.common.business.logic.SinisterService;
-import org.aaa.core.business.mapping.Contract;
-import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.business.mapping.sinister.accident.Accident;
-import org.aaa.core.business.mapping.sinister.PlainSinister;
-import org.aaa.core.business.mapping.sinister.Sinister;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.sinister.accident.Accident;
+import org.aaa.core.business.mapping.entity.sinister.PlainSinister;
+import org.aaa.core.business.mapping.entity.sinister.Sinister;
 import org.aaa.core.web.common.business.logic.VehicleService;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions.*;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;
@@ -24,30 +22,28 @@ import org.aaa.core.web.api.model.input.validation.SinisterSubmissionValidator;
 import org.aaa.core.web.api.model.ouput.customer.*;
 import org.aaa.core.web.api.model.ouput.customer.sinister.AccidentDTO;
 import org.aaa.core.web.api.model.ouput.customer.sinister.PlainSinisterDTO;
-import org.aaa.core.web.api.model.ouput.customer.sinister.PlainSinisterDTO.TypeDTO;
 import org.aaa.core.web.api.model.ouput.customer.sinister.SinisterDTO;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.User;
 
 import com.itextpdf.text.DocumentException;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
-import static org.springframework.http.HttpStatus.CREATED;
 
-import org.aaa.util.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by alexandremasanes on 21/02/2017.
  */
-@RestController // = @Controller + @ResponseBody
-@RequestMapping(value = "/customer")
+@RestController
+@RequestMapping(value = "${routes.customer.root}")
 public class CustomerApiController extends BaseController {
 
     @Autowired
@@ -90,83 +86,80 @@ public class CustomerApiController extends BaseController {
 
     @ModelAttribute
     public void checkCustomer(
-            Customer customer,
-            @PathVariable long customerId
+                          Customer customer,
+            @PathVariable long     customerId
     ) {
         if(customer.getId() != customerId)
             throw new ResourceForbiddenException();
     }
 
-    @RequestMapping(value = "/granted", method = GET)
-    public Boolean customerIsGranted(
-            Customer customer
-    ) {
-        return customer.isSepaDocumentPresent();
-    }
-
-    @RequestMapping(value = "/makes", method = GET, params = "name")
-    public List<MakeDTO> getMakes(
+    @ModelAttribute
+    public void checkWhiteSpace(
             @RequestParam String name
     ) {
         checkWhiteSpaces(name);
+    }
+
+    @RequestMapping(path = "${routes.customer.makes}", method = GET)
+    public List<MakeDTO> getMakes(
+            @RequestParam String name
+    ) {
         return fromCollection(vehicleService.getMakesByName(name), MakeDTO::new);
     }
 
-    @RequestMapping(value = "makes/{id}/models", method = GET, params = "name")
+    @RequestMapping(path = "${routes.customer.makeModels}", method = GET)
     public List<ModelDTO> getModels(
             @PathVariable long   id,
             @RequestParam String name
             
     ) {
-        checkWhiteSpaces(name);
+        System.out.println(vehicleService.getModelsByNameAndMakeId(name, id));
         return fromCollection(vehicleService.getModelsByNameAndMakeId(name, id), ModelDTO::new);
     }
 
-    @RequestMapping(value = "/models", method = GET, params = "name")
+    @RequestMapping(path = "${routes.customer.models}", method = GET)
     public List<ModelDTO> getModels(
             @RequestParam String name
     ) {
-        checkWhiteSpaces(name);
         return getModels(NULL_ID, name);
     }
 
-    @RequestMapping(method = GET)
+    @RequestMapping(path = "${routes.customer.customer}", method = GET)
     public CustomerDTO getCustomer(
             Customer customer
     ) {
         return new CustomerDTO(customer);
     }
 
-    @RequestMapping(value = "/customers/{customerId}/contracts", method = GET)
+    @RequestMapping(path = "${routes.customer.customerContracts}", method = GET)
     public List<ContractDTO> getCustomerContracts(
             Customer customer
     ) {
         return fromCollection(
-                contractService.getContracts(customer),
+                contractService.get(customer),
                 ContractDTO::new
         );
     }
 
-    @RequestMapping(value = "/customers/{customerId}/contracts/{contractId}", method = GET)
+    @RequestMapping(path = "${routes.customer.customerContract}", method = GET)
     public ContractDTO getContract(
             @PathVariable int      contractId,
                           Customer customer
     ) {
-        return new ContractDTO(contractService.getContract(customer, contractId));
+        return new ContractDTO(contractService.get(customer, contractId));
     }
 
-    @RequestMapping(value = "/customers/{customerId}/contracts/{contractId}/sinisters", method = GET)
+    @RequestMapping(path = "${routes.customer.customerContractSinisters}", method = GET)
     public List<SinisterDTO> getSinisters(
             @PathVariable int      contractId,
                           Customer customer
     ) {
 
         List<SinisterDTO> sinisters;
-        int i;
 
         sinisters = new ArrayList<>();
 
-        sinisterService.getSinisters(customer, contractId).forEach(
+        sinisterService.getByCustomerContract(customer, contractId).forEach(
                 (sinister) ->  sinisters.add(
                         sinister instanceof Accident ?
                                 new AccidentDTO((Accident) sinister) :
@@ -176,15 +169,14 @@ public class CustomerApiController extends BaseController {
         return sinisters;
     }
 
-    @RequestMapping(value = "/customers/{customerId}/sinisters/{sinisterId}", method = GET)
+    @RequestMapping(path = "${routes.customer.customerContractSinister}", method = GET)
     public SinisterDTO getSinister(
             @PathVariable  int      sinisterId,
                            Customer customer
     ) {
-
         Sinister sinister;
 
-        sinister = sinisterService.getSinister(customer, sinisterId);
+        sinister = sinisterService.getByCustomer(customer, sinisterId);
         if(sinister == null)
             return null;
 
@@ -194,14 +186,15 @@ public class CustomerApiController extends BaseController {
 
     }
 
-
     @ResponseStatus(CREATED)
-    @RequestMapping(value = "/customers/{customerId}/contracts", method = POST)
+    @RequestMapping(path = "${routes.customer.customerContracts}", method = POST)
     public void postContract(
-            @RequestBody ContractSubmission contractSubmission,
-                         Customer           customer
+            @RequestBody ContractSubmission  contractSubmission,
+                         Customer            customer,
+                         HttpServletResponse response
     ) throws Exception {
         Errors errors;
+        Contract contract;
 
         errors = new Errors(ContractSubmission.class);
         contractSubmissionValidator.validate(contractSubmission, errors);
@@ -209,20 +202,26 @@ public class CustomerApiController extends BaseController {
         if(!errors.isEmpty())
             throw new CommandNotValidatedException(errors);
 
-        contractService.addContract(contractSubmission,
+        contract = contractService.create(contractSubmission,
                 customer
         );
+
+        if(contract == null)
+            throw new BadRequestException();
+
+        setLocationResponseHeader(response, contract.getId());
     }
 
     @ResponseStatus(CREATED)
-    @RequestMapping(value = "/customers/{customerId}/contracts/{contractId}/sinisters", method = POST)
-    public long postSinister(
-            @PathVariable  long               contractId,
-            @RequestBody   SinisterSubmission sinisterSubmission,
-                           Customer           customer
+    @RequestMapping(path = "${routes.customer.customerContractSinisters}", method = POST)
+    public void postSinister(
+            @PathVariable  long                contractId,
+            @RequestBody   SinisterSubmission  sinisterSubmission,
+                           Customer            customer,
+                           HttpServletResponse response
     ) throws Exception {
         Errors   errors;
-        long id;
+        Sinister sinister;
 
         errors = new Errors(SinisterSubmission.class);
         sinisterSubmissionValidator.validate(sinisterSubmission, errors);
@@ -230,14 +229,13 @@ public class CustomerApiController extends BaseController {
         if(!errors.isEmpty())
             throw new CommandNotValidatedException(errors);
 
-
-        if((id = sinisterService.addSinister(sinisterSubmission, customer, contractId)) == NULL_ID)
+        if((sinister = sinisterService.create(sinisterSubmission, customer, contractId)) == null)
             throw new BadRequestException();
 
-        return id;
+        setLocationResponseHeader(response, sinister.getId());
     }
 
-    @RequestMapping(value = "/customers/{customerId}?sepa", method = GET)
+    @RequestMapping(path = "${routes.customer.customer}", method = GET, params = "sepa")
     public byte[] getSepa(
             Customer customer
     ) throws IOException, DocumentException {
@@ -246,7 +244,7 @@ public class CustomerApiController extends BaseController {
     }
 
     @ResponseStatus(NO_CONTENT)
-    @RequestMapping(value = "/customers/{customerId}", method = PATCH)
+    @RequestMapping(path = "${routes.customer.customer}", method = PATCH)
     public void patchCustomer(
             @RequestBody byte[]   sepa,
                          Customer customer

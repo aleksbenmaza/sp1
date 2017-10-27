@@ -3,6 +3,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:ev="http://persistence.blazebit.com/view/spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
                            http://www.springframework.org/schema/context
@@ -10,7 +11,9 @@
 	                       http://www.springframework.org/schema/task
 	                       http://www.springframework.org/schema/task/spring-task.xsd
                            http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+                           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                           http://persistence.blazebit.com/view/spring http://persistence.blazebit.com/view/spring/spring-entity-views-1.2.xsd">
 
     <context:component-scan base-package="org.aaa.core.web"/>
 
@@ -20,6 +23,17 @@
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <property name="configLocation" value="classpath:hbn.xml"/>
         <property name="packagesToScan" value="org.aaa.core.business.mapping"/>
+    </bean>
+
+    <ev:entity-views base-package="org.aaa.core.business.mapping"/>
+
+    <bean id="entityViewConfiguration" class="com.blazebit.persistence.view.impl.EntityViewConfigurationImpl"/>
+
+    <bean id="criteriaBuilderConfiguration" class="com.blazebit.persistence.impl.CriteriaBuilderConfigurationImpl"/>
+
+    <bean id="entityViewManagerFactory" class="com.blazebit.persistence.impl.CriteriaBuilderFactoryImpl">
+        <constructor-arg ref="criteriaBuilderConfiguration"/>
+        <constructor-arg ref="sessionFactory"/>
     </bean>
     <bean id="strongEncryptor"
           class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
@@ -37,17 +51,18 @@
     <context:property-placeholder location="classpath*:/validation.properties,
                                             classpath*:/service.properties,
                                             classpath*:/app.controller.properties,
+                                            classpath*:/api.controller.properties,
                                             classpath*:/helper.properties,
                                             classpath*:/task.properties"/>
 
-    <bean id="transactionManager"
+    <bean id="txManager"
           class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <tx:annotation-driven mode="proxy"
                           proxy-target-class="true"
-                          transaction-manager="transactionManager"/>
+                          transaction-manager="txManager"/>
 
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="velocityProperties">

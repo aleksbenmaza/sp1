@@ -2,11 +2,11 @@ package org.aaa.core.web.common.business.logic;
 
 import static java.util.UUID.randomUUID;
 
-import org.aaa.core.business.mapping.UserAccount;
-import org.aaa.core.business.mapping.Token;
+import org.aaa.core.business.mapping.entity.UserAccount;
+import org.aaa.core.business.mapping.entity.Token;
 
 import org.aaa.core.web.app.http.session.Guest;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.User;
 import org.aaa.core.web.common.helper.Host;
 import org.apache.commons.lang.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;

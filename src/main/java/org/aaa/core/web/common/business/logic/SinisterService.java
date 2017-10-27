@@ -1,20 +1,17 @@
 package org.aaa.core.web.common.business.logic;
 
-import static org.aaa.core.business.mapping.ToBeChecked.Status.*;
-import static org.aaa.orm.entity.identifiable.IdentifiableById.NULL_ID;
+import static org.aaa.core.business.mapping.entity.ToBeChecked.Status.*;
 import static org.aaa.orm.entity.identifiable.IdentifiableById.toSortedList;
 
-import org.aaa.orm.entity.identifiable.IdentifiableById;
+import org.aaa.core.business.mapping.entity.*;
 import org.aaa.orm.entry.manytoone.Entry;
-import org.aaa.core.business.mapping.*;
-import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.business.mapping.person.insuree.Insuree;
-import org.aaa.core.business.mapping.person.insuree.ThirdParty;
-import org.aaa.core.business.mapping.sinister.PlainSinister;
-import org.aaa.core.business.mapping.PlainSinisterType;
-import org.aaa.core.business.mapping.sinister.Sinister;
-import org.aaa.core.business.mapping.sinister.accident.WithCustomerAccident;
-import org.aaa.core.business.mapping.sinister.accident.WithThirdPartyAccident;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.person.insuree.Insuree;
+import org.aaa.core.business.mapping.entity.person.insuree.ThirdParty;
+import org.aaa.core.business.mapping.entity.sinister.PlainSinister;
+import org.aaa.core.business.mapping.entity.sinister.Sinister;
+import org.aaa.core.business.mapping.entity.sinister.accident.WithCustomerAccident;
+import org.aaa.core.business.mapping.entity.sinister.accident.WithThirdPartyAccident;
 import org.aaa.core.web.api.model.input.databinding.sinister.AccidentSubmission;
 import org.aaa.core.web.api.model.input.databinding.sinister.PlainSinisterSubmission;
 import org.aaa.core.web.api.model.input.databinding.sinister.SinisterSubmission;
@@ -43,16 +40,16 @@ public class SinisterService extends BaseService {
     @Value("${sinisterService.documentsDir.report}")
     private String reportDocumentDir;
 
-    public List<Sinister> getSinisters(Customer customer, long contractId) {
-        return toSortedList(contractService.getContract(customer, contractId).getSinisters());
+    public List<Sinister> getByCustomerContract(Customer customer, long contractId) {
+        return toSortedList(contractService.get(customer, contractId).getSinisters());
     }
 
-    public Sinister getSinister(Customer customer, long sinisterId) {
+    public Sinister getByCustomer(Customer customer, long sinisterId) {
         return dao.findSinister(customer, sinisterId);
     }
 
     @Transactional
-    public long addSinister(
+    public Sinister create(
             SinisterSubmission submission,
             Customer           customer,
             long               contractId
@@ -60,8 +57,8 @@ public class SinisterService extends BaseService {
         Contract contract;
         Sinister         sinister;
         WithCustomerAccident otherPartyAccident;
-        Model            otherPartyModel;
-        Vehicle          contractVehicle, otherPartyVehicle;
+        Model otherPartyModel;
+        Vehicle contractVehicle, otherPartyVehicle;
         PlainSinisterType type;
         byte[]           reportDocument;
         FileOutputStream outputStream;
@@ -72,7 +69,7 @@ public class SinisterService extends BaseService {
         contract = dao.findContract(customer, contractId);
 
         if(contract == null)
-            return NULL_ID;
+            return null;
 
         reportDocument = submission.getReportDocument();
         reportFileName = reportDocumentDir +
@@ -127,8 +124,8 @@ public class SinisterService extends BaseService {
             sinister.setStatus(AWAITING);
 
             dao.save(sinister);
-            return sinister.getId();
+            return sinister;
         }
-        return NULL_ID;
+        return null;
     }
 }

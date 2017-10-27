@@ -1,6 +1,6 @@
 package org.aaa.core.web.api.model.ouput.customer.sinister;
 
-import org.aaa.core.business.mapping.sinister.accident.Accident;
+import org.aaa.core.business.mapping.entity.sinister.accident.Accident;
 import com.google.gson.annotations.SerializedName;
 
 /**

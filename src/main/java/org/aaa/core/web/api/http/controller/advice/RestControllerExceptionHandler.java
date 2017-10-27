@@ -1,5 +1,6 @@
 package org.aaa.core.web.api.http.controller.advice;
 
+import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions.CommandNotValidatedException;
 
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by alexandremasanes on 24/03/2017.
@@ -35,8 +34,18 @@ public class RestControllerExceptionHandler extends ResponseEntityExceptionHandl
         return new ResponseEntity<>(httpStatus);
     }
 
-    @ExceptionHandler(Exception.class)
-    protected void handle() {
-        System.out.println("a log amongst a thousand");
+    @ExceptionHandler(CustomHttpExceptions.HttpException.class)
+    protected ResponseEntity<Object> handle(CustomHttpExceptions.HttpException exception) {
+
+        HttpStatus httpStatus;
+
+        exception.printStackTrace();
+
+        if(exception.getClass().isAnnotationPresent(ResponseStatus.class))
+            httpStatus = exception.getClass().getAnnotation(ResponseStatus.class).value();
+        else
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        return new ResponseEntity<>(httpStatus);
     }
 }

@@ -1,6 +1,6 @@
 package org.aaa.core.web.common.business.logic;
 
-import org.aaa.core.business.mapping.Insurance;
+import org.aaa.core.business.mapping.entity.Insurance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

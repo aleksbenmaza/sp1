@@ -2,14 +2,14 @@ package org.aaa.core.web.common.business.logic;
 
 import static org.aaa.util.Hash.*;
 
-import org.aaa.core.business.mapping.ToBeChecked;
-import org.aaa.core.business.mapping.UserAccount;
-import org.aaa.core.business.mapping.person.Person;
-import org.aaa.core.business.mapping.person.RegisteredUser;
-import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.ToBeChecked;
+import org.aaa.core.business.mapping.entity.UserAccount;
+import org.aaa.core.business.mapping.entity.person.Person;
+import org.aaa.core.business.mapping.entity.person.RegisteredUser;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.app.model.Login;
 import org.aaa.core.web.app.model.Registration;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

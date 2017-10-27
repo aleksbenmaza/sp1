@@ -112,5 +112,18 @@
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" name="Maven: org.jasypt:jasypt:1.9.3.redhat_3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-core-api:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-core-impl:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-core-parser:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.6" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-common-utils:0.1.14" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-entity-view-api:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-entity-view-impl:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-integration-hibernate-5.2:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-integration-hibernate-base:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-integration-jpa-base:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-integration-entity-view-cdi:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-integration-base-cdi:1.2.0-Alpha3" level="project" />
+    <orderEntry type="library" name="Maven: com.blazebit:blaze-persistence-integration-entity-view-spring:1.2.0-Alpha3" level="project" />
   </component>
 </module>

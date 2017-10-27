@@ -3,6 +3,7 @@ package org.aaa.core.web.common.http.interceptor;
 import static org.aaa.util.ObjectUtils.doIf;
 
 import org.aaa.orm.entity.BaseEntity;
+import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 
@@ -53,41 +54,41 @@ public class HibernateSessionInterceptor extends HandlerInterceptorAdapter {
         httpSession = request.getSession();
 
         if(httpSession != null)
-            extractEntities(httpSession).forEach(new Consumer<BaseEntity>() {
-                @Override
-                public void accept(BaseEntity baseEntity) {
-                    session.lock(baseEntity, LockMode.NONE);
-                }
-        }.andThen(session::refresh));
+            extractEntities(httpSession).forEach((attributeName, entity) -> {
+                    httpSession.setAttribute(attributeName, session.get(entity.getClass(), entity.getId()));
+            });
 
         return super.preHandle(request, response, handler);
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        extractEntities(request.getSession()).forEach(sessionsRequests.get(request)::detach);
+        extractEntities(request.getSession()).values().forEach(sessionsRequests.get(request)::detach);
         sessionsRequests.remove(request);
         super.postHandle(request, response, handler, modelAndView);
     }
 
-    private ArrayList<BaseEntity> extractEntities(HttpSession httpSession) {
-        ArrayList<BaseEntity> entities;
-
-        entities = new ArrayList<>();
-
+    private HashMap<String, IdentifiedByIdEntity> extractEntities(HttpSession httpSession) {
+        HashMap<String, IdentifiedByIdEntity> entities;
         Enumeration<String>  sessionAttributeNames;
+        String sessionAttributeName;
         Object sessionAttribute;
+
+        entities = new HashMap<>();
+
         sessionAttributeNames = httpSession.getAttributeNames();
         while(sessionAttributeNames.hasMoreElements()) {
-            sessionAttribute = httpSession.getAttribute(sessionAttributeNames.nextElement());
-            if(sessionAttribute instanceof BaseEntity)
-                entities.add((BaseEntity) sessionAttribute);
+            sessionAttributeName = sessionAttributeNames.nextElement();
+            sessionAttribute     = httpSession.getAttribute(sessionAttributeName);
+            if(sessionAttribute instanceof IdentifiedByIdEntity)
+                entities.put(sessionAttributeName, (IdentifiedByIdEntity) sessionAttribute);
         }
         return entities;
     }
 
     @PreDestroy
     private void destroy() {
+        System.out.println("Destroyed !");
         sessionsRequests.values()
                         .stream()
                         .filter(Session::isOpen)

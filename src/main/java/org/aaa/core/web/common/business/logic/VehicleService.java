@@ -1,8 +1,8 @@
 package org.aaa.core.web.common.business.logic;
 
-import org.aaa.core.business.mapping.Make;
-import org.aaa.core.business.mapping.Model;
-import org.aaa.core.business.mapping.Year;
+import org.aaa.core.business.mapping.entity.Make;
+import org.aaa.core.business.mapping.entity.Model;
+import org.aaa.core.business.mapping.entity.Year;
 import org.aaa.core.web.common.model.foreign.output.edmunds.MakeDTO;
 import org.aaa.core.web.common.model.foreign.output.edmunds.MakesDTO;
 import org.aaa.util.ImportSources;

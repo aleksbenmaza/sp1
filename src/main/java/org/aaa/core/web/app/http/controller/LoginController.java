@@ -1,13 +1,12 @@
 package org.aaa.core.web.app.http.controller;
 
 
-import org.aaa.core.business.mapping.person.Manager;
-import org.aaa.core.business.mapping.person.RegisteredUser;
+import org.aaa.core.business.mapping.entity.person.RegisteredUser;
 import org.aaa.core.web.common.business.logic.TokenService;
 import org.aaa.core.web.common.business.logic.UserService.*;
-import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.app.model.Login;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.User;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.util.MessageCode;
 import org.aaa.util.RedirectView;
@@ -25,9 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.StringJoiner;
 
 /**
  * Created by alexandremasanes on 12/03/2017.

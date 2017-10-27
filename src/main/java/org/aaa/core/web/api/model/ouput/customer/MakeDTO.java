@@ -1,6 +1,6 @@
 package org.aaa.core.web.api.model.ouput.customer;
 
-import org.aaa.core.business.mapping.Make;
+import org.aaa.core.business.mapping.entity.Make;
 import org.aaa.core.web.api.model.ouput.DTO;
 
 /**

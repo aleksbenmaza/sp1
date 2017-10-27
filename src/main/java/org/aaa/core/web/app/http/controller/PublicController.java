@@ -3,10 +3,8 @@ package org.aaa.core.web.app.http.controller;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import org.aaa.core.web.common.business.logic.TokenService;
-import org.aaa.core.business.mapping.person.RegisteredUser;
-import org.aaa.core.business.mapping.Token;
-import org.aaa.core.web.app.http.session.Guest;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.person.RegisteredUser;
+import org.aaa.core.business.mapping.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Created by alexandremasanes on 03/03/2017.

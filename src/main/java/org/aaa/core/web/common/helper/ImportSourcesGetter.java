@@ -1,7 +1,7 @@
 package org.aaa.core.web.common.helper;
 
 import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
-import org.aaa.core.business.mapping.Make;
+import org.aaa.core.business.mapping.entity.Make;
 import org.aaa.util.ImportSources;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

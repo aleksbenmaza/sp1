@@ -2,12 +2,12 @@ package org.aaa.core.web.app.http.controller;
 
 import org.aaa.core.web.app.http.session.Constants;
 import org.aaa.core.web.common.business.logic.UserService;
-import org.aaa.core.business.mapping.person.Person;
-import org.aaa.core.business.mapping.person.RegisteredUser;
+import org.aaa.core.business.mapping.entity.person.Person;
+import org.aaa.core.business.mapping.entity.person.RegisteredUser;
 import org.aaa.core.web.app.http.session.Guest;
 
 import org.springframework.web.bind.annotation.InitBinder;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;

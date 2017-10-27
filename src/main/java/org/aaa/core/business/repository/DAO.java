@@ -1,9 +1,9 @@
 package org.aaa.core.business.repository;
 
-import org.aaa.core.business.mapping.*;
-import org.aaa.core.business.mapping.Token;
-import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.business.mapping.sinister.Sinister;
+import org.aaa.core.business.mapping.entity.*;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.sinister.Sinister;
+import org.aaa.core.business.mapping.view.VehicleCountByInsureeAndModel;
 import org.aaa.orm.entity.BaseEntity;
 import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 
@@ -58,4 +58,6 @@ public interface DAO extends Finder, Recorder, Remover {
     String getHashSalt();
 
     short getTokenLifetime();
+
+    List<VehicleCountByInsureeAndModel> getVehicleCountByInsureeAndModel();
 }

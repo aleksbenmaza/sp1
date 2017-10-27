@@ -2,8 +2,8 @@ package org.aaa.core.web.api.model.ouput.customer;
 
 import static org.aaa.util.ObjectUtils.ifNull;
 
-import org.aaa.core.business.mapping.UserAccount;
-import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.UserAccount;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.api.model.ouput.DTO;
 import com.google.gson.annotations.SerializedName;
 

@@ -1,7 +1,7 @@
 package org.aaa.core.web.api.model.ouput.customer;
 
-import org.aaa.core.business.mapping.Ownership;
-import org.aaa.core.business.mapping.Vehicle;
+import org.aaa.core.business.mapping.entity.Ownership;
+import org.aaa.core.business.mapping.entity.Vehicle;
 import org.aaa.core.web.api.model.ouput.DTO;
 
 import com.google.gson.annotations.SerializedName;

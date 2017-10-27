@@ -1,7 +1,7 @@
 package org.aaa.core.web.app.http.controller;
 
-import org.aaa.core.business.mapping.person.RegisteredUser;
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.person.RegisteredUser;
+import org.aaa.core.business.mapping.entity.User;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.util.RedirectView;
 

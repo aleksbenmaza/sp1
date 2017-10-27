@@ -1,23 +1,24 @@
 package test.aaa.business;
 
-import org.aaa.core.business.mapping.*;
-import org.aaa.core.business.mapping.damage.Damage;
-import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.damage.Damage;
+import org.aaa.core.business.mapping.entity.Contract;
+import org.aaa.core.business.mapping.entity.Deductible;
+import org.aaa.core.business.mapping.entity.Insurance;
+import org.aaa.core.business.mapping.entity.UserAccount;
+import org.aaa.core.business.mapping.entity.person.Person;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.business.repository.DAO;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -81,6 +82,19 @@ public class MappingTest {
             System.out.println("<<<< Contract#getId call ! >>>>");
             break;
         }
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void testSameQueryCall() {
+        List<Person> persons = dao.find(Person.class);
+        System.out.println(persons == dao.find(Person.class));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void blazebit_entityView_doesWork() {
+        System.out.println(dao.getVehicleCountByInsureeAndModel());
     }
 
     @Test

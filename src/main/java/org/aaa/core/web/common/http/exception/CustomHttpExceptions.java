@@ -45,7 +45,7 @@ public final class CustomHttpExceptions {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public static class CommandNotValidatedException extends RuntimeException {
+    public static class CommandNotValidatedException extends HttpException {
 
         private Object errors;
 
@@ -64,6 +64,11 @@ public final class CustomHttpExceptions {
 
         public Object getErrors() {
             return errors;
+        }
+
+        @Override
+        public HttpStatus getHttpStatus() {
+            return HttpStatus.BAD_REQUEST;
         }
 
         public ModelAndView getModelAndView() {

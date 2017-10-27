@@ -1,6 +1,6 @@
 package org.aaa.core.web.api.model.ouput.publik;
 
-import org.aaa.core.business.mapping.Insurance;
+import org.aaa.core.business.mapping.entity.Insurance;
 import org.aaa.core.web.api.model.ouput.DTO;
 import com.google.gson.annotations.SerializedName;
 

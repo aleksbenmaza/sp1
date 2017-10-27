@@ -1,10 +1,16 @@
 package org.aaa.core.web.common.business.repository;
 
 
-import org.aaa.core.business.mapping.*;
+import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.view.EntityViewManager;
+import com.blazebit.persistence.view.EntityViewSetting;
+import com.blazebit.persistence.view.spi.EntityViewConfiguration;
 
-import org.aaa.core.business.mapping.person.insuree.Customer;
-import org.aaa.core.business.mapping.sinister.Sinister;
+import org.aaa.core.business.mapping.entity.*;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.sinister.Sinister;
+import org.aaa.core.business.mapping.view.VehicleCountByInsureeAndModel;
 import org.aaa.core.business.repository.DAO;
 import org.aaa.orm.entity.BaseEntity;
 import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
@@ -19,14 +25,17 @@ import org.hibernate.query.Query;
 import static org.apache.commons.lang.ArrayUtils.toObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.persistence.EntityManager;
 import javax.persistence.Table;
 
 import static java.util.Arrays.asList;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
@@ -42,6 +51,12 @@ public final class DAOImpl extends Object implements DAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private EntityViewConfiguration entityViewConfiguration;
+
+    @Autowired
+    private CriteriaBuilderFactory criteriaBuilderFactory;
 
     private String hashSalt;
 
@@ -443,6 +458,15 @@ public final class DAOImpl extends Object implements DAO {
         return tokenLifetime;
     }
 
+    @Override
+    public List<VehicleCountByInsureeAndModel> getVehicleCountByInsureeAndModel() {
+        CriteriaBuilder<Vehicle> cb = getCriteriaBuilder(Vehicle.class);
+
+        CriteriaBuilder<VehicleCountByInsureeAndModel> countBuilder = getEntityViewManager().applySetting(EntityViewSetting.create(VehicleCountByInsureeAndModel.class), cb);
+
+        return countBuilder.getResultList();
+    }
+
     @PostConstruct
     protected void init() {
         String stm;
@@ -567,5 +591,13 @@ public final class DAOImpl extends Object implements DAO {
         } catch(StackOverflowError err) {
             System.out.println("S.O !");
         }
+    }
+
+    private <T extends BaseEntity> CriteriaBuilder<T> getCriteriaBuilder(Class<T> clazz) {
+        return criteriaBuilderFactory.create(getCurrentSession().unwrap(EntityManager.class), clazz);
+    }
+
+    private EntityViewManager getEntityViewManager() {
+        return entityViewConfiguration.createEntityViewManager(criteriaBuilderFactory);
     }
 }

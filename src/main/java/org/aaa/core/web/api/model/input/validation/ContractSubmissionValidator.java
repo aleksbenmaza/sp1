@@ -5,8 +5,8 @@ import static java.net.URLConnection.guessContentTypeFromStream;
 
 import org.aaa.core.web.app.model.validation.Validating;
 import org.aaa.core.business.repository.DAO;
-import org.aaa.core.business.mapping.Insurance;
-import org.aaa.core.business.mapping.Model;
+import org.aaa.core.business.mapping.entity.Insurance;
+import org.aaa.core.business.mapping.entity.Model;
 import org.aaa.core.web.common.helper.MessageGetter;
 import org.aaa.core.web.app.model.Command;
 import org.aaa.core.web.api.model.input.databinding.ContractSubmission;

@@ -1,0 +1,6 @@
+{
+  "name": "vue",
+  "dependencies": {
+    "vue": "file:src/main/webapp/WEB-INF/resources/public/script/lib"
+  }
+}

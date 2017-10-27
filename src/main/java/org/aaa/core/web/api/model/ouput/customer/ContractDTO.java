@@ -1,7 +1,7 @@
 package org.aaa.core.web.api.model.ouput.customer;
 
-import org.aaa.core.business.mapping.Contract;
-import org.aaa.core.business.mapping.ToBeChecked;
+import org.aaa.core.business.mapping.entity.Contract;
+import org.aaa.core.business.mapping.entity.ToBeChecked;
 
 import org.aaa.core.web.api.model.ouput.DTO;
 import org.aaa.core.web.api.model.ouput.publik.InsuranceDTO;

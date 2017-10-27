@@ -1,7 +1,7 @@
 package org.aaa.core.web.api.model.ouput.customer;
 
-import org.aaa.core.business.mapping.Model;
-import org.aaa.core.business.mapping.Year;
+import org.aaa.core.business.mapping.entity.Model;
+import org.aaa.core.business.mapping.entity.Year;
 import org.aaa.core.web.api.model.ouput.DTO;
 import com.google.gson.annotations.SerializedName;
 

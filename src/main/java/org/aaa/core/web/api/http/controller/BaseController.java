@@ -36,6 +36,14 @@ public abstract class BaseController {
             throw new CustomHttpExceptions.BadRequestException();
         if(encryptedString.equals(newEncryptedString))
             throw new CustomHttpExceptions.ResourceForbiddenException();
-        response.setHeader("Authorization", newEncryptedString);
+        setAuthorizationResponseHeader(response, newEncryptedString);
+    }
+
+    protected void setLocationResponseHeader(HttpServletResponse responseHeader, long value) {
+        responseHeader.setHeader("Location", Long.toString(value));
+    }
+
+    protected void setAuthorizationResponseHeader(HttpServletResponse responseHeader, String authToken) {
+        responseHeader.setHeader("Location", authToken);
     }
 }

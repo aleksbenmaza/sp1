@@ -1,7 +1,7 @@
 package org.aaa.core.web.common.model.foreign.output.edmunds;
 
 import com.google.gson.annotations.SerializedName;
-import org.aaa.core.business.mapping.Make;
+import org.aaa.core.business.mapping.entity.Make;
 import org.aaa.core.web.common.model.foreign.output.ToEntitiesConvertible;
 
 import java.util.Arrays;

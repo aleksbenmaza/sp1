@@ -1,7 +1,7 @@
 package org.aaa.core.web.app.http.controller;
 
 import org.aaa.core.web.common.business.logic.UserService;
-import org.aaa.core.business.mapping.UserAccount;
+import org.aaa.core.business.mapping.entity.UserAccount;
 
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.util.MessageCode;

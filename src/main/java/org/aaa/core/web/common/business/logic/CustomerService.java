@@ -1,9 +1,9 @@
 package org.aaa.core.web.common.business.logic;
 
-import static org.aaa.core.business.mapping.ToBeChecked.Status.*;
+import static org.aaa.core.business.mapping.entity.ToBeChecked.Status.*;
 
-import org.aaa.core.business.mapping.UserAccount;
-import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.UserAccount;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.common.helper.VelocityTemplateResolver;
 import org.aaa.core.web.app.model.validation.RegistrationValidator;
 

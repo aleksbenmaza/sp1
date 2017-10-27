@@ -1,10 +1,10 @@
 package org.aaa.core.web.app.http.controller;
 
-import org.aaa.core.business.mapping.person.insuree.Customer;
+import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 
-import org.aaa.core.business.mapping.User;
+import org.aaa.core.business.mapping.entity.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
