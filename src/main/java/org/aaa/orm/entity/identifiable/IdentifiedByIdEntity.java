@@ -35,7 +35,6 @@ public abstract class IdentifiedByIdEntity extends UpdatableEntity implements Id
 
 	@Override
 	public final long getId() {
-		ObjectUtils.doIf(() -> idGenerator.generateFor(this), id == NULL_ID);
 		return id;
 	}
 
