@@ -14,7 +14,7 @@ import org.aaa.core.business.mapping.entity.person.Person;
 @Table(name = "insurees")
 public abstract class Insuree extends Person implements Serializable {
 
-	public static final long serialVersionUID = 1168426245888642040L;
+	private static final long serialVersionUID = 1168426245888642040L;
 
 	@ElementCollection(fetch = FetchType.LAZY)
 	@CollectionTable(
@@ -22,7 +22,8 @@ public abstract class Insuree extends Person implements Serializable {
 			joinColumns = @JoinColumn(
 					name = "insuree_id",
 					referencedColumnName = "id"
-			))
+			)
+	)
 	@MapKeyJoinColumn(name = "vehicle_id", referencedColumnName = "id")
 	protected Map<Vehicle, Ownership> ownershipsByVehicle;
 
@@ -48,6 +49,4 @@ public abstract class Insuree extends Person implements Serializable {
 	public Map<Vehicle, Ownership> getOwnershipsByVehicle() {
 		return new HashMap<>(ownershipsByVehicle);
 	}
-
-
 }

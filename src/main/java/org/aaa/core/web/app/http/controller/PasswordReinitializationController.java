@@ -4,11 +4,12 @@ import org.aaa.core.web.common.business.logic.UserService;
 import org.aaa.core.business.mapping.entity.UserAccount;
 
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
-import org.aaa.util.MessageCode;
-import org.aaa.util.RedirectView;
+import org.aaa.core.web.app.util.MessageCode;
+import org.aaa.core.web.app.util.RedirectView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -52,7 +53,7 @@ public class PasswordReinitializationController extends GuestController {
 
         if(!emailAddress.matches(emailPattern)) {
             messageCode.setValue("validation.email.badPattern");
-            throw new CustomHttpExceptions.CommandNotValidatedException().withView("lostpassword");
+            throw new CustomHttpExceptions.CommandNotValidatedException().withModelAndView(render("lostpassword"));
         }
 
         if(userService.emailAddressExists(emailAddress)) {
@@ -61,7 +62,7 @@ public class PasswordReinitializationController extends GuestController {
         }
 
         messageCode.setValue("validation.email.unkown");
-        throw new CustomHttpExceptions.CommandNotValidatedException().withView("lostpasword");
+        throw new CustomHttpExceptions.CommandNotValidatedException().withModelAndView(render("lostpasword"));
 
     }
 

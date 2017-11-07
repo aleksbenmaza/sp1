@@ -11,4 +11,6 @@ import java.io.Serializable;
 
 @Immutable
 @MappedSuperclass
-public abstract class ImmutableEntity extends BaseEntity {}
+public abstract class ImmutableEntity extends BaseEntity {
+    private static final long serialVersionUID = -3947938411017668853L;
+}

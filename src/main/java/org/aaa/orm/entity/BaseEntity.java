@@ -8,6 +8,8 @@ import java.util.Objects;
  */
 public abstract class BaseEntity implements Serializable {
 
+    private static final long serialVersionUID = -8207979840833251610L;
+
     @Override
     public abstract int hashCode();
 
@@ -26,7 +28,6 @@ public abstract class BaseEntity implements Serializable {
     }
 
     protected static <T extends BaseEntity> void requireNonNull(T... entities) {
-
         for(BaseEntity entity : entities)
             if(entity == null)
                 throw new NullPointerException();

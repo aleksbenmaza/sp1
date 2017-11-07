@@ -14,6 +14,8 @@ import java.util.Date;
 @Table(name = "h_vehicules")
 public class VehicleHistory extends History {
 
+    private static final long serialVersionUID = 7125845232269751210L;
+
     @Column
     private float value;
 

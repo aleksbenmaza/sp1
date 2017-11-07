@@ -5,7 +5,7 @@ import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 
 import org.aaa.core.web.app.http.session.Guest;
 
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.SessionAttribute;

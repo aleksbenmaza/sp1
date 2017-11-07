@@ -16,6 +16,8 @@ import java.sql.Timestamp;
 @MappedSuperclass
 public abstract class History extends ImmutableEntity implements IdentifiableById {
 
+    private static final long serialVersionUID = -5902443307699149633L;
+
     @Id @GeneratedValue
     protected long id;
 

@@ -23,7 +23,7 @@ import org.aaa.core.web.api.model.ouput.customer.*;
 import org.aaa.core.web.api.model.ouput.customer.sinister.AccidentDTO;
 import org.aaa.core.web.api.model.ouput.customer.sinister.PlainSinisterDTO;
 import org.aaa.core.web.api.model.ouput.customer.sinister.SinisterDTO;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 
 import com.itextpdf.text.DocumentException;
 

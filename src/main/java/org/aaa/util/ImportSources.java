@@ -119,7 +119,6 @@ public final class ImportSources {
             @XmlAttribute(name = "class")
             private Class<? extends ToEntitiesConvertible> outputClass;
 
-
             public String getName() {
                 return name;
             }

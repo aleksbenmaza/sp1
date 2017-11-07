@@ -22,8 +22,12 @@ import javax.persistence.Entity;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Deductible extends BaseEntity {
 
+    private static final long serialVersionUID = 6299615088696914187L;
+
     @Embeddable
     public static class Id implements Serializable {
+
+        private static final long serialVersionUID = -2618769407490295129L;
 
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(

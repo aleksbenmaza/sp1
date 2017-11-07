@@ -7,7 +7,7 @@ import static org.aaa.core.web.app.http.controller.ErrorController.VIEW_NAME;
 
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions.ResourceNotFoundException;
 
-import org.aaa.util.SpringMessageVars;
+import org.aaa.core.web.app.util.SpringMessageVars;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

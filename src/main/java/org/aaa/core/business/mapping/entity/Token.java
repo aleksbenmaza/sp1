@@ -20,6 +20,8 @@ import java.util.UUID;
 @Table(name = "tokens")
 public class Token extends IdentifiedByIdEntity {
 
+    private static final long serialVersionUID = -534311138982607094L;
+
     @Column
     private UUID value;
 

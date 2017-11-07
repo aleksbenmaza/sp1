@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "managers")
 public class Manager extends Person implements RegisteredUser {
 
-	public static final long serialVersionUID = 6723623575574622116L;
+	private static final long serialVersionUID = 6723623575574622116L;
 
 	@OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
 	private Set<Customer> customers;

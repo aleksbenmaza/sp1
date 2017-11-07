@@ -4,7 +4,6 @@ package org.aaa.core.web.common.helper;
  * Created by alexandremasanes on 25/08/2017.
  */
 
-
 import java.io.File;
 
 import javax.xml.bind.JAXBContext;

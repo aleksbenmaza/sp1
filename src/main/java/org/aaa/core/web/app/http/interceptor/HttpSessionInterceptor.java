@@ -1,8 +1,8 @@
 package org.aaa.core.web.app.http.interceptor;
 
-import org.aaa.core.web.app.http.session.Constants;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.aaa.core.web.app.http.session.Guest;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -27,8 +27,8 @@ public class HttpSessionInterceptor extends HandlerInterceptorAdapter {
 
         session = request.getSession();
 
-        if(session.isNew())
-            session.setAttribute(Constants.ATTRIBUTE_USER, new Guest());
+        if(session.isNew() || session.getAttribute(User.class.getSimpleName().toLowerCase()) == null)
+            session.setAttribute(User.class.getSimpleName().toLowerCase(), new Guest());
 
         return true;
     }

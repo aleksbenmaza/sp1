@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 @Table(name = "third_party_accidents")
 public class WithThirdPartyAccident extends Accident {
 
+    private static final long serialVersionUID = 1463402185746234389L;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;

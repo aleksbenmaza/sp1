@@ -35,7 +35,7 @@ public class Host {
     @Value("#{'${ipPrinterURIs}'.split(';')}")
     private String[] ipPrinterURIs;
 
-    @Value("#{@systemEnvironment['AAA_SERVERNAME']}")
+    @Value("#{@systemEnvironment['AAA_SERVER_NAME']}")
     private String domainName;
 
     @Value("#{@systemEnvironment['AAA_CUSTOMER_API_SUBDOMAIN']}")
@@ -81,6 +81,8 @@ public class Host {
         HttpStatus httpStatus;
         RestTemplate restTemplate;
 
+        privateIpAdress = getLocalHost().getHostAddress();
+
         restTemplate = new RestTemplate(
                 new HttpComponentsClientHttpRequestFactory() {{
                     setReadTimeout(readTimeout);
@@ -103,7 +105,6 @@ public class Host {
             if(httpStatus.is2xxSuccessful()
             && response.hasBody()) {
                 publicIpAddress = response.getBody();
-                privateIpAdress = getLocalHost().getHostAddress();
                 return;
             }
         }

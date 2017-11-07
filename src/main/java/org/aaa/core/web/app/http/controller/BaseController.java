@@ -7,7 +7,7 @@ import org.aaa.core.business.mapping.entity.person.RegisteredUser;
 import org.aaa.core.web.app.http.session.Guest;
 
 import org.springframework.web.bind.annotation.InitBinder;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;

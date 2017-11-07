@@ -21,7 +21,7 @@ import java.util.Set;
 @SecondaryTable(name = "vehicles__insurees", pkJoinColumns = @PrimaryKeyJoinColumn(name = "vehicle_id", referencedColumnName = "id"))
 public class Vehicle extends IdentifiedByIdEntity {
 
-	public static final long serialVersionUID = 3403684733912100002L;
+	private static final long serialVersionUID = 3403684733912100002L;
 
 	@Column(name = "vin_number", unique = true)
 	private String vinNumber;

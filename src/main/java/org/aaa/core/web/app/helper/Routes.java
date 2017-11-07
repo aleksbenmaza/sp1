@@ -55,21 +55,25 @@ public class Routes implements Map<String ,String> {
     }
 
     @Override
+    @Deprecated
     public String put(String key, String value) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     public String remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     public void putAll(Map<? extends String, ? extends String> m) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @Deprecated
     public void clear() {
         throw new UnsupportedOperationException();
     }

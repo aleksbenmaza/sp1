@@ -12,6 +12,8 @@ import javax.persistence.*;
 @Table(name = "accidents")
 public abstract class Accident extends Sinister {
 
+    private static final long serialVersionUID = 2941179199148322392L;
+
     @Column(
             name = "responsibility_rate"
     ) private float responsibilityRate;

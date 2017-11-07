@@ -7,6 +7,6 @@ import javax.persistence.Table;
 @Table(name = "third_parties")
 public class ThirdParty extends Insuree {
 
-	public static final long serialVersionUID = 6968875177402393854L;
+	private static final long serialVersionUID = 6968875177402393854L;
 
 }

@@ -3,6 +3,7 @@ package org.aaa.core.business.mapping.entity.person;
 import org.aaa.core.business.mapping.entity.UserAccount;
 import org.aaa.core.business.mapping.entity.sinister.Sinister;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +15,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "experts")
 public class Expert extends Person implements RegisteredUser {
+
+    private static final long serialVersionUID = -8210740393208610872L;
 
     @Column
     protected Integer rank;

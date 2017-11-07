@@ -25,7 +25,6 @@ import org.hibernate.query.Query;
 import static org.apache.commons.lang.ArrayUtils.toObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +34,6 @@ import javax.persistence.Table;
 
 import static java.util.Arrays.asList;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
@@ -47,7 +45,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("unchecked")
 @Repository("dao")
-public final class DAOImpl extends Object implements DAO {
+public final class DAOImpl implements DAO {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -236,7 +234,7 @@ public final class DAOImpl extends Object implements DAO {
         String stm;
         Query<Float> query;
 
-        stm   = "SELECT compute_deductible(:insuranceId, :damageAmount)";
+        stm   = "SELECT FUNCTION('compute_deductible', :insuranceId, :damageAmount)";
         query = getCurrentSession().createNativeQuery(stm);
         query.setParameter("insuranceId", insuranceId)
              .setParameter("damageAmount", damageAmount);
@@ -322,7 +320,7 @@ public final class DAOImpl extends Object implements DAO {
         Query<Year> query;
 
         stm = "FROM " + Year.class.getSimpleName() + " " +
-                "WHERE value = :value";
+              "WHERE value = :value";
 
         query = getCurrentSession().createQuery(stm);
 
@@ -460,9 +458,15 @@ public final class DAOImpl extends Object implements DAO {
 
     @Override
     public List<VehicleCountByInsureeAndModel> getVehicleCountByInsureeAndModel() {
-        CriteriaBuilder<Vehicle> cb = getCriteriaBuilder(Vehicle.class);
+        CriteriaBuilder<VehicleCountByInsureeAndModel> countBuilder;
+        CriteriaBuilder<Vehicle> cb;
 
-        CriteriaBuilder<VehicleCountByInsureeAndModel> countBuilder = getEntityViewManager().applySetting(EntityViewSetting.create(VehicleCountByInsureeAndModel.class), cb);
+        cb = criteraBuilder(Vehicle.class).from(Vehicle.class, "vehicle");
+
+        countBuilder = entityViewManager().applySetting(
+                EntityViewSetting.create(VehicleCountByInsureeAndModel.class),
+                cb
+        );
 
         return countBuilder.getResultList();
     }
@@ -489,7 +493,6 @@ public final class DAOImpl extends Object implements DAO {
         tokenLifetime = (
                 (Integer) ObjectUtils.ifNull(values[1], 0)
         ).shortValue();
-
     }
 
     @PreDestroy
@@ -593,11 +596,11 @@ public final class DAOImpl extends Object implements DAO {
         }
     }
 
-    private <T extends BaseEntity> CriteriaBuilder<T> getCriteriaBuilder(Class<T> clazz) {
+    private <T extends BaseEntity> CriteriaBuilder<T> criteraBuilder(Class<T> clazz) {
         return criteriaBuilderFactory.create(getCurrentSession().unwrap(EntityManager.class), clazz);
     }
 
-    private EntityViewManager getEntityViewManager() {
+    private EntityViewManager entityViewManager() {
         return entityViewConfiguration.createEntityViewManager(criteriaBuilderFactory);
     }
 }

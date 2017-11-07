@@ -4,7 +4,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 import org.aaa.core.web.common.business.logic.TokenService;
 import org.aaa.core.business.mapping.entity.person.RegisteredUser;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,9 +56,9 @@ public class PublicController extends BaseController {
         encryptedToken = getEncryptedToken(session);
         if(encryptedToken == null) {
             if (user instanceof RegisteredUser)
-                encryptedToken = tokenService.createToken(((RegisteredUser) user).getUserAccount());
+                encryptedToken = tokenService.createEncrypted(((RegisteredUser) user).getUserAccount());
             else
-                encryptedToken = tokenService.createToken(null);
+                encryptedToken = tokenService.createEncrypted(null);
             setEncryptedToken(session, encryptedToken);
         } else
             setEncryptedToken(session, tokenService.replaceIfExpired(encryptedToken));

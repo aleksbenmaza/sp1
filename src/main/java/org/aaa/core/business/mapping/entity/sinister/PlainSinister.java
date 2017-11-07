@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 @Table(name = "plain_sinisters")
 public class PlainSinister extends Sinister {
 
+    private static final long serialVersionUID = -1787070553375003163L;
+
     @ManyToOne(
             cascade = CascadeType.ALL
     ) @JoinColumn(

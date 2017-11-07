@@ -1,6 +1,6 @@
 package org.aaa.core.web.common.business.logic;
 
-import static org.aaa.util.Hash.*;
+import static org.aaa.util.Hasher.*;
 
 import org.aaa.core.business.mapping.entity.ToBeChecked;
 import org.aaa.core.business.mapping.entity.UserAccount;
@@ -9,7 +9,7 @@ import org.aaa.core.business.mapping.entity.person.RegisteredUser;
 import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.app.model.Login;
 import org.aaa.core.web.app.model.Registration;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,7 +62,7 @@ public class UserService extends BaseService {
 
         toBeHashed   = emailAddress + getHashSalt() + password;
 
-        userAccount  = dao.findUserAccount(emailAddress, encrypt(toBeHashed, SHA_1));
+        userAccount  = dao.findUserAccount(emailAddress, hash(toBeHashed, SHA_1));
 
         loginResult  = new LoginResult();
 
@@ -112,7 +112,7 @@ public class UserService extends BaseService {
     ) throws NoSuchAlgorithmException{
         String hash;
 
-        hash = encrypt(userAccount.getEmailAddress() +
+        hash = hash(userAccount.getEmailAddress() +
                         getHashSalt() +
                         password,
                 SHA_1);
@@ -135,10 +135,12 @@ public class UserService extends BaseService {
     ) throws NoSuchAlgorithmException {
         String hash;
 
-        hash = encrypt(registration.getEmailAddress() +
-                        getHashSalt() +
-                        registration.getPassword(),
-                        SHA_1);
+        hash = hash(
+            registration.getEmailAddress() +
+            getHashSalt() +
+            registration.getPassword(),
+            SHA_1
+        );
 
         createUserAccount(customer, registration.getEmailAddress(), hash);
     }

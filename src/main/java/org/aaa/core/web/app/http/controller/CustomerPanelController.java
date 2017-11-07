@@ -2,9 +2,12 @@ package org.aaa.core.web.app.http.controller;
 
 import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 
+import org.aaa.core.web.common.business.logic.TokenService;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,20 +22,11 @@ public class CustomerPanelController extends BaseController {
 
     public final static String VIEW_NAME = "customerpanel";
 
-    /*
-    @PreHandler
-    public ForwardingView preHandle(@SessionAttribute User user) {
-
-        if(user instanceof Customer)
-            return null;
-        return new ForwardingView(getWebroot() + "/connexion", HttpStatus.UNAUTHORIZED);
-    }*/
-
-
-
+    @Autowired
+    private TokenService tokenService;
 
     @ModelAttribute
-    protected User checkedUser(@SessionAttribute User user) {
+    public Customer checkedCustomer(@SessionAttribute User user) {
         System.out.println("user :" + user);
         if(!(user instanceof Customer))
             throw new CustomHttpExceptions.UnauthorizedRequestException()
@@ -51,10 +45,10 @@ public class CustomerPanelController extends BaseController {
             "${routes.customerPanel4}",
             "${routes.customerPanel5}",
             "${routes.customerPanel6}"
-    }) public ModelAndView getIndex(
-            @ModelAttribute("user") Customer customer
-    ) {
-        return render();
+    }) public ModelAndView getIndex(Customer customer) {
+        String encryptedToken;
+        encryptedToken = tokenService.createEncrypted(customer.getUserAccount());
+        return render(new ModelMap("encryptedToken", encryptedToken));
     }
 
     @Override

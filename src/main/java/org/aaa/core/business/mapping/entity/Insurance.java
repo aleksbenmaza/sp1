@@ -22,6 +22,8 @@ import java.util.Set;
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Insurance extends IdentifiedByIdEntity {
 
+    private static final long serialVersionUID = -7312824440761061655L;
+
     @Column(
             unique = true
     ) private String code;

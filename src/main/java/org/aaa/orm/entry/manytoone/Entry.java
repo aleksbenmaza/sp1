@@ -16,8 +16,10 @@ import java.io.Serializable;
 @Embeddable
 public class Entry<K extends BaseEntity, V extends Serializable> extends BaseEntry<K, V> {
 
+    private static final long serialVersionUID = -2745140778620998369L;
+
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "insuree_id", referencedColumnName = "id")
+    @JoinColumn
     private K key;
 
     public Entry(K key) {

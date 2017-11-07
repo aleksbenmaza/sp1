@@ -1,9 +1,9 @@
 package org.aaa.core.web.app.http.controller;
 
 import org.aaa.core.business.mapping.entity.person.RegisteredUser;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
-import org.aaa.util.RedirectView;
+import org.aaa.core.web.app.util.RedirectView;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

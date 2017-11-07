@@ -7,7 +7,10 @@ import java.util.Map;
 /**
  * Created by alexandremasanes on 09/09/2017.
  */
-public abstract class BaseEntry<K extends Serializable, V extends Serializable> implements Map.Entry<K, V>, Serializable {
+public abstract class BaseEntry<K extends Serializable, V extends Serializable>
+implements Map.Entry<K, V>, Serializable {
+
+    private static final long serialVersionUID = -5200365562667884271L;
 
     @Embedded
     private V value;

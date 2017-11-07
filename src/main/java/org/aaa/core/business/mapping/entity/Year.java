@@ -18,6 +18,8 @@ import java.util.Set;
 //@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Year extends IdentifiedByIdEntity {
 
+    private static final long serialVersionUID = -683393275054120818L;
+
     @Column(unique = true)
     private short value;
 

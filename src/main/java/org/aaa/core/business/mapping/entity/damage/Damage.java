@@ -18,8 +18,12 @@ import javax.persistence.Entity;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // + embeddedId = MESS
 public abstract class Damage extends UpdatableEntity {
 
+    private static final long serialVersionUID = -1417493372635933833L;
+
     @Embeddable
     public static class Id implements Serializable {
+
+        private static final long serialVersionUID = -1323127144613810140L;
 
         @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "id", referencedColumnName = "id")

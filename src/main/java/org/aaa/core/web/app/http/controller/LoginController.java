@@ -1,15 +1,14 @@
 package org.aaa.core.web.app.http.controller;
 
-
 import org.aaa.core.business.mapping.entity.person.RegisteredUser;
 import org.aaa.core.web.common.business.logic.TokenService;
 import org.aaa.core.web.common.business.logic.UserService.*;
 import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.app.model.Login;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
-import org.aaa.util.MessageCode;
-import org.aaa.util.RedirectView;
+import org.aaa.core.web.app.util.MessageCode;
+import org.aaa.core.web.app.util.RedirectView;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ import java.util.Map;
 @RequestMapping("${routes.login}")
 public class LoginController extends GuestController {
 
-    public  static final String VIEW_NAME = "login";
+    private static final String VIEW_NAME = "login";
 
     private Map<Class<? extends User>, String> redirectURIs;
 
@@ -45,11 +44,6 @@ public class LoginController extends GuestController {
 
     @Autowired
     private TokenService tokenService;
-
-    @PostConstruct
-    public void init() {
-        redirectURIs = of(Customer.class, customerPanelPath);
-    }
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getIndex() {
@@ -71,10 +65,10 @@ public class LoginController extends GuestController {
         if(loginResult.getRegisteredUser() == null) {
             messageCode.setValue(loginResult.getMessageCode());
             throw new CustomHttpExceptions.CommandNotValidatedException()
-                                          .withView(VIEW_NAME);
+                                          .withModelAndView(render(new ModelMap(login)));
         } else {
             user = loginResult.getRegisteredUser();
-            tokenService.createToken(((RegisteredUser) user).getUserAccount());
+            tokenService.createEncrypted(((RegisteredUser) user).getUserAccount());
             setSessionUser(httpSession, user);
         }
 
@@ -82,6 +76,11 @@ public class LoginController extends GuestController {
             return new RedirectView(redirectURIs.get(user.getClass()));
         else
             return new RedirectView(referer);
+    }
+
+    @PostConstruct
+    protected void init() {
+        redirectURIs = of(Customer.class, customerPanelPath);
     }
 
     @Override

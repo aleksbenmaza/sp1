@@ -9,6 +9,8 @@ import javax.persistence.*;
 @Table(name = "destructions")
 public class Destruction extends Damage {
 
+    private static final long serialVersionUID = -935253888954278062L;
+
     @Column(name = "is_total")
     private boolean total;
 

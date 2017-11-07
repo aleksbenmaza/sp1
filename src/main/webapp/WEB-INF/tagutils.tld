@@ -7,21 +7,21 @@
     <function>
         <name>isRegistered</name>
         <function-class>org.aaa.core.web.app.util.TagUtils</function-class>
-        <function-signature>boolean isRegistered(org.aaa.core.business.mapping.User)</function-signature>
+        <function-signature>boolean isRegistered(org.aaa.core.business.mapping.entity.person.User)</function-signature>
     </function>
     <function>
         <name>isCustomer</name>
         <function-class>org.aaa.core.web.app.util.TagUtils</function-class>
-        <function-signature>boolean isCustomer(org.aaa.core.business.mapping.User)</function-signature>
+        <function-signature>boolean isCustomer(org.aaa.core.business.mapping.entity.person.User)</function-signature>
     </function>
     <function>
         <name>isManager</name>
         <function-class>org.aaa.core.web.app.util.TagUtils</function-class>
-        <function-signature>boolean isManager(org.aaa.core.business.mapping.User)</function-signature>
+        <function-signature>boolean isManager(org.aaa.core.business.mapping.entity.person.User)</function-signature>
     </function>
     <function>
         <name>getShortenedFullName</name>
         <function-class>org.aaa.core.web.app.util.TagUtils</function-class>
-        <function-signature>java.lang.String getShortenedFullName(org.aaa.core.business.mapping.person.Person)</function-signature>
+        <function-signature>java.lang.String getShortenedFullName(org.aaa.core.business.mapping.entity.person.Person)</function-signature>
     </function>
 </taglib>

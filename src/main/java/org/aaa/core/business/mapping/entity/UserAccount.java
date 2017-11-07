@@ -17,18 +17,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @Table(name = "user_accounts")
 public class UserAccount extends UpdatableEntity {
 
-	public static final long serialVersionUID = 1482252304755392540L;
+	private static final long serialVersionUID = 1482252304755392540L;
 
 	@Embeddable
 	public static class Id implements Serializable {
+
+		private static final long serialVersionUID = -6242302251593705273L;
 
 		@OneToOne(targetEntity = Person.class, cascade = CascadeType.ALL)
 		@JoinColumn(name = "id", referencedColumnName = "id")
 		private RegisteredUser user;
 
 		public <U extends  Person & RegisteredUser> Id(U user) {
-			this.user = user;
 			check(requireNonNull(user).getUserAccount() == null);
+			this.user = user;
 		}
 
 		public RegisteredUser getUser() {
@@ -114,6 +116,5 @@ public class UserAccount extends UpdatableEntity {
 		return id.hashCode();
 	}
 
-	UserAccount() {
-	}
+	UserAccount() {}
 }

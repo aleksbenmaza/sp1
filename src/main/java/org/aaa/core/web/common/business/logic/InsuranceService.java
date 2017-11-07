@@ -14,6 +14,7 @@ public class InsuranceService extends BaseService {
         return dao.find(Insurance.class, ids);
     }
 
+    @Transactional(readOnly = true)
     public Float getDeductibleValue(long insuranceId, float amount) {
         return dao.computeDeductibleValue(insuranceId, amount);
     }

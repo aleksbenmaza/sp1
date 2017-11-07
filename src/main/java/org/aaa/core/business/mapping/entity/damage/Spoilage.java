@@ -13,7 +13,9 @@ import javax.persistence.Entity;
 @Table(name = "spoilages")
 public class Spoilage extends Damage {
 
-    @Column()
+    private static final long serialVersionUID = -3392835249796230906L;
+
+    @Column
     private float rate;
 
     @ManyToOne(cascade = CascadeType.ALL)

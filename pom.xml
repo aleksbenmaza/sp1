@@ -9,6 +9,12 @@
     <packaging>war</packaging>
     <repositories>
         <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+        <repository>
             <id>org.gridgain</id>
             <url>http://www.gridgainsystems.com/nexus/content/repositories/external/</url>
         </repository>
@@ -23,7 +29,7 @@
     </repositories>
     <properties>
         <spring.version>4.3.6.RELEASE</spring.version>
-        <blaze-persistence.version>1.2.0-Alpha3</blaze-persistence.version>
+        <blaze-persistence.version>1.2.0-SNAPSHOT</blaze-persistence.version>
     </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.checkerframework/checker-qual -->
@@ -239,9 +245,7 @@
             <groupId>com.blazebit</groupId>
             <artifactId>blaze-persistence-core-impl</artifactId>
             <version>${blaze-persistence.version}</version>
-            <scope>test</scope>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.blazebit/blaze-persistence-entity-view-api -->
         <dependency>
             <groupId>com.blazebit</groupId>
@@ -252,7 +256,7 @@
         <dependency>
             <groupId>com.blazebit</groupId>
             <artifactId>blaze-persistence-entity-view-impl</artifactId>
-            <version>${blaze-persistence.version}</version>
+            <version>1.2.0-Alpha3</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.blazebit/blaze-persistence-integration-hibernate-5 -->
         <dependency>
@@ -272,24 +276,24 @@
             <artifactId>blaze-persistence-integration-entity-view-spring</artifactId>
             <version>${blaze-persistence.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.blazebit</groupId>
-            <artifactId>blaze-persistence-core-impl</artifactId>
-            <version>RELEASE</version>
-        </dependency>
     </dependencies>
     <build>
         <resources>
             <resource>
                 <directory>src/main/webapp/WEB-INF/</directory>
             </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/WEB-INF/resources/private/vue/managerpanel</directory>
+                <includes>
+                    <include>**manager-panel.js</include>
+                </includes>
+                <targetPath>resources/public/script/app</targetPath>
+            </resource>
         </resources>
-       <!-- <testResources>
-        config and Spring files for Junit Spring loader
-            <testResource>
-                <directory>src/main/webapp/WEB-INF/</directory>
-            </testResource>
-        </testResources> -->
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -320,6 +324,43 @@
                   </compilerArgs>  -->
               </configuration>
           </plugin>
+        <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <configuration>
+                <workingDirectory>src/main/webapp/WEB-INF/resources/private/managerpanel</workingDirectory>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>install node and npm</id>
+                    <goals>
+                        <goal>install-node-and-npm</goal>
+                    </goals>
+                    <configuration>
+                        <nodeVersion>v4.2.1</nodeVersion>
+                        <npmVersion>3.5.3</npmVersion>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>npm install</id>
+                    <goals>
+                        <goal>npm</goal>
+                    </goals>
+                    <configuration>
+                        <arguments>install</arguments>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>npm run build</id>
+                    <goals>
+                        <goal>npm</goal>
+                    </goals>
+                    <configuration>
+                        <arguments>run build</arguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
       </plugins>
   </build>
 </project>

@@ -1,11 +1,7 @@
 package org.aaa.util;
 
-
-import org.apache.commons.lang.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
-import java.util.concurrent.Callable;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -68,8 +64,6 @@ public final class ObjectUtils {
         params[0] = instance;
         return params;
     }
-
-
 
     ObjectUtils() {}
 }

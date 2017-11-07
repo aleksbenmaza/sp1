@@ -15,6 +15,8 @@ import java.sql.Timestamp;
 @MappedSuperclass
 public abstract class UpdatableEntity extends BaseEntity {
 
+    private static final long serialVersionUID = -4512272703014018308L;
+
     @Generated(GenerationTime.ALWAYS)
     @Column(name = "updated_at", insertable = false, updatable = false)
     protected Timestamp updateTime;

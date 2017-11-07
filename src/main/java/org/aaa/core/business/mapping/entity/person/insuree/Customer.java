@@ -17,7 +17,7 @@ import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 @Table(name = "customers")
 public class Customer extends Insuree implements RegisteredUser, ToBeChecked {
 
-	public static final long serialVersionUID = -4842054876473218101L;
+	private static final long serialVersionUID = -4842054876473218101L;
 
 	@Column(name = "has_sepa_document")
 	private boolean sepaDocumentPresent;

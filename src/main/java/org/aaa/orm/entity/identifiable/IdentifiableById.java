@@ -21,7 +21,6 @@ public interface IdentifiableById {
         return o1.getId() > o2.getId() ? +1 : -1;
      };
 
-
     static <T extends IdentifiableById> List<T> toSortedList(Set<T> identifiableByIds) {
         ArrayList<T> resultList;
         resultList = new ArrayList<>(identifiableByIds);
@@ -33,4 +32,7 @@ public interface IdentifiableById {
 
     @Override
     int hashCode();
+
+    @Override
+    boolean equals(Object that);
 }

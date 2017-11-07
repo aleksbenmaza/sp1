@@ -20,6 +20,8 @@ import java.util.Set;
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Model extends IdentifiedByIdEntity {
 
+    private static final long serialVersionUID = -1474458724416840144L;
+
     @Column
     private String name;
 

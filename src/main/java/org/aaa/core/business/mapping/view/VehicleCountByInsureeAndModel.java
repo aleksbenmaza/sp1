@@ -13,12 +13,12 @@ import java.io.Serializable;
 @EntityView(Vehicle.class)
 public interface VehicleCountByInsureeAndModel extends Serializable {
 
-    @Mapping("CONCAT(insuree.firstName, ' ', insuree.lastName)")
+    @Mapping("CONCAT(ownership.key.firstName, ' ', insuree.key.lastName)")
     String getInsureeFullname();
 
-    @Mapping("CONCAT(make.name, ' ', model.name, ' ', year.value")
+    @Mapping("CONCAT(model.make.name, ' ', model.name, ' ', year.value")
     String getMakeModelYearName();
 
-    @Mapping("COUNT(vehicle)")
+    @Mapping("COUNT(*)")
     long getCount();
 }

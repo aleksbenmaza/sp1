@@ -12,6 +12,8 @@ import java.util.Date;
 @Embeddable
 public class Ownership implements Serializable {
 
+    private static final long serialVersionUID = 4098480644920448243L;
+
     @Column(name = "registration_number", unique = true)
     private String registrationNumber;
 

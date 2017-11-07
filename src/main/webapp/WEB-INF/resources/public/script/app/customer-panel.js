@@ -5,8 +5,8 @@
 
 'use strict';
 
-const PUBLIC_API_URI   = BASE_API_URI + '/' + PUBLIC_API_NAME;
-const CUSTOMER_API_URI = BASE_API_URI + '/' + CUSTOMER_API_NAME;
+const PUBLIC_API_URI   = CUSTOMER_API_BASE_URI;
+const CUSTOMER_API_URI = PUBLIC_API_BASE_URI;
 const CUSTOMER_TEMPLATE_URI = WEBROOT + '/resources/customer/templates/customerpanel';
 
 let api_access_key = API_ACCESS_KEY;

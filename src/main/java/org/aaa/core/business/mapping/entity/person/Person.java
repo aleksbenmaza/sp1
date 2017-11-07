@@ -11,7 +11,7 @@ import org.aaa.core.business.mapping.entity.UserAccount;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person extends IdentifiedByIdEntity {
 
-	public static final long serialVersionUID = 5018887767387110200L;
+	private static final long serialVersionUID = 5018887767387110200L;
 
 	@Column(
 			name = "first_name"

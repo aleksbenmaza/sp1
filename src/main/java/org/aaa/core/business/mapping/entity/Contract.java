@@ -13,7 +13,7 @@ import java.util.*;
 @Table(name = "contracts")
 public class Contract extends IdentifiedByIdEntity implements ToBeChecked {
 
-	public static final long serialVersionUID = 1683771937667628264L;
+	private static final long serialVersionUID = 1683771937667628264L;
 
 	@Enumerated
 	@Column(

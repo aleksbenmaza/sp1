@@ -1,6 +1,5 @@
 package org.aaa.core.business.mapping.entity.sinister;
 
-
 import org.aaa.orm.entity.identifiable.IdentifiedByIdEntity;
 import org.aaa.core.business.mapping.entity.Contract;
 import org.aaa.core.business.mapping.entity.ToBeChecked;
@@ -22,6 +21,8 @@ import java.sql.Time;
 @Table(name = "sinisters")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Sinister extends IdentifiedByIdEntity implements ToBeChecked {
+
+    private static final long serialVersionUID = -4032512037824357967L;
 
     @ManyToOne(
             cascade = CascadeType.ALL

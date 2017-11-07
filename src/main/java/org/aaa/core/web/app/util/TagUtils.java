@@ -4,12 +4,12 @@ import org.aaa.core.business.mapping.entity.person.Manager;
 import org.aaa.core.business.mapping.entity.person.Person;
 import org.aaa.core.business.mapping.entity.person.RegisteredUser;
 import org.aaa.core.business.mapping.entity.person.insuree.Customer;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 
 /**
  * Created by alexandremasanes on 17/08/2017.
  */
-public class TagUtils {
+public final class TagUtils {
 
     //Checks to see if Object 'o' is an instance of the class in the string "className"
     public static boolean isRegistered(User user) {

@@ -16,6 +16,8 @@ import java.util.Set;
 @Table(name = "car_dealers")
 public class CarDealer extends IdentifiedByIdEntity {
 
+    private static final long serialVersionUID = 8027881639510234611L;
+
     @Column
     private String name;
 

@@ -78,8 +78,6 @@
     const PUBLIC_API_BASE_URI   = "http://${host.publicApiSubdomain}.${host.domainName}";
 </script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/angular.1.5.7.min.js')" defer></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/vue.2.5.2.min.js'"></script>
-<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.min.js" onerror="src_on_error(this, '${WEBROOT}/public/script/angular-route.1.5.7.min.js')" defer></script>-->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/angular-ui-router.0.4.2.min.js')" defer></script>
 <script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js" onerror="src_on_error(this, '${WEBROOT}/resources/public/script/lib/FileSaver.min.js')" defer></script>
 <script type="text/javascript" src="${WEBROOT}/resources/public/script/app/customer-panel.js" defer></script>

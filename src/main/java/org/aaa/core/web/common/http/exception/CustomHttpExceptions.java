@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
-import org.aaa.util.ForwardingView;
-import org.aaa.util.RedirectView;
+import org.aaa.core.web.app.util.ForwardingView;
+import org.aaa.core.web.app.util.RedirectView;
 
 /**
  * Created by alexandremasanes on 31/05/2017.
@@ -57,8 +57,9 @@ public final class CustomHttpExceptions {
             this.errors = errors;
         }
 
-        public CommandNotValidatedException withView(String viewName) {
-            modelAndView = new ModelAndView(viewName);
+        public CommandNotValidatedException withModelAndView(ModelAndView modelAndView) {
+            modelAndView.setStatus(getHttpStatus());
+            this.modelAndView = modelAndView;
             return this;
         }
 

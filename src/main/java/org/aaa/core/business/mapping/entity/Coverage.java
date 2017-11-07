@@ -10,6 +10,8 @@ import java.io.Serializable;
 @Embeddable
 public class Coverage implements Serializable {
 
+    private static final long serialVersionUID = 8228927396664841524L;
+
     private float rate;
 
     public float getRate() {

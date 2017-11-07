@@ -6,17 +6,23 @@ import org.aaa.core.business.mapping.entity.UserAccount;
 import org.aaa.core.business.mapping.entity.Token;
 
 import org.aaa.core.web.app.http.session.Guest;
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.aaa.core.web.common.helper.Host;
 import org.apache.commons.lang.StringUtils;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+
 import java.sql.Timestamp;
+
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by alexandremasanes on 29/04/2017.
@@ -25,14 +31,16 @@ import java.util.*;
 @Service
 public class TokenService extends BaseService {
 
+    private final static Logger logger = Logger.getLogger(TokenService.class.getName());
+
     private HashMap<String, TokenEncryptionComponents> cache;
-
-    @Autowired
-    private StandardPBEStringEncryptor jasypt;
-
+    
     {
         cache  = new HashMap<>();
     }
+
+    @Autowired
+    private StandardPBEStringEncryptor jasypt;
 
     @Value("#{@dao.tokenLifetime}")
     private int tokenLifetime;
@@ -81,16 +89,16 @@ public class TokenService extends BaseService {
     }
 
     @Transactional
-    public String createToken() {
-        return createToken(null);
+    public String createEncrypted() {
+        return createEncrypted(null);
     }
 
     @Transactional
-    public String createToken(UserAccount userAccount) {
-        Token token;
-        UUID uuid;
-        TokenEncryptionComponents tokenEncryptionComponents;
-        String encryptedToken;
+    public String createEncrypted(UserAccount userAccount) {
+        Token                      token;
+        UUID                       uuid;
+        TokenEncryptionComponents  tokenEncryptionComponents;
+        String                     encryptedToken;
 
         tokenEncryptionComponents = new TokenEncryptionComponents();
 
@@ -130,7 +138,7 @@ public class TokenService extends BaseService {
         tokenEncryptionComponents = cache.computeIfAbsent(encryptedString, this::fromEncryptedString);
         if(!valid(tokenEncryptionComponents))
             return null;
-
+        logger.log(Level.INFO, "tokenEncryptionComponents not valid !");
         userAccount = get(tokenEncryptionComponents.uuid).getUserAccount();
         return userAccount == null ? new Guest() : userAccount.getId().getUser();
     }
@@ -152,9 +160,9 @@ public class TokenService extends BaseService {
         String key;
         key = StringUtils.join(
                 new Object[] {
-                        tokenEncryptionComponents.uuid,
-                        tokenEncryptionComponents.emailAddress,
-                        tokenEncryptionComponents.timestamp
+                    tokenEncryptionComponents.uuid,
+                    tokenEncryptionComponents.emailAddress,
+                    tokenEncryptionComponents.timestamp
                 },
                 '#'
         );
@@ -164,17 +172,17 @@ public class TokenService extends BaseService {
     }
 
     private TokenEncryptionComponents fromEncryptedString(String encryptedString) {
-        String[]             decryptedStrings;
+        String[]                  decryptedStrings;
         TokenEncryptionComponents tokenEncryptionComponents;
 
         decryptedStrings = jasypt.decrypt(encryptedString).split("#");
 
         tokenEncryptionComponents = new TokenEncryptionComponents();
-        tokenEncryptionComponents.emailAddress = decryptedStrings[1];
         try {
+            tokenEncryptionComponents.emailAddress = decryptedStrings[1];
             tokenEncryptionComponents.uuid = UUID.fromString(decryptedStrings[0]);
             tokenEncryptionComponents.timestamp = Timestamp.valueOf(decryptedStrings[2]);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
             tokenEncryptionComponents = null;
         }
 
@@ -189,6 +197,14 @@ public class TokenService extends BaseService {
 
         System.out.println("token is " + token);
         return token != null && !expired(token);
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    protected void clearCache() {
+        cache.values().removeIf(
+                tokenEncryptionComponents -> new Date().compareTo(
+                        tokenEncryptionComponents.timestamp) > tokenLifetime
+        );
     }
 
     private class TokenEncryptionComponents {

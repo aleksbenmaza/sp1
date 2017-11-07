@@ -13,6 +13,8 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by alexandremasanes on 22/07/2017.
@@ -20,18 +22,22 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice(annotations = Controller.class)
 public class ControllerExceptionHandler {
 
+    Logger logger = Logger.getLogger(ControllerExceptionHandler.class.getName());
+
     @RequestMapping(method = RequestMethod.GET)
     @ExceptionHandler(WithAbstractUrlBasedViewException.class)
     protected AbstractUrlBasedView handle(WithAbstractUrlBasedViewException exception) {
         AbstractUrlBasedView view;
         view = exception.getView();
+        logger.log(Level.INFO, view.getUrl());
         return view;
-
     }
 
     @RequestMapping(method = RequestMethod.POST)
     @ExceptionHandler(CustomHttpExceptions.CommandNotValidatedException.class)
     protected ModelAndView handle(CustomHttpExceptions.CommandNotValidatedException exception) {
+        logger.log(Level.SEVERE, "handle");
+        System.out.println(exception.getModelAndView().getViewName());
         return exception.getModelAndView();
     }
 
@@ -39,7 +45,7 @@ public class ControllerExceptionHandler {
     protected ModelAndView handle(Exception exception, HttpServletRequest request, HttpServletResponse response) {
         ModelAndView modelAndView;
         HttpStatus status;
-        System.out.println("handle");
+        exception.printStackTrace();
 
         switch (HttpMethod.valueOf(request.getMethod())) {
             case GET :

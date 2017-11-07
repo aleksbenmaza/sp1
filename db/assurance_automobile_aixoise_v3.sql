@@ -444,27 +444,25 @@ VALUES
   (NULL, 3, 'Bris de glace', NULL);
 
 # -----------------------------------------------------------------------------
-#       FUNCTION : allocate_auto_increment
+#       FUNCTION : __allocate_auto_increment
 # -----------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS allocate_auto_increment;
+DROP FUNCTION IF EXISTS __allocate_auto_increment;
 
 DELIMITER $
 
-CREATE PROCEDURE allocate_auto_increment(IN in_table_name VARCHAR(64), IN in_number SMALLINT, OUT out_next_id BIGINT)
+CREATE FUNCTION __allocate_auto_increment(in_table_name VARCHAR(64), in_number SMALLINT) RETURNS BIGINT
 BEGIN
   DECLARE message_text VARCHAR(64);
+  DECLARE out_next_id BIGINT;
   SET message_text := CONCAT('Table `', in_table_name,'` does not have AUTO_INCREMENT defined.');
-  SET @allocate_auto_increment.in_table_name := in_table_name;
-  SET @allocate_auto_increment.number := in_number;
-  SELECT auto_increment INTO out_next_id FROM information_schema.tables WHERE auto_increment IS NOT NULL AND table_name = in_table_name LIMIT 1;
+  SELECT value INTO out_next_id FROM __sequences__ WHERE table_name = in_table_name LIMIT 1;
   IF out_next_id IS NULL THEN
     SIGNAL SQLSTATE '42000' SET MESSAGE_TEXT = message_text;
   END IF;
-  SET @allocate_auto_increment.stmt := CONCAT('ALTER TABLE ', in_table_name,' AUTO_INCREMENT=', out_next_id + in_number);
-  PREPARE query FROM @allocate_auto_increment.stmt;
-  EXECUTE query;
-  DROP PREPARE query;
+  UPDATE sequences SET value := in_number + out_next_id
+  WHERE table_name = in_table_name;
+  RETURN out_next_id;
 END $
 
 DELIMITER ;

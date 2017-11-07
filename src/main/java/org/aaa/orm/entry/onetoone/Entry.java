@@ -5,6 +5,7 @@ import org.aaa.orm.entry.BaseEntry;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import java.io.Serializable;
 
@@ -15,7 +16,10 @@ import java.io.Serializable;
 @Embeddable
 public class Entry<K extends BaseEntity, V extends Serializable> extends BaseEntry<K, V> {
 
+    private static final long serialVersionUID = -5992690016361004102L;
+
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
     private K key;
 
     public Entry(K key) {

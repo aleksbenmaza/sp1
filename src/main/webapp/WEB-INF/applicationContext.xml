@@ -13,7 +13,8 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
                            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-                           http://persistence.blazebit.com/view/spring http://persistence.blazebit.com/view/spring/spring-entity-views-1.2.xsd">
+                           http://persistence.blazebit.com/view/spring
+                           http://persistence.blazebit.com/view/spring/spring-entity-views-1.2.xsd">
 
     <context:component-scan base-package="org.aaa.core.web"/>
 
@@ -22,31 +23,26 @@
     <bean id="sessionFactory" name="sessionFactory"
           class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
         <property name="configLocation" value="classpath:hbn.xml"/>
-        <property name="packagesToScan" value="org.aaa.core.business.mapping"/>
+        <property name="packagesToScan" value="org.aaa.core.business.mapping.entity"/>
     </bean>
 
-    <ev:entity-views base-package="org.aaa.core.business.mapping"/>
+    <ev:entity-views base-package="org.aaa.core.business.mapping.view"/>
 
     <bean id="entityViewConfiguration" class="com.blazebit.persistence.view.impl.EntityViewConfigurationImpl"/>
 
     <bean id="criteriaBuilderConfiguration" class="com.blazebit.persistence.impl.CriteriaBuilderConfigurationImpl"/>
 
-    <bean id="entityViewManagerFactory" class="com.blazebit.persistence.impl.CriteriaBuilderFactoryImpl">
+    <bean id="criteriaBuilderFactory" class="com.blazebit.persistence.impl.CriteriaBuilderFactoryImpl">
         <constructor-arg ref="criteriaBuilderConfiguration"/>
         <constructor-arg ref="sessionFactory"/>
     </bean>
+
     <bean id="strongEncryptor"
           class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
         <property name="algorithm" value="PBEWithMD5AndTripleDES"/>
         <property name="password" value="jasypt"/>
     </bean>
-    <!--
-    <bean id="entityManagerFactory"
-          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceXmlLocation" encryptedString="classpath*:/META-INF/persistence.xml"/>
-        <property name="persistenceUnitName" encryptedString="aaa"/>
 
-    </bean> -->
     <!-- must be c/p into every *-servlet.xml -->
     <context:property-placeholder location="classpath*:/validation.properties,
                                             classpath*:/service.properties,
@@ -90,17 +86,11 @@
         </property>
     </bean>
 
-    <!--<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller"/>-->
-
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- one of the properties available; the maximum file size in bytes -->
         <property name="maxUploadSize" value="100000"/>
     </bean>
-    <!--
-    <bean id="openEntityManagerInViewInterceptor" class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
-
-    </bean>-->
 
     <!-- this is a template messageCode that we can pre-load with default state -->
     <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">

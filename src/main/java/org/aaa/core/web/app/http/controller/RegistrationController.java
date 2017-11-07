@@ -2,21 +2,20 @@ package org.aaa.core.web.app.http.controller;
 
 import org.aaa.core.web.common.business.logic.CustomerService;
 import org.aaa.core.web.common.business.logic.CustomerService.*;
+import org.aaa.core.web.common.helper.Host;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 import org.aaa.core.web.common.helper.MessageGetter;
 import org.aaa.core.web.app.model.Login;
 import org.aaa.core.web.app.model.Registration;
 import org.aaa.core.web.app.model.validation.RegistrationValidator;
+import org.aaa.core.web.app.util.MessageCode;
+import org.aaa.core.web.app.util.RedirectView;
 
-
-import org.aaa.util.MessageCode;
-import org.aaa.util.RedirectView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -35,6 +34,9 @@ public class RegistrationController extends GuestController {
     public final static String VIEW_NAME = "registration";
 
     @Autowired
+    private Host                  host;
+
+    @Autowired
     private CustomerService       customerService;
 
     @Autowired
@@ -48,14 +50,14 @@ public class RegistrationController extends GuestController {
         return render(new ModelMap(new Registration()));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(method = RequestMethod.POST)
     public Object signUp(
-            @RequestHeader("Host") String             serverName,
-            @ModelAttribute        Registration       registration,
-            @ModelAttribute        MessageCode        messageCode,
-                                   Login              login,
-                                   BindingResult      bindingResult,
-                                   RedirectAttributes redirectAttributes
+            @ModelAttribute Registration       registration,
+            @ModelAttribute MessageCode        messageCode,
+                            Login              login,
+                            BindingResult      bindingResult,
+                            RedirectAttributes redirectAttributes
     ) {
 
         ModelAndView modelAndView;
@@ -76,19 +78,19 @@ public class RegistrationController extends GuestController {
 
 
         if (!bindingResult.hasErrors()) {
-            registrationResult = customerService.preRegister(registration, serverName);
+            registrationResult = customerService.preRegister(registration, host.getDomainName());
 
             if (registrationResult.isSuccessful()) {
                 redirectUri = "";
                 messageCode.setValue(registrationResult.getMessageCode());
                 redirectAttributes.addFlashAttribute(messageCode);
-                return new RedirectView(redirectUri, HttpStatus.CREATED);
+                return new RedirectView(redirectUri);
 
             } else
                 messageCode.setValue(registrationResult.getMessageCode());
         }
 
-        throw new CustomHttpExceptions.CommandNotValidatedException().withView(getViewName());
+        throw new CustomHttpExceptions.CommandNotValidatedException().withModelAndView(render());
     }
 
     @RequestMapping(value = "/validation", method = RequestMethod.POST)

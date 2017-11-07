@@ -11,6 +11,8 @@ import javax.persistence.*;
 @Table(name = "customer_accidents")
 public class WithCustomerAccident extends Accident {
 
+    private static final long serialVersionUID = -4679156685945571234L;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(
             name            = "accidents__accidents",

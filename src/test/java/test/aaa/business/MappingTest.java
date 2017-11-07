@@ -98,6 +98,13 @@ public class MappingTest {
     }
 
     @Test
+    @Transactional
+    public void idAllocator_should_work() {
+        System.out.println(new Customer().getId());
+        System.out.println(new Customer().getId());
+    }
+
+    @Test
     public void testUUID() {
         System.out.println(UUID.randomUUID().hashCode());
     }

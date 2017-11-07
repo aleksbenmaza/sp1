@@ -63,7 +63,7 @@
     </div>
     <script type="text/javascript">
         const API_ACCESS_KEY = "${encryptedToken}";
-        const PUBLIC_API_URI = "http://${host.publicApiSubdomain}.${host.domainName}/public";
+        const PUBLIC_API_URI = "http://${host.publicApiSubdomain}.${host.domainName}";
     </script>
     <script type="text/javascript" src="${WEBROOT}/resources/public/script/app/services.js" defer></script>
 <%@ include file="footer.jsp" %>

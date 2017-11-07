@@ -19,6 +19,8 @@ import java.util.Set;
 //@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Make extends IdentifiedByIdEntity {
 
+    private static final long serialVersionUID = -4616976715269612719L;
+
     @Column
     private String name;
 

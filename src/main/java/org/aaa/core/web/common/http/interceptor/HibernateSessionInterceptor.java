@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -32,6 +34,8 @@ import java.util.function.Consumer;
 
 @Component
 public class HibernateSessionInterceptor extends HandlerInterceptorAdapter {
+
+    private final static Logger logger = Logger.getLogger(HibernateSessionInterceptor.class.getName());
 
     private HashMap<HttpServletRequest, Session> sessionsRequests;
 
@@ -46,7 +50,8 @@ public class HibernateSessionInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Session session;
         HttpSession httpSession;
-        System.out.println(((HandlerMethod)handler).getShortLogMessage());
+        if(handler instanceof HandlerMethod)
+            logger.log(Level.INFO, ((HandlerMethod)handler).getShortLogMessage());
         session = sessionFactory.openSession();
 
         sessionsRequests.put(request, session);

@@ -1,13 +1,12 @@
 package org.aaa.orm.entity.identifiable;
 
-import static org.aaa.util.ObjectUtils.doIf;
-
 import org.aaa.orm.entity.UpdatableEntity;
 import org.aaa.util.ObjectUtils;
+import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
+import java.util.stream.Stream;
 
-import java.util.UUID;
 
 @MappedSuperclass
 public abstract class IdentifiedByIdEntity extends UpdatableEntity implements IdentifiableById {
@@ -22,39 +21,38 @@ public abstract class IdentifiedByIdEntity extends UpdatableEntity implements Id
 
 	@Id
 	//@Access(AccessType.PROPERTY) //allows calling getId without loading whole proxy (use final instead ?)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Basic(fetch = FetchType.EAGER)
-	@Column(name = "java_id", unique = true)
-	private UUID uuid;
-
-	@Override
-	public int hashCode() {
-		//ObjectUtils.doIf(() -> id = idGenerator.generateFor(this), id == NULL_ID);
-		generateIfNullUUID();
-		return uuid.hashCode();
+	{
+		idGenerator.generateFor(this);
 	}
 
 	@Override
-	public long getId() {
-		System.err.println(getClass());
+	public final int hashCode() {
+		return Long.hashCode(getId());
+	}
+
+	@Override
+	public final long getId() {
+		ObjectUtils.doIf(() -> idGenerator.generateFor(this), id == NULL_ID);
 		return id;
 	}
-	/*
-	//needed for property access, set to private for security reason
-	void setId(long id) {
+
+	protected void setId(long id) {
 		this.id = id;
 	}
-*/
-	@Override
-	public boolean equals(Object o) {
-		return o != null && this.hashCode() == o.hashCode();
-	}
 
-	//should test if hibernate triggers lazy loading on loading event
-	@PostLoad
-	private void generateIfNullUUID() {
-		uuid = ObjectUtils.ifNull(uuid, UUID::randomUUID);
+	@Override
+	public final boolean equals(Object that) {
+		return that != null &&
+				(this instanceof HibernateProxy ?
+				this.getClass().getSuperclass() :
+				this.getClass())
+						==
+						(that instanceof HibernateProxy ?
+								that.getClass().getSuperclass() :
+								that.getClass()) &&
+				this.hashCode() == that.hashCode();
 	}
 }

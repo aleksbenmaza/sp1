@@ -1,6 +1,6 @@
 package org.aaa.core.web.app.http.controller;
 
-import org.aaa.core.business.mapping.entity.User;
+import org.aaa.core.business.mapping.entity.person.User;
 import org.aaa.core.business.mapping.entity.person.insuree.Customer;
 import org.aaa.core.web.common.http.exception.CustomHttpExceptions;
 
@@ -23,7 +23,7 @@ public class CustomerResourcesController extends BaseController {
         return (Customer) user;
     }
 
-    @RequestMapping(value = "/templates/customerpanel/{templateName}.html")
+    @RequestMapping(value = "/templates/customerpanel/{templateName}.{html}")
     public ModelAndView serveCustomerPanelTemplate(
                           Customer customer,
             @PathVariable String   templateName
