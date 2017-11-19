@@ -1,0 +1,16 @@
+<import-sources>
+    <domain-objects>
+        <domain-object class="org.aaa.core.business.mapping.entity.Make">
+            <sources>
+                <source name="Edmunds" class="org.aaa.core.web.common.model.foreign.output.edmunds.MakesDTOImpl">
+                    <uri secured="true" host="api.edmunds.com" path="/api/vehicle/v2/makes">
+                        <params>
+                            <param key="state" value="new"/>
+                        </params>
+                    </uri>
+                    <key name="api_key" mode="in_uri" value="uqxdcyydzg8td9vut44gcesv"/>
+                </source>
+            </sources>
+        </domain-object>
+    </domain-objects>
+</import-sources>

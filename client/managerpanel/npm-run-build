@@ -1,0 +1,4 @@
+npm run build
+
+cp -f ../../server/src/main/webapp/WEB-INF/resources/public/script/app/manager-panel.js ../../target/classes/resources/public/script/app/manager-panel.js
+cp -f ../../server/src/main/webapp/WEB-INF/resources/public/script/app/manager-panel.js.map ../../target/classes/resources/public/script/app/manager-panel.js.map

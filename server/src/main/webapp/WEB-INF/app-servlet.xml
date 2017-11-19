@@ -1,0 +1,51 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                           http://www.springframework.org/schema/context
+	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	                       http://www.springframework.org/schema/util
+	                       http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="org.aaa.core.web.app"/>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="fr" />
+    </bean>
+
+    <mvc:resources mapping="/resources/public/**" location="classpath:/resources/public/"
+                   cache-period="31556926"/>
+
+    <context:property-placeholder location="classpath*:/validation.properties,
+                                            classpath*:/service.properties,
+                                            classpath*:/app.controller.properties"/>
+
+    <util:properties id="properties" location="classpath*:/app.controller.properties"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/error"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <ref bean="hibernateSessionInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/error"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <ref bean="httpSessionInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <mvc:annotation-driven ignore-default-model-on-redirect="true"/>
+</beans>

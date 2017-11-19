@@ -1,0 +1,105 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:ev="http://persistence.blazebit.com/view/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                           http://www.springframework.org/schema/context
+	                       http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	                       http://www.springframework.org/schema/task
+	                       http://www.springframework.org/schema/task/spring-task.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                           http://persistence.blazebit.com/view/spring
+                           http://persistence.blazebit.com/view/spring/spring-entity-views-1.2.xsd">
+
+    <context:component-scan base-package="org.aaa.core.web"/>
+
+    <task:annotation-driven/>
+
+    <bean id="sessionFactory" name="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="configLocation" value="classpath:hbn.xml"/>
+        <property name="packagesToScan" value="org.aaa.core.business.mapping.entity"/>
+    </bean>
+
+    <ev:entity-views base-package="org.aaa.core.business.mapping.view"/>
+
+    <bean id="entityViewConfiguration" class="com.blazebit.persistence.view.impl.EntityViewConfigurationImpl"/>
+
+    <bean id="criteriaBuilderConfiguration" class="com.blazebit.persistence.impl.CriteriaBuilderConfigurationImpl"/>
+
+    <bean id="criteriaBuilderFactory" class="com.blazebit.persistence.impl.CriteriaBuilderFactoryImpl">
+        <constructor-arg ref="criteriaBuilderConfiguration"/>
+        <constructor-arg ref="sessionFactory"/>
+    </bean>
+
+    <bean id="strongEncryptor"
+          class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="algorithm" value="PBEWithMD5AndTripleDES"/>
+        <property name="password" value="jasypt"/>
+    </bean>
+
+    <!-- must be c/p into every *-servlet.xml -->
+    <context:property-placeholder location="classpath*:/validation.properties,
+                                            classpath*:/service.properties,
+                                            classpath*:/app.controller.properties,
+                                            classpath*:/api.controller.properties,
+                                            classpath*:/helper.properties,
+                                            classpath*:/task.properties,
+                                            classpath*:/idallocator.properties"/>
+
+    <bean id="txManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven mode="proxy"
+                          proxy-target-class="true"
+                          transaction-manager="txManager"/>
+
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+        <property name="velocityProperties">
+            <props>
+                <prop key="resource.loader">file</prop>
+                <prop key="file.resource.loader.class">
+                    org.apache.velocity.runtime.resource.loader.FileResourceLoader
+                </prop>
+                <prop key="file.resource.loader.cache">false</prop>
+            </props>
+        </property>
+        <property name="resourceLoaderPath" value="/WEB-INF/resources/private/velocity/" />
+    </bean>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="587" />
+        <property name="username" value="#{@systemEnvironment['AAA_EMAIL_ADDRESS']}" />
+        <property name="password" value="#{@systemEnvironment['AAA_EMAIL_PASSWORD']}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize" value="100000"/>
+    </bean>
+
+    <!-- this is a template messageCode that we can pre-load with default state -->
+    <bean id="templateMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="Assurance Automobile Aixoise"/>
+    </bean>
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

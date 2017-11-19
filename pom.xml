@@ -28,6 +28,7 @@
         </repository>
     </repositories>
     <properties>
+        <log4j.version>1.2.17.redhat-3</log4j.version>
         <spring.version>4.3.6.RELEASE</spring.version>
         <blaze-persistence.version>1.2.0-SNAPSHOT</blaze-persistence.version>
     </properties>
@@ -142,6 +143,12 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <!-- Log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -160,11 +167,11 @@
             <artifactId>ehcache</artifactId>
             <version>3.3.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.5</version>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.hibernate.javax.persistence/hibernate-jpa-2.1-api -->
         <dependency>
@@ -178,7 +185,6 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.2.8.Final</version>
         </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
         <!--
         <dependency>
@@ -280,18 +286,10 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/webapp/WEB-INF/</directory>
+                <directory>server/src/main/webapp/WEB-INF</directory>
             </resource>
             <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/WEB-INF/resources/private/vue/managerpanel</directory>
-                <includes>
-                    <include>**manager-panel.js</include>
-                </includes>
-                <targetPath>resources/public/script/app</targetPath>
+                <directory>server/src/main/resources</directory>
             </resource>
         </resources>
         <plugins>
@@ -304,8 +302,9 @@
                     <password>admin</password>
                     <url>http://localhost:8080/manager</url>
                     <server>aaa_server</server>
-                    <contextReloadable>true</contextReloadable>
+                    <contextReloadable>false</contextReloadable>
                     <path>/</path>
+                    <warSourceDirectory>server/src/main/webapp</warSourceDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -324,6 +323,7 @@
                   </compilerArgs>  -->
               </configuration>
           </plugin>
+        <!--
         <plugin>
             <groupId>com.github.eirslett</groupId>
             <artifactId>frontend-maven-plugin</artifactId>
@@ -360,7 +360,9 @@
                     </configuration>
                 </execution>
             </executions>
-        </plugin>
+        </plugin>-->
       </plugins>
+      <sourceDirectory>server/src/main/java</sourceDirectory>
+      <testSourceDirectory>server/src/test/java</testSourceDirectory>
   </build>
 </project>
